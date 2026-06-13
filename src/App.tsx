@@ -4,9 +4,12 @@ import LeftSidebar from './components/LeftSidebar';
 import MainContent from './components/MainContent';
 import RightSidebar from './components/RightSidebar';
 import Footer from './components/Footer';
+import FooterModal from './components/FooterModal';
+import LiveChatWidget from './components/LiveChatWidget';
 import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
-import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
+import { generateBetId, getCombinations, checkIsSelectionWon, formatOdds } from './utils/betting';
+import type { OddsFormat } from './utils/betting';
 import { supabase, hasRealSupabaseConfig } from './lib/supabase';
 import type { User } from '@supabase/supabase-js';
 import './App.css';
@@ -37,6 +40,14 @@ export interface PlacedBet {
   };
 }
 
+export interface AppNotification {
+  id: string;
+  message: string;
+  time: string;
+  read: boolean;
+  type?: 'goal' | 'bet_won' | 'bet_lost' | 'deposit' | 'system';
+}
+
 export type Category = 'Sports' | 'Live Betting' | 'Virtuals' | 'Casino' | 'Live Casino' | 'Poker';
 export type Sport = 'Football' | 'Tennis' | 'Basketball' | 'Ice Hockey' | 'Boxing' | 'Cricket' | 'Darts' | 'Formula 1' | 'MMA';
 
@@ -55,6 +66,11 @@ function App() {
   const [isWelcomePopupOpen, setIsWelcomePopupOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSlipOpen, setIsMobileSlipOpen] = useState(false);
+
+  const [activeFooterTab, setActiveFooterTab] = useState<string | null>(null);
+  const [depositLimit, setDepositLimit] = useState<number>(1000);
+  const [selfExclusionEndTime, setSelfExclusionEndTime] = useState<number>(0);
+  const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
 
   const addBet = useCallback((bet: Bet) => {
     setBetSlip(prev => {
@@ -112,9 +128,13 @@ function App() {
 
   // Deposit function passed to Header
   const handleDeposit = useCallback((amount: number) => {
+    if (amount > depositLimit) {
+      triggerGlobalToast(`❌ Deposit blocked. This deposit of €${amount.toFixed(2)} exceeds your daily limit of €${depositLimit.toFixed(2)}.`);
+      return;
+    }
     updateBalance(balance + amount);
     triggerGlobalToast(`💰 Deposit successful! €${amount.toFixed(2)} added to your balance.`);
-  }, [balance, updateBalance, triggerGlobalToast]);
+  }, [balance, updateBalance, triggerGlobalToast, depositLimit]);
 
   // Simulate live match minute increments, score updates, and odds fluctuations
   useEffect(() => {
@@ -482,6 +502,10 @@ function App() {
   }, [user]);
 
   const handlePlaceBet = useCallback(async (stake: number, potentialReturn: number, type: 'Single' | 'Multi' | 'System' = 'Multi') => {
+    if (selfExclusionEndTime > Date.now()) {
+      triggerGlobalToast(`🔒 Betting blocked. Your account is self-excluded until ${new Date(selfExclusionEndTime).toLocaleTimeString()}.`);
+      return;
+    }
     if (betSlip.length === 0 || stake <= 0 || balance < stake) return;
 
     updateBalance(balance - stake);
@@ -648,6 +672,24 @@ function App() {
         balance={balance}
         onDeposit={handleDeposit}
       />
+
+      {selfExclusionEndTime > Date.now() && (
+        <div className="self-exclusion-alert-banner" role="alert" style={{
+          backgroundColor: '#dc3545',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '10px',
+          fontSize: '0.85rem',
+          fontWeight: 'bold',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '8px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
+        }}>
+          🔒 Account self-excluded. Betting is locked.
+        </div>
+      )}
       
       <div className="main-layout">
         <div className={`sidebar-container left ${isMobileMenuOpen ? 'open' : ''}`}>
@@ -691,6 +733,7 @@ function App() {
             matches={matches}
             balance={balance}
             onCashOut={handleCashOut}
+            isSelfExcluded={selfExclusionEndTime > Date.now()}
           />
         </div>
       </div>
@@ -714,7 +757,31 @@ function App() {
         )}
       </Suspense>
 
-      <Footer />
+      <Footer 
+        setActiveCategory={handleCategoryChange}
+        setActiveFooterTab={setActiveFooterTab}
+      />
+
+      <FooterModal 
+        tab={activeFooterTab} 
+        onClose={() => setActiveFooterTab(null)}
+        balance={balance}
+        placedBetsCount={placedBets.length}
+        depositLimit={depositLimit}
+        setDepositLimit={setDepositLimit}
+        selfExclusionEndTime={selfExclusionEndTime}
+        setSelfExclusionEndTime={setSelfExclusionEndTime}
+        onStartLiveChat={() => setIsLiveChatOpen(true)}
+        triggerToast={triggerGlobalToast}
+      />
+
+      <LiveChatWidget 
+        isOpen={isLiveChatOpen}
+        onClose={() => setIsLiveChatOpen(false)}
+        balance={balance}
+        placedBetsCount={placedBets.length}
+        selfExclusionEndTime={selfExclusionEndTime}
+      />
       
       {/* Mobile Overlay */}
       {(isMobileMenuOpen || isMobileSlipOpen) && (

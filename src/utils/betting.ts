@@ -88,3 +88,50 @@ export function checkIsSelectionWon(selection: string, score: string | undefined
 
   return false;
 }
+
+export type OddsFormat = 'decimal' | 'fractional' | 'american';
+
+/**
+ * Formats decimal odds into Decimal, Fractional, or American formats.
+ */
+export function formatOdds(decimal: number, format: OddsFormat = 'decimal'): string {
+  if (decimal === 0) return '-';
+  if (format === 'decimal') {
+    return decimal.toFixed(2);
+  }
+  if (format === 'fractional') {
+    if (decimal <= 1) return '0';
+    const val = decimal - 1;
+    let bestNumerator = 1;
+    let bestDenominator = 1;
+    let minError = Math.abs(val - 1);
+    for (let d = 1; d <= 20; d++) {
+      const n = Math.round(val * d);
+      const error = Math.abs(val - n / d);
+      if (error < minError) {
+        minError = error;
+        bestNumerator = n;
+        bestDenominator = d;
+      }
+      if (error < 0.005) break;
+    }
+    const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
+    const divisor = gcd(bestNumerator, bestDenominator);
+    const num = bestNumerator / divisor;
+    const den = bestDenominator / divisor;
+    if (num === 0) return '0';
+    return `${num}/${den}`;
+  }
+  if (format === 'american') {
+    if (decimal <= 1) return '0';
+    if (decimal >= 2.00) {
+      const amt = Math.round((decimal - 1) * 100);
+      return `+${amt}`;
+    } else {
+      const amt = Math.round(-100 / (decimal - 1));
+      return `${amt}`;
+    }
+  }
+  return decimal.toFixed(2);
+}
+

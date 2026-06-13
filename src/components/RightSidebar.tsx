@@ -17,6 +17,7 @@ interface RightSidebarProps {
   matches: MatchData[];
   balance?: number;
   onCashOut?: (id: string, amount: number) => void;
+  isSelfExcluded?: boolean;
 }
 
 // Lookup current live odds
@@ -64,7 +65,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   closeMobileSlip, 
   matches, 
   balance = 1000, 
-  onCashOut = () => {} 
+  onCashOut = () => {},
+  isSelfExcluded = false
 }) => {
   const [activeTab, setActiveTab] = useState<'betslip' | 'mybets'>('betslip');
   const [betMode, setBetMode] = useState<'single' | 'multi' | 'system'>('multi');
@@ -510,6 +512,13 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 <span>Insufficient balance!</span>
               </div>
             )}
+
+            {betSlip.length > 0 && isSelfExcluded && (
+              <div className="insufficient-balance-warning self-exclusion-warning" style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', borderColor: 'rgba(220, 53, 69, 0.2)', color: '#dc3545' }}>
+                <AlertTriangle size={14} />
+                <span>Account Self-Excluded! Betting is locked.</span>
+              </div>
+            )}
             
             <button 
               className="btn-place-bet" 
@@ -517,13 +526,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 betSlip.length === 0 || 
                 hasOddsChanged ||
                 isBalanceInsufficient ||
+                isSelfExcluded ||
                 (betMode === 'multi' && (parseFloat(multiStake) || 0) <= 0) ||
                 (betMode === 'single' && singleTotalStake <= 0) ||
                 (betMode === 'system' && (parseFloat(systemStake) || 0) <= 0)
               }
               onClick={handlePlaceBetClick}
             >
-              {hasOddsChanged ? 'Accept Odds to Bet' : isBalanceInsufficient ? 'Insufficient Balance' : 'Place Bet'}
+              {hasOddsChanged ? 'Accept Odds to Bet' : isSelfExcluded ? 'Self-Excluded' : isBalanceInsufficient ? 'Insufficient Balance' : 'Place Bet'}
             </button>
           </div>
         </>

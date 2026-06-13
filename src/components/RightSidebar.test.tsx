@@ -170,4 +170,29 @@ describe('RightSidebar (component tests)', () => {
     const enabledBtn = screen.getByRole('button', { name: /Place Bet/i });
     expect(enabledBtn).not.toBeDisabled();
   });
+
+  it('disables Place Bet button and shows Self-Excluded label when isSelfExcluded is true', async () => {
+    const user = userEvent.setup();
+    const bets: Bet[] = [
+      { id: 'm1-home', match: 'Arsenal vs Man Utd', selection: 'home', odds: 1.5 },
+    ];
+    const matchingMatches = [
+      { ...initialMatches[0], odds: { home: 1.5, draw: 4.2, away: 7.5 } },
+    ];
+    const props = createProps({ 
+      betSlip: bets, 
+      matches: matchingMatches as MatchData[],
+      isSelfExcluded: true 
+    });
+
+    render(<RightSidebar {...props} />);
+
+    const stakeInput = screen.getByPlaceholderText('0.00');
+    await user.type(stakeInput, '10');
+
+    // Even with stake, it should be disabled and show Self-Excluded
+    const placeBtn = screen.getByRole('button', { name: /Self-Excluded/i });
+    expect(placeBtn).toBeDisabled();
+    expect(screen.getByText(/Account Self-Excluded! Betting is locked/i)).toBeInTheDocument();
+  });
 });
