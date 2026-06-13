@@ -147,7 +147,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
     return maxReturn.toFixed(2);
   }, [systemCombinations, systemStake]);
 
-  const handlePlaceBetClick = () => {
+  const handlePlaceBetClick = async () => {
     if (betSlip.length === 0 || hasOddsChanged) return;
 
     let finalStake = 0;
@@ -168,14 +168,18 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
     }
 
     setShowSuccess(true);
-    setTimeout(() => {
-      onPlaceBet(finalStake, finalReturn, betMode === 'single' ? 'Single' : betMode === 'system' ? 'System' : 'Multi');
-      setMultiStake('');
-      setSingleStakes({});
-      setSystemStake('');
-      setShowSuccess(false);
-      setActiveTab('mybets');
-    }, 1500);
+
+    // Call onPlaceBet (may be async if saving to Supabase).
+    // We keep the 1500ms "processing" feel for UX, then await the actual save.
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    await onPlaceBet(finalStake, finalReturn, betMode === 'single' ? 'Single' : betMode === 'system' ? 'System' : 'Multi');
+
+    setMultiStake('');
+    setSingleStakes({});
+    setSystemStake('');
+    setShowSuccess(false);
+    setActiveTab('mybets');
   };
 
   return (
