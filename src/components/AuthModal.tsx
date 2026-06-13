@@ -24,6 +24,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
   const [formError, setFormError] = useState<string | null>(null);
 
   // Clear sensitive fields when switching tabs (avoid leaking passwords between login/register)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional UX reset on user-initiated tab change (same pattern as other effects in the codebase)
   React.useEffect(() => {
     setPassword('');
     setConfirmPassword('');
