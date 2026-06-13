@@ -6,6 +6,7 @@ import RightSidebar from './components/RightSidebar';
 import Footer from './components/Footer';
 import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
+import { toggleBet, generateBetId } from './utils/betting';
 
 // Lazy loading modals to reduce initial bundle size
 const AuthModal = React.lazy(() => import('./components/AuthModal'));
@@ -107,8 +108,9 @@ function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsWelcomePopupOpen(true);
-    }, 1500); // Show popup 1.5s after load
+    }, 1500); // Show popup 1.5s after load (intentional delayed mount effect)
     return () => clearTimeout(timer);
   }, []);
 
@@ -123,14 +125,7 @@ function App() {
   const [isMobileSlipOpen, setIsMobileSlipOpen] = useState(false);
 
   const addBet = useCallback((bet: Bet) => {
-    setBetSlip(prev => {
-      const exists = prev.find(b => b.id === bet.id);
-      // #region agent log
-      fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'C',location:'App.tsx:addBet',message:'bet toggled',data:{betId:bet.id,action:exists?'remove':'add',prevCount:prev.length,newCount:exists?prev.length-1:prev.length+1},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
-      if (exists) return prev.filter(b => b.id !== bet.id); // Toggle off if already added
-      return [...prev, bet];
-    });
+    setBetSlip(prev => toggleBet(prev, bet));
   }, []);
 
   const removeBet = useCallback((id: string) => {
@@ -145,7 +140,7 @@ function App() {
     if (betSlip.length === 0 || stake <= 0) return;
     
     const newPlacedBet: PlacedBet = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: generateBetId('ticket', Date.now().toString(36)),
       date: new Date().toLocaleString(),
       stake,
       bets: [...betSlip],

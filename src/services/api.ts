@@ -89,9 +89,6 @@ export const fetchLiveMatches = async (apiKey: string): Promise<any[]> => {
     }));
 
     const transformed = transformToMatchData(data, scoresMap);
-    // #region agent log
-    fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'A',location:'api.ts:fetchLiveMatches',message:'API transform complete',data:{rawCount:data.length,transformedCount:transformed.length,filteredOut:data.length-transformed.length,liveSportKeys:topSportKeys.length},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
     return transformed;
   } catch (error) {
     console.error('Error fetching live matches:', error);
@@ -99,11 +96,15 @@ export const fetchLiveMatches = async (apiKey: string): Promise<any[]> => {
   }
 };
 
-const transformToMatchData = (apiData: OddsApiMatch[], scoresMap: Map<string, ScoreApiMatch>): any[] => {
+export const transformToMatchData = (apiData: OddsApiMatch[], scoresMap: Map<string, ScoreApiMatch>): any[] => {
   const result: any[] = [];
   
   apiData.forEach(item => {
-    const bookmaker = item.bookmakers.find(b => b.key === 'unibet' || b.key === 'betfair_ex_eu') || item.bookmakers[0];
+    // Prefer Unibet, then Betfair exchange, otherwise first available bookmaker
+    const bookmaker =
+      item.bookmakers.find(b => b.key === 'unibet') ||
+      item.bookmakers.find(b => b.key === 'betfair_ex_eu') ||
+      item.bookmakers[0];
     const h2hMarket = bookmaker?.markets.find(m => m.key === 'h2h');
     
     let homeOdds = 0;
@@ -112,9 +113,15 @@ const transformToMatchData = (apiData: OddsApiMatch[], scoresMap: Map<string, Sc
 
     if (h2hMarket) {
       h2hMarket.outcomes.forEach(outcome => {
-        if (outcome.name === item.home_team) homeOdds = outcome.price;
-        else if (outcome.name === item.away_team) awayOdds = outcome.price;
-        else drawOdds = outcome.price;
+        const name = outcome.name;
+        if (name === item.home_team) {
+          homeOdds = outcome.price;
+        } else if (name === item.away_team) {
+          awayOdds = outcome.price;
+        } else if (name.toLowerCase() === 'draw') {
+          drawOdds = outcome.price;
+        }
+        // Unknown outcome names (e.g. for tennis or malformed data) are ignored → stay 0
       });
     }
 

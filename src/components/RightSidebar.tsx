@@ -3,6 +3,7 @@ import { Trash2, X, CheckCircle2, AlertTriangle, TrendingUp, TrendingDown } from
 import type { Bet, PlacedBet } from '../App';
 import type { MatchData } from '../data/matches';
 import { leagueOutrights } from '../data/leaguesData';
+import { getCombinations } from '../utils/betting';
 import './RightSidebar.css';
 
 interface RightSidebarProps {
@@ -14,24 +15,6 @@ interface RightSidebarProps {
   onPlaceBet: (stake: number, potentialReturn: number, type: 'Single' | 'Multi' | 'System') => void;
   closeMobileSlip?: () => void;
   matches: MatchData[];
-}
-
-// Helper to get combinations of a specific size from an array
-function getCombinations<T>(array: T[], size: number): T[][] {
-  const result: T[][] = [];
-  function helper(start: number, combo: T[]) {
-    if (combo.length === size) {
-      result.push([...combo]);
-      return;
-    }
-    for (let i = start; i < array.length; i++) {
-      combo.push(array[i]);
-      helper(i + 1, combo);
-      combo.pop();
-    }
-  }
-  helper(0, []);
-  return result;
 }
 
 // Lookup current live odds
@@ -104,11 +87,6 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
 
   const hasOddsChanged = useMemo(() => {
     const changed = Object.values(oddsStatus).some(status => status.changed);
-    if (betSlip.length > 0) {
-      // #region agent log
-      fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'E',location:'RightSidebar.tsx:hasOddsChanged',message:'odds status computed',data:{betCount:betSlip.length,hasOddsChanged:changed,statuses:betSlip.map(b=>({id:b.id,storedOdds:b.odds,current:oddsStatus[b.id]?.current,changed:oddsStatus[b.id]?.changed}))},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
-    }
     return changed;
   }, [oddsStatus, betSlip]);
 
