@@ -1,0 +1,152 @@
+.header {
+  background-color: var(--bwin-black);
+  display: flex;
+  flex-direction: column;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  border-bottom: 1px solid var(--bwin-dark);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.mobile-toggle-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--bwin-white);
+  cursor: pointer;
+  padding: 5px;
+}
+
+.logo {
+  cursor: pointer;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mobile-slip-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--bwin-white);
+  cursor: pointer;
+  padding: 5px;
+  position: relative;
+  margin-left: 10px;
+}
+
+.slip-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-login {
+  background-color: transparent;
+  color: var(--bwin-white);
+  border: 1px solid var(--bwin-white);
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-login:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-register {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-register:hover {
+  background-color: var(--bwin-yellow-hover);
+}
+
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background-color: var(--bwin-darker);
+}
+
+.header-nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.header-nav ul::-webkit-scrollbar {
+  display: none;
+}
+
+.header-nav li {
+  color: var(--bwin-white);
+  padding: 15px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.header-nav li:hover {
+  color: var(--bwin-yellow);
+}
+
+.header-nav li.active {
+  border-bottom-color: var(--bwin-yellow);
+}
+
+.nav-search {
+  cursor: pointer;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .header-top {
+    padding: 15px 20px;
+  }
+  
+  .header-nav {
+    padding: 0 20px;
+  }
+  
+  .mobile-toggle-btn, .mobile-slip-btn {
+    display: flex;
+  }
+}

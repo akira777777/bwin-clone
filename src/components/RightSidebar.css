@@ -1,0 +1,552 @@
+.right-sidebar {
+  width: 320px;
+  background-color: var(--bwin-bg-secondary);
+  border-left: 1px solid var(--bwin-border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+}
+
+.mobile-close-slip-btn {
+  display: none;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--bwin-white);
+  cursor: pointer;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .mobile-close-slip-btn {
+    display: block;
+  }
+}
+
+.sidebar-tabs {
+  display: flex;
+  background-color: var(--bwin-darker);
+  border-bottom: 1px solid var(--bwin-border);
+}
+
+.sidebar-tab {
+  flex: 1;
+  padding: 15px 0;
+  text-align: center;
+  color: var(--bwin-gray-text);
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+}
+
+.sidebar-tab.active {
+  color: var(--bwin-white);
+  background-color: var(--bwin-bg-secondary);
+  border-top: 2px solid var(--bwin-yellow);
+}
+
+.tab-badge {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 10px;
+  margin-left: 5px;
+  vertical-align: super;
+}
+
+.bet-slip-header {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bet-slip-header h2 {
+  font-size: 12px;
+  color: var(--bwin-gray-text);
+  text-transform: uppercase;
+}
+
+.bet-slip-content, .my-bets-content {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty-slip {
+  text-align: center;
+  color: var(--bwin-gray-text);
+  font-size: 14px;
+  padding: 40px 20px;
+}
+
+.bet-item {
+  background-color: var(--bwin-dark);
+  border: 1px solid var(--bwin-border);
+  border-radius: 4px;
+  padding: 12px;
+  position: relative;
+}
+
+.bet-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-right: 20px;
+}
+
+.bet-selection {
+  font-weight: bold;
+  color: var(--bwin-white);
+  font-size: 13px;
+}
+
+.bet-odds {
+  font-weight: bold;
+  color: var(--bwin-yellow);
+}
+
+.bet-match {
+  font-size: 11px;
+  color: var(--bwin-gray-text);
+  margin-bottom: 8px;
+}
+
+.btn-remove-bet {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--bwin-red);
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.btn-remove-bet:hover {
+  opacity: 1;
+}
+
+.bet-slip-footer {
+  padding: 15px;
+  background-color: var(--bwin-darker);
+  border-top: 1px solid var(--bwin-border);
+}
+
+.bet-stake {
+  display: flex;
+  align-items: center;
+  background-color: var(--bwin-bg-primary);
+  border: 1px solid var(--bwin-border);
+  border-radius: 4px;
+  padding: 0 8px;
+}
+
+.bet-stake label {
+  color: var(--bwin-gray-text);
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.bet-stake input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--bwin-white);
+  padding: 8px 0;
+  outline: none;
+  text-align: right;
+  font-weight: bold;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.summary-label {
+  color: var(--bwin-gray-text);
+}
+
+.summary-value {
+  color: var(--bwin-white);
+  font-weight: bold;
+}
+
+.summary-value.highlight {
+  color: var(--bwin-green);
+  font-size: 16px;
+}
+
+.btn-place-bet {
+  width: 100%;
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+
+.btn-place-bet:hover:not(:disabled) {
+  background-color: var(--bwin-yellow-hover);
+}
+
+.btn-place-bet:disabled {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-gray-text);
+  cursor: not-allowed;
+}
+
+.bet-success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 30, 30, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  color: white;
+  text-align: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.bet-success-overlay h3 {
+  color: var(--bwin-green);
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.bet-success-overlay p {
+  color: var(--bwin-gray-text);
+}
+
+/* My Bets Styles */
+.placed-bets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.placed-bet-card {
+  background-color: var(--bwin-darker);
+  border: 1px solid var(--bwin-border);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.pb-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--bwin-border);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.pb-date {
+  font-size: 11px;
+  color: var(--bwin-gray-text);
+}
+
+.pb-status {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-pending { color: var(--bwin-yellow); }
+.status-won { color: var(--bwin-green); }
+.status-lost { color: var(--bwin-red); }
+
+.pb-selection-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+.pb-selection { color: var(--bwin-white); }
+.pb-odds { color: var(--bwin-yellow); }
+
+.pb-footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--bwin-border);
+  padding-top: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.pb-stake span, .pb-return span {
+  font-weight: bold;
+  color: var(--bwin-white);
+}
+
+.pb-return span {
+  color: var(--bwin-green);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ==========================================================================
+   ADVANCED BET SLIP STYLES
+   ========================================================================== */
+
+/* Mode switcher tab bar (Single / Multi / System) */
+.betslip-modes-bar {
+  display: flex;
+  background-color: var(--bwin-dark);
+  border-bottom: 1px solid var(--bwin-border);
+  padding: 4px;
+  gap: 4px;
+}
+
+.mode-btn {
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  color: var(--bwin-gray-text);
+  padding: 8px 0;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.mode-btn:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.mode-btn.active {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-yellow);
+}
+
+/* Odds Changed Alert Warning */
+.odds-changed-warning {
+  background-color: rgba(255, 152, 0, 0.12);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 4px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  animation: pulseWarning 2s infinite alternate;
+}
+
+@keyframes pulseWarning {
+  0% { border-color: rgba(255, 152, 0, 0.3); box-shadow: 0 0 2px rgba(255, 152, 0, 0.1); }
+  100% { border-color: rgba(255, 152, 0, 0.6); box-shadow: 0 0 6px rgba(255, 152, 0, 0.2); }
+}
+
+.warning-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffa726;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.accept-odds-btn {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.accept-odds-btn:hover {
+  background-color: var(--bwin-yellow-hover);
+}
+
+/* Odds Fluctuation Animations */
+.bet-item.changed {
+  border: 1px dashed rgba(255, 152, 0, 0.5);
+  background-color: rgba(255, 152, 0, 0.03);
+}
+
+.odds-display-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.old-odds {
+  font-size: 11px;
+  text-decoration: line-through;
+  color: var(--bwin-gray-text);
+}
+
+.bet-odds.up {
+  color: var(--bwin-green) !important;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: bold;
+}
+
+.bet-odds.down {
+  color: var(--bwin-red) !important;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: bold;
+}
+
+/* Single Stake Fields Inside Bet Item */
+.single-stake-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  gap: 12px;
+}
+
+.single-stake-container input {
+  width: 80px;
+  background-color: var(--bwin-bg-primary);
+  border: 1px solid var(--bwin-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #fff;
+  font-weight: bold;
+  outline: none;
+  font-size: 12px;
+  text-align: right;
+}
+
+.single-stake-container input:focus {
+  border-color: var(--bwin-yellow);
+}
+
+.single-return-preview {
+  font-size: 12px;
+  color: var(--bwin-gray-text);
+}
+
+.single-return-preview span {
+  font-weight: bold;
+  color: var(--bwin-white);
+}
+
+/* System configuration selects and stakelines */
+.system-config-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.system-config-row label {
+  font-size: 12px;
+  color: var(--bwin-gray-text);
+  font-weight: bold;
+}
+
+.system-config-row select {
+  background-color: var(--bwin-bg-primary);
+  border: 1px solid var(--bwin-border);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+}
+
+.system-config-row select:focus {
+  border-color: var(--bwin-yellow);
+}
+
+/* Placing bets tag details in history */
+.pb-type-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pb-type-tag {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-yellow);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 2px;
+  border: 1px solid rgba(245, 171, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+.pb-selection-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pb-match-title {
+  font-size: 10px;
+  color: var(--bwin-gray-text);
+}
+
+.pb-selections {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pb-selection-row {
+  border-bottom: 1px dashed rgba(255,255,255,0.03);
+  padding-bottom: 6px;
+}
+
+.pb-selection-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.clear-all-btn {
+  background: transparent;
+  border: none;
+  color: var(--bwin-gray-text);
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clear-all-btn:hover {
+  color: var(--bwin-red);
+}

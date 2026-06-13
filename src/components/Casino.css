@@ -1,0 +1,185 @@
+.casino-container {
+  padding: 20px;
+  animation: fadeIn 0.4s ease;
+}
+
+.casino-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.casino-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.casino-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.casino-nav button {
+  background: var(--bwin-surface);
+  border: 1px solid var(--bwin-border);
+  color: var(--bwin-gray-text);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.casino-nav button:hover, .casino-nav button.active {
+  background: var(--bwin-yellow);
+  color: var(--bwin-bg);
+  border-color: var(--bwin-yellow);
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.game-card {
+  position: relative;
+  height: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(235, 171, 0, 0.2);
+}
+
+.game-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  transition: transform 0.4s ease;
+}
+
+.game-card:hover .game-bg {
+  transform: scale(1.1);
+}
+
+.game-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.game-card:hover .game-overlay {
+  opacity: 1;
+}
+
+.play-btn {
+  background: var(--bwin-yellow);
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-weight: bold;
+  font-size: 16px;
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-card:hover .play-btn {
+  transform: translateY(0);
+}
+
+.game-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  text-align: left;
+}
+
+.game-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.game-provider {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: var(--bwin-gray-text);
+}
+
+/* Casino Toast */
+.casino-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bwin-green);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 200;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  animation: slideDownFade 0.3s ease-out;
+  white-space: nowrap;
+}
+
+/* Loading state for game cards */
+.game-card.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.game-card.loading .game-bg {
+  animation: pulse 1s infinite;
+}
+
+.game-card.loading .game-overlay {
+  opacity: 1;
+}
+
+.game-card.loading .play-btn {
+  background: var(--bwin-gray);
+  color: var(--bwin-white);
+}
+
+@media (max-width: 600px) {
+  .casino-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .casino-nav {
+    flex-wrap: wrap;
+  }
+  
+  .games-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  
+  .game-card {
+    height: 220px;
+  }
+}

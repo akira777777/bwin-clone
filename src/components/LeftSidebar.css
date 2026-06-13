@@ -1,0 +1,227 @@
+.left-sidebar {
+  width: 260px;
+  background-color: var(--bwin-bg-secondary);
+  border-radius: 4px;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-section {
+  padding: 0 12px;
+}
+
+.sidebar-section + .sidebar-section {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--bwin-border);
+}
+
+/* Search */
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--bwin-gray);
+  border-radius: 4px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-box:focus-within {
+  border-color: var(--bwin-yellow);
+  box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.15);
+}
+
+.search-icon {
+  color: var(--bwin-gray-text);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.search-input {
+  background: none;
+  border: none;
+  color: var(--bwin-white);
+  width: 100%;
+  outline: none;
+  font-size: 13px;
+}
+
+.search-input::placeholder {
+  color: var(--bwin-gray-text);
+}
+
+/* Section Titles */
+.section-title {
+  color: var(--bwin-gray-text);
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.title-icon {
+  color: var(--bwin-yellow);
+}
+
+/* Sidebar List */
+.sidebar-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
+
+/* Sidebar Items — universal */
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  color: var(--bwin-white);
+  gap: 10px;
+  position: relative;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-item.active {
+  background-color: rgba(255, 204, 0, 0.1);
+  border-left: 3px solid var(--bwin-yellow);
+  padding-left: 7px;
+}
+
+.sidebar-item.active .league-name,
+.sidebar-item.active .sport-name {
+  color: var(--bwin-yellow);
+  font-weight: 600;
+}
+
+/* League Flag */
+.league-flag {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* League / Sport Name */
+.league-name,
+.sport-name {
+  flex: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sport Emoji */
+.sport-emoji {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Item Meta (right side) */
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Match Count */
+.match-count {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-gray-text);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.sidebar-item.active .match-count {
+  background-color: rgba(255, 204, 0, 0.2);
+  color: var(--bwin-yellow);
+}
+
+/* Live Dot Badge */
+.live-dot-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--bwin-red);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--bwin-red);
+  border-radius: 50%;
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.6); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(255, 51, 51, 0); }
+  100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+}
+
+/* Chevron */
+.chevron {
+  color: var(--bwin-gray-text);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-item:hover .chevron {
+  color: var(--bwin-yellow);
+  transform: translateX(2px);
+}
+
+.sidebar-item.active .chevron {
+  color: var(--bwin-yellow);
+}
+
+/* Highlight items */
+.highlight-item {
+  padding: 9px 10px;
+}
+
+/* Leagues list */
+.leagues-list .league-item {
+  padding: 7px 10px;
+  font-size: 12.5px;
+}
+
+/* Scrollbar within sidebar */
+.left-sidebar {
+  overflow-y: auto;
+  max-height: calc(100vh - 130px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--bwin-gray) transparent;
+}
+
+@media (max-width: 768px) {
+  .left-sidebar {
+    width: 100%;
+    max-height: none;
+  }
+}

@@ -1,0 +1,305 @@
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+.modal-content {
+  background-color: var(--bwin-darker);
+  border: 1px solid var(--bwin-border);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 420px;
+  padding: 0;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: fadeInScale 0.3s ease-out forwards;
+  overflow: hidden;
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: var(--bwin-gray-text);
+  transition: color 0.2s;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  color: var(--bwin-white);
+}
+
+/* Auth Tabs */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--bwin-border);
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 16px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--bwin-gray-text);
+  background: var(--bwin-darkest);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.auth-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.auth-tab.active {
+  color: var(--bwin-white);
+  background: var(--bwin-darker);
+}
+
+.auth-tab.active::after {
+  background: var(--bwin-yellow);
+}
+
+.auth-tab:hover:not(.active) {
+  color: var(--bwin-white);
+}
+
+/* Auth Error */
+.auth-error {
+  margin: 15px 25px 0;
+  padding: 10px 14px;
+  background: rgba(255, 51, 51, 0.1);
+  border: 1px solid var(--bwin-red);
+  border-radius: 4px;
+  color: var(--bwin-red);
+  font-size: 13px;
+  animation: fadeInScale 0.2s ease-out;
+}
+
+/* Auth Success Overlay */
+.auth-success-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 26, 26, 0.97);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.auth-success-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--bwin-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  margin-bottom: 15px;
+  animation: pulse 0.5s ease-out;
+}
+
+.auth-success-overlay p {
+  color: var(--bwin-white);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Auth Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 25px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: var(--bwin-gray-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  background-color: var(--bwin-bg);
+  border: 1px solid var(--bwin-border);
+  color: var(--bwin-white);
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--bwin-yellow);
+  box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.1);
+}
+
+/* Password Wrapper */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  padding-right: 42px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  color: var(--bwin-gray-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.password-toggle:hover {
+  color: var(--bwin-white);
+}
+
+/* Form Options Row */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--bwin-gray-text);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.remember-me input[type="checkbox"] {
+  accent-color: var(--bwin-yellow);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.remember-me a {
+  color: var(--bwin-yellow);
+  text-decoration: underline;
+}
+
+.forgot-password {
+  color: var(--bwin-yellow);
+  font-size: 13px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.forgot-password:hover {
+  color: var(--bwin-yellow-hover);
+  text-decoration: underline;
+}
+
+/* Submit Button */
+.btn-submit {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  padding: 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 5px;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: var(--bwin-yellow-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-submit:disabled,
+.btn-submit.submitting {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-gray-text);
+  cursor: wait;
+  transform: none;
+}
+
+/* Auth Footer */
+.auth-footer {
+  padding: 0 25px 25px;
+  text-align: center;
+}
+
+.auth-footer p {
+  color: var(--bwin-gray-text);
+  font-size: 13px;
+  margin: 0;
+}
+
+.auth-switch {
+  color: var(--bwin-yellow);
+  font-weight: bold;
+  font-size: 13px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.auth-switch:hover {
+  color: var(--bwin-yellow-hover);
+  text-decoration: underline;
+}

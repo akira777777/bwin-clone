@@ -1,0 +1,130 @@
+.match-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.btn-back {
+  align-self: flex-start;
+  color: var(--bwin-gray-text);
+  font-weight: bold;
+  padding: 8px 16px;
+  background-color: var(--bwin-bg-secondary);
+  border: 1px solid var(--bwin-border);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-white);
+}
+
+.match-header {
+  background: linear-gradient(to right, var(--bwin-darker), var(--bwin-bg-secondary));
+  padding: 30px;
+  border-radius: 4px;
+  border: 1px solid var(--bwin-border);
+  text-align: center;
+}
+
+.match-league {
+  color: var(--bwin-gray-text);
+  font-size: 14px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.match-title-row {
+  margin-bottom: 15px;
+}
+
+.match-title-row h2 {
+  font-size: 28px;
+  color: var(--bwin-white);
+}
+
+.vs {
+  color: var(--bwin-yellow);
+  font-size: 20px;
+  margin: 0 15px;
+  font-style: italic;
+}
+
+.match-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 16px;
+}
+
+.live-badge {
+  background-color: var(--bwin-red);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+.score-display {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--bwin-yellow);
+}
+
+.upcoming-time {
+  color: var(--bwin-gray-text);
+}
+
+.markets-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.market-group {
+  background-color: var(--bwin-bg-secondary);
+  border-radius: 4px;
+  border: 1px solid var(--bwin-border);
+  overflow: hidden;
+}
+
+.market-header {
+  background-color: var(--bwin-gray);
+  padding: 12px 20px;
+  font-weight: bold;
+  color: var(--bwin-white);
+  border-bottom: 1px solid var(--bwin-border);
+}
+
+.market-odds {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+}
+
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+@media (max-width: 600px) {
+  .market-odds.grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.animation-slide-up {
+  animation: slideDownFade 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.no-markets {
+  text-align: center;
+  padding: 40px;
+  background-color: var(--bwin-bg-secondary);
+  border-radius: 4px;
+  color: var(--bwin-gray-text);
+  font-style: italic;
+}

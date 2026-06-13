@@ -1,0 +1,97 @@
+.bwin-footer {
+  background-color: var(--bwin-darkest);
+  border-top: 1px solid var(--bwin-border);
+  padding: 40px 20px 20px;
+  margin-top: 40px;
+  color: var(--bwin-white);
+}
+
+.footer-content {
+  display: flex;
+  max-width: 1600px;
+  margin: 0 auto;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-section h4 {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: var(--bwin-yellow);
+  text-transform: uppercase;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-section a {
+  color: var(--bwin-gray-text);
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-section a:hover {
+  color: var(--bwin-white);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  max-width: 1600px;
+  margin: 40px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--bwin-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.trust-badges {
+  display: flex;
+  gap: 15px;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.age-badge {
+  background-color: #e60000;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.safe-badge {
+  background-color: var(--bwin-gray);
+  color: var(--bwin-white);
+  display: flex;
+  align-items: center;
+}
+
+.copyright {
+  color: var(--bwin-gray-text);
+  font-size: 12px;
+  text-align: center;
+}
