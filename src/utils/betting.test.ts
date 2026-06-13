@@ -5,6 +5,7 @@ import {
   calculateMultiPotentialReturn,
   calculateSinglePotentialReturn,
   getCombinations,
+  checkIsSelectionWon,
 } from './betting';
 import type { Bet } from '../App';
 
@@ -76,6 +77,58 @@ describe('betting utils (pure logic)', () => {
     it('returns empty for size larger than array or < 1', () => {
       expect(getCombinations([1, 2], 3)).toHaveLength(0);
       expect(getCombinations([1, 2, 3], 0)).toHaveLength(0);
+    });
+  });
+
+  describe('checkIsSelectionWon', () => {
+    it('handles home winning correctly', () => {
+      expect(checkIsSelectionWon('home', '2-1')).toBe(true);
+      expect(checkIsSelectionWon('home', '1-1')).toBe(false);
+      expect(checkIsSelectionWon('home', '0-2')).toBe(false);
+    });
+
+    it('handles draw correctly', () => {
+      expect(checkIsSelectionWon('draw', '1-1')).toBe(true);
+      expect(checkIsSelectionWon('draw', '2-1')).toBe(false);
+    });
+
+    it('handles away winning correctly', () => {
+      expect(checkIsSelectionWon('away', '0-1')).toBe(true);
+      expect(checkIsSelectionWon('away', '1-1')).toBe(false);
+    });
+
+    it('handles over/under 2.5 goals correctly', () => {
+      expect(checkIsSelectionWon('over25', '2-1')).toBe(true);
+      expect(checkIsSelectionWon('over25', '1-1')).toBe(false);
+      expect(checkIsSelectionWon('under25', '1-1')).toBe(true);
+      expect(checkIsSelectionWon('under25', '2-1')).toBe(false);
+    });
+
+    it('handles both teams to score (btts) correctly', () => {
+      expect(checkIsSelectionWon('btts_yes', '1-1')).toBe(true);
+      expect(checkIsSelectionWon('btts_yes', '2-0')).toBe(false);
+      expect(checkIsSelectionWon('btts_no', '2-0')).toBe(true);
+      expect(checkIsSelectionWon('btts_no', '1-1')).toBe(false);
+    });
+
+    it('handles double chance correctly', () => {
+      expect(checkIsSelectionWon('dc_1x', '1-0')).toBe(true);
+      expect(checkIsSelectionWon('dc_1x', '1-1')).toBe(true);
+      expect(checkIsSelectionWon('dc_1x', '0-1')).toBe(false);
+
+      expect(checkIsSelectionWon('dc_x2', '0-1')).toBe(true);
+      expect(checkIsSelectionWon('dc_x2', '1-1')).toBe(true);
+      expect(checkIsSelectionWon('dc_x2', '1-0')).toBe(false);
+
+      expect(checkIsSelectionWon('dc_12', '1-0')).toBe(true);
+      expect(checkIsSelectionWon('dc_12', '0-1')).toBe(true);
+      expect(checkIsSelectionWon('dc_12', '1-1')).toBe(false);
+    });
+
+    it('returns false for undefined score or malformed strings', () => {
+      expect(checkIsSelectionWon('home', undefined)).toBe(false);
+      expect(checkIsSelectionWon('home', '1-')).toBe(false);
+      expect(checkIsSelectionWon('home', 'foo')).toBe(false);
     });
   });
 });
