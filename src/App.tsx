@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
 import { toggleBet, generateBetId } from './utils/betting';
-import { supabase } from './lib/supabase';
+import { supabase, hasRealSupabaseConfig } from './lib/supabase';
 import type { User } from '@supabase/supabase-js';
 
 // Lazy loading modals to reduce initial bundle size
@@ -148,8 +148,7 @@ function App() {
   // Load placed bets from Supabase for the current user (called on login and after place)
   // Defined before handlePlaceBet to avoid TDZ and allow inclusion in its deps.
   const loadPlacedBets = useCallback(async () => {
-    const hasRealClient = import.meta.env.VITE_SUPABASE_URL && 
-                         !import.meta.env.VITE_SUPABASE_URL.includes('placeholder');
+    const hasRealClient = hasRealSupabaseConfig;
 
     if (!user || !hasRealClient) return;
 
@@ -191,8 +190,7 @@ function App() {
     };
 
     // If real Supabase user + client configured, persist to DB (RLS will enforce ownership)
-    const hasRealClient = import.meta.env.VITE_SUPABASE_URL && 
-                         !import.meta.env.VITE_SUPABASE_URL.includes('placeholder');
+    const hasRealClient = hasRealSupabaseConfig;
 
     if (user && hasRealClient) {
       try {

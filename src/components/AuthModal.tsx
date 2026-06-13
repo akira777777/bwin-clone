@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Eye, EyeOff } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, hasRealSupabaseConfig } from '../lib/supabase';
 import './AuthModal.css';
 
 interface AuthModalProps {
@@ -58,8 +58,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
     const trimmedEmail = email.trim();
 
     // If real Supabase keys are configured, use real auth
-    const hasRealClient = import.meta.env.VITE_SUPABASE_URL && 
-                         !import.meta.env.VITE_SUPABASE_URL.includes('placeholder');
+    const hasRealClient = hasRealSupabaseConfig;
 
     try {
       if (hasRealClient) {
