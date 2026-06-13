@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Key, TrendingUp, Trophy, Calendar, User } from 'lucide-react';
 import type { Bet, Category, Sport } from '../App';
 import { fetchLiveMatches } from '../services/api';
@@ -24,6 +24,7 @@ interface MainContentProps {
   setSelectedMatchId: (id: string | null) => void;
   matches: MatchData[];
   setMatches: React.Dispatch<React.SetStateAction<MatchData[]>>;
+  searchQuery: string;
 }
 
 const LEAGUE_FLAGS: Record<string, string> = {
@@ -47,10 +48,16 @@ const LEAGUE_FLAGS: Record<string, string> = {
 const MainContent: React.FC<MainContentProps> = ({ 
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
-  matches, setMatches
+  matches, setMatches, searchQuery
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');
+  
+  const [prevLeague, setPrevLeague] = useState<string | null>(activeLeague);
+  if (activeLeague !== prevLeague) {
+    setPrevLeague(activeLeague);
+    setActiveTab('matches');
+  }
   
   const envKey = import.meta.env?.VITE_ODDS_API_KEY || '';
   const initialKey = localStorage.getItem('odds_api_key') || envKey;
@@ -66,12 +73,8 @@ const MainContent: React.FC<MainContentProps> = ({
     // mount effect kept for potential future side effects (currently none)
   }, []);
 
-  // Reset league active tab to 'matches' when the league changes
-  useEffect(() => {
-    setActiveTab('matches');
-  }, [activeLeague]);
-
-  const loadRealMatches = async (key: string) => {
+  const loadRealMatches = useCallback(async (key: string) => {
+    await Promise.resolve();
     setIsLoading(true);
     setError(null);
     try {
@@ -92,7 +95,7 @@ const MainContent: React.FC<MainContentProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setMatches]);
 
   const handleSaveApiKey = () => {
     const key = apiKeyInputRef.current?.value || '';
@@ -112,13 +115,14 @@ const MainContent: React.FC<MainContentProps> = ({
 
   useEffect(() => {
     if (apiKey && !isKeyModalOpen && !isUsingMock) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadRealMatches(apiKey);
       const refreshInterval = setInterval(() => {
         loadRealMatches(apiKey);
       }, 120000);
       return () => clearInterval(refreshInterval);
     }
-  }, [apiKey, isKeyModalOpen, isUsingMock]);
+  }, [apiKey, isKeyModalOpen, isUsingMock, loadRealMatches]);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -134,8 +138,16 @@ const MainContent: React.FC<MainContentProps> = ({
     if (activeLeague) {
       list = list.filter(m => m.league === activeLeague);
     }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(m => 
+        m.team1.toLowerCase().includes(q) || 
+        m.team2.toLowerCase().includes(q) || 
+        m.league.toLowerCase().includes(q)
+      );
+    }
     return list;
-  }, [matches, activeSport, activeLeague]);
+  }, [matches, activeSport, activeLeague, searchQuery]);
 
   const liveMatches = useMemo(() => {
     return filteredMatches.filter(m => m.isLive);

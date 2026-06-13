@@ -1,4 +1,4 @@
-
+import type { MatchData } from '../data/matches';
 
 export interface OddsApiMatch {
   id: string;
@@ -33,7 +33,7 @@ interface ScoreApiMatch {
 }
 
 // Simple in-memory cache to avoid burning API limits on scores
-const scoreCache: Record<string, { scores: any, timestamp: number }> = {};
+const scoreCache: Record<string, { scores: ScoreApiMatch[]; timestamp: number }> = {};
 
 const fetchScoresForSport = async (sportKey: string, apiKey: string): Promise<ScoreApiMatch[]> => {
   const now = Date.now();
@@ -54,7 +54,7 @@ const fetchScoresForSport = async (sportKey: string, apiKey: string): Promise<Sc
   return [];
 };
 
-export const fetchLiveMatches = async (apiKey: string): Promise<any[]> => {
+export const fetchLiveMatches = async (apiKey: string): Promise<MatchData[]> => {
   if (!apiKey) throw new Error('API Key is required');
 
   try {
@@ -96,8 +96,8 @@ export const fetchLiveMatches = async (apiKey: string): Promise<any[]> => {
   }
 };
 
-export const transformToMatchData = (apiData: OddsApiMatch[], scoresMap: Map<string, ScoreApiMatch>): any[] => {
-  const result: any[] = [];
+export const transformToMatchData = (apiData: OddsApiMatch[], scoresMap: Map<string, ScoreApiMatch>): MatchData[] => {
+  const result: MatchData[] = [];
   
   apiData.forEach(item => {
     // Prefer Unibet, then Betfair exchange, otherwise first available bookmaker

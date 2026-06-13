@@ -3,8 +3,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import RightSidebar from './RightSidebar';
-import type { Bet, PlacedBet, MatchData } from '../App';
+import type { Bet, PlacedBet } from '../App';
 import { initialMatches } from '../data/matches';
+import type { MatchData } from '../data/matches';
 
 // Helper to create minimal props
 const createProps = (overrides: Partial<Parameters<typeof RightSidebar>[0]> = {}) => {
@@ -129,7 +130,7 @@ describe('RightSidebar (component tests)', () => {
     const consistentMatches = [
       { ...initialMatches[0], odds: { home: 1.5, draw: 4.2, away: 7.5 } },
     ];
-    const props = createProps({ betSlip: bets, onPlaceBet, matches: consistentMatches as any });
+    const props = createProps({ betSlip: bets, onPlaceBet, matches: consistentMatches as MatchData[] });
 
     render(<RightSidebar {...props} />);
 
@@ -154,7 +155,7 @@ describe('RightSidebar (component tests)', () => {
     const matchingMatches = [
       { ...initialMatches[0], odds: { home: 1.5, draw: 4.2, away: 7.5 } },
     ];
-    const props = createProps({ betSlip: bets, matches: matchingMatches as any });
+    const props = createProps({ betSlip: bets, matches: matchingMatches as MatchData[] });
 
     render(<RightSidebar {...props} />);
 

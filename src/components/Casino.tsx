@@ -44,7 +44,7 @@ export const Casino: React.FC = () => {
   };
 
   const handleClaimBonus = () => {
-    showToast('🎁 Бонус активирован! 100% на первый депозит + 50 Free Spins.');
+    showToast('🎁 Bonus activated! 100% on first deposit + 50 Free Spins.');
   };
 
   return (

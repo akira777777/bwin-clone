@@ -13,6 +13,8 @@ interface HeaderProps {
   isLoggedIn?: boolean;
   userEmail?: string | null;
   onLogout?: () => void;
+  balance: number;
+  onDeposit: (amount: number) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -24,7 +26,9 @@ const Header: React.FC<HeaderProps> = ({
   betSlipCount,
   isLoggedIn = false,
   userEmail,
-  onLogout
+  onLogout,
+  balance,
+  onDeposit
 }) => {
   const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
 
@@ -43,6 +47,12 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         
         <div className="header-right">
+          {/* User Balance Pill */}
+          <div className="balance-pill" key={balance}>
+            <span className="balance-amount">€{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <button className="balance-deposit-btn" onClick={() => onDeposit(500)} title="Quick Deposit €500">+</button>
+          </div>
+
           {isLoggedIn ? (
             <>
               <span 

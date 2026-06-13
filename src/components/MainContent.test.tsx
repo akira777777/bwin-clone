@@ -76,7 +76,6 @@ describe('MainContent (RTL component + integration tests)', () => {
     const user = userEvent.setup();
     (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(null);
     const setMatches = vi.fn();
-    const setIsUsingMock = vi.fn(); // internal but we can observe via content
 
     render(<MainContent {...createProps({ setMatches })} />);
 
@@ -122,7 +121,6 @@ describe('MainContent (RTL component + integration tests)', () => {
   });
 
   it('shows loading state while fetching real matches', async () => {
-    const user = userEvent.setup();
     (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue('existing-key');
     mockFetchLiveMatches.mockImplementation(() => new Promise(() => {})); // never resolves
 

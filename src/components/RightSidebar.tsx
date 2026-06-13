@@ -3,7 +3,7 @@ import { Trash2, X, CheckCircle2, AlertTriangle, TrendingUp, TrendingDown } from
 import type { Bet, PlacedBet } from '../App';
 import type { MatchData } from '../data/matches';
 import { leagueOutrights } from '../data/leaguesData';
-import { getCombinations } from '../utils/betting';
+import { getCombinations, checkIsSelectionWon } from '../utils/betting';
 import './RightSidebar.css';
 
 interface RightSidebarProps {
@@ -15,6 +15,8 @@ interface RightSidebarProps {
   onPlaceBet: (stake: number, potentialReturn: number, type: 'Single' | 'Multi' | 'System') => void;
   closeMobileSlip?: () => void;
   matches: MatchData[];
+  balance: number;
+  onCashOut: (id: string, amount: number) => void;
 }
 
 // Lookup current live odds
@@ -53,7 +55,7 @@ const getCurrentOdds = (bet: Bet, matches: MatchData[]): number => {
 };
 
 const RightSidebar: React.FC<RightSidebarProps> = ({ 
-  betSlip, setBetSlip, removeBet, clearBetSlip, placedBets, onPlaceBet, closeMobileSlip, matches 
+  betSlip, setBetSlip, removeBet, clearBetSlip, placedBets, onPlaceBet, closeMobileSlip, matches, balance, onCashOut 
 }) => {
   const [activeTab, setActiveTab] = useState<'betslip' | 'mybets'>('betslip');
   const [betMode, setBetMode] = useState<'single' | 'multi' | 'system'>('multi');
@@ -65,6 +67,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   const [systemSize, setSystemSize] = useState<number>(2); // e.g. 2 for 2/3
   
   const [showSuccess, setShowSuccess] = useState(false);
+  const [cashingOutId, setCashingOutId] = useState<string | null>(null);
 
   // 1. Detect odds fluctuations in real time
   const oddsStatus = useMemo(() => {
@@ -147,8 +150,88 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
     return maxReturn.toFixed(2);
   }, [systemCombinations, systemStake]);
 
+  // Total current stake based on bet mode
+  const currentTotalStake = useMemo(() => {
+    if (betMode === 'multi') {
+      return parseFloat(multiStake) || 0;
+    } else if (betMode === 'single') {
+      return singleTotalStake;
+    } else if (betMode === 'system') {
+      return parseFloat(systemTotalStake) || 0;
+    }
+    return 0;
+  }, [betMode, multiStake, singleTotalStake, systemTotalStake]);
+
+  const isBalanceInsufficient = balance < currentTotalStake;
+
+  // Dynamic Cash Out offer calculation
+  const getCashOutOffer = (pb: PlacedBet) => {
+    if (pb.status !== 'Pending') return 0;
+    
+    let currentTotalOdds = 1;
+    let placedTotalOdds = 1;
+    let anyUnavailable = false;
+    let isDead = false;
+
+    for (const b of pb.bets) {
+      placedTotalOdds *= b.odds;
+
+      // Extract matchId and selection
+      let selection = '';
+      let matchId = '';
+      if (b.id.startsWith('outright-')) {
+        selection = 'outright';
+        matchId = b.id.replace('outright-', '');
+      } else {
+        const lastDashIndex = b.id.lastIndexOf('-');
+        if (lastDashIndex !== -1) {
+          matchId = b.id.substring(0, lastDashIndex);
+          selection = b.id.substring(lastDashIndex + 1);
+        }
+      }
+
+      const match = matches.find(m => m.id === matchId);
+      if (!match) {
+        currentTotalOdds *= b.odds;
+        continue;
+      }
+
+      // If match is finished, check if selection won
+      if (match.time === 'Finished' || (!match.isLive && match.score && match.time !== 'Live' && !match.time.includes("'") && !match.time.includes('Set') && !match.time.includes('Q'))) {
+        const won = checkIsSelectionWon(selection, match.score);
+        if (!won) {
+          isDead = true;
+          break;
+        } else {
+          currentTotalOdds *= 1.0; // settled outcome acts as 1.0
+        }
+      } else {
+        const currentOdds = getCurrentOdds(b, matches);
+        if (currentOdds <= 0) {
+          anyUnavailable = true;
+          break;
+        }
+        currentTotalOdds *= currentOdds;
+      }
+    }
+
+    if (isDead) return 0;
+    if (anyUnavailable || currentTotalOdds <= 0) return 0;
+
+    // Cashout = Stake * (Placed Odds / Current Odds) * 0.95
+    const offer = pb.stake * (placedTotalOdds / currentTotalOdds) * 0.95;
+    return Math.max(pb.stake * 0.10, Math.min(pb.potentialReturn * 0.98, offer));
+  };
+
+  const handleCashOutClick = async (betId: string, val: number) => {
+    setCashingOutId(betId);
+    await new Promise(resolve => setTimeout(resolve, 800)); // mock delay
+    onCashOut(betId, val);
+    setCashingOutId(null);
+  };
+
   const handlePlaceBetClick = async () => {
-    if (betSlip.length === 0 || hasOddsChanged) return;
+    if (betSlip.length === 0 || hasOddsChanged || isBalanceInsufficient) return;
 
     let finalStake = 0;
     let finalReturn = 0;
@@ -403,18 +486,35 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               </>
             )}
             
+            {betSlip.length > 0 && (
+              <div className="balance-indicator-row">
+                <span className="balance-label">Your Balance:</span>
+                <span className={`balance-value ${isBalanceInsufficient ? 'insufficient' : ''}`}>
+                  €{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
+            )}
+
+            {betSlip.length > 0 && isBalanceInsufficient && (
+              <div className="insufficient-balance-warning">
+                <AlertTriangle size={14} />
+                <span>Insufficient balance!</span>
+              </div>
+            )}
+            
             <button 
               className="btn-place-bet" 
               disabled={
                 betSlip.length === 0 || 
                 hasOddsChanged ||
+                isBalanceInsufficient ||
                 (betMode === 'multi' && (parseFloat(multiStake) || 0) <= 0) ||
                 (betMode === 'single' && singleTotalStake <= 0) ||
                 (betMode === 'system' && (parseFloat(systemStake) || 0) <= 0)
               }
               onClick={handlePlaceBetClick}
             >
-              {hasOddsChanged ? 'Accept Odds to Bet' : 'Place Bet'}
+              {hasOddsChanged ? 'Accept Odds to Bet' : isBalanceInsufficient ? 'Insufficient Balance' : 'Place Bet'}
             </button>
           </div>
         </>
@@ -426,32 +526,49 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             </div>
           ) : (
             <div className="placed-bets-list">
-              {placedBets.map(pb => (
-                <div key={pb.id} className="placed-bet-card">
-                  <div className="pb-header">
-                    <div className="pb-type-date">
-                      <span className="pb-type-tag">{pb.type}</span>
-                      <span className="pb-date">{pb.date}</span>
-                    </div>
-                    <span className={`pb-status status-${pb.status.toLowerCase()}`}>{pb.status}</span>
-                  </div>
-                  <div className="pb-selections">
-                    {pb.bets.map(b => (
-                      <div key={b.id} className="pb-selection-row">
-                        <div className="pb-selection-info">
-                          <span className="pb-selection">{b.selection}</span>
-                          <span className="pb-match-title">{b.match}</span>
-                        </div>
-                        <span className="pb-odds">{b.odds.toFixed(2)}</span>
+              {placedBets.map(pb => {
+                const cashoutVal = getCashOutOffer(pb);
+                return (
+                  <div key={pb.id} className="placed-bet-card">
+                    <div className="pb-header">
+                      <div className="pb-type-date">
+                        <span className="pb-type-tag">{pb.type}</span>
+                        <span className="pb-date">{pb.date}</span>
                       </div>
-                    ))}
+                      <span className={`pb-status status-${pb.status.toLowerCase()}`}>{pb.status}</span>
+                    </div>
+                    <div className="pb-selections">
+                      {pb.bets.map(b => (
+                        <div key={b.id} className="pb-selection-row">
+                          <div className="pb-selection-info">
+                            <span className="pb-selection">{b.selection}</span>
+                            <span className="pb-match-title">{b.match}</span>
+                          </div>
+                          <span className="pb-odds">{b.odds.toFixed(2)}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pb-footer-wrapper">
+                      <div className="pb-footer">
+                        <div className="pb-stake">Stake: <span>€{pb.stake.toFixed(2)}</span></div>
+                        <div className="pb-return">
+                          {pb.status === 'Won' && pb.metadata?.cashed_out ? 'Cashed Out:' : 'To Return:'} 
+                          <span>€{pb.potentialReturn.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      {pb.status === 'Pending' && cashoutVal > 0 && (
+                        <button 
+                          className="btn-cashout" 
+                          disabled={cashingOutId !== null}
+                          onClick={() => handleCashOutClick(pb.id, cashoutVal)}
+                        >
+                          {cashingOutId === pb.id ? 'Cashing out...' : `Cash Out €${cashoutVal.toFixed(2)}`}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="pb-footer">
-                    <div className="pb-stake">Stake: <span>€{pb.stake.toFixed(2)}</span></div>
-                    <div className="pb-return">To Return: <span>€{pb.potentialReturn.toFixed(2)}</span></div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

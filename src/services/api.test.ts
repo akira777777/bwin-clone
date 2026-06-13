@@ -40,15 +40,6 @@ describe('transformToMatchData (data transformation)', () => {
     ...overrides,
   });
 
-  const makeScore = (id: string, homeScore: string, awayScore: string): any => ({
-    id,
-    completed: false,
-    scores: [
-      { name: 'Arsenal', score: homeScore },
-      { name: 'Chelsea', score: awayScore },
-    ],
-  });
-
   it('maps soccer/football to Football sport and keeps league as sport_title', () => {
     const input = [makeMatch({ sport_key: 'soccer_epl', sport_title: 'Premier League' })];
     const result = transformToMatchData(input, new Map()) as MatchData[];
@@ -349,7 +340,7 @@ describe('fetchLiveMatches (integration with mocked fetch)', () => {
       ] },
     ];
 
-    (global.fetch as any)
+    (global.fetch as unknown as ReturnType<typeof vi.fn>)
       .mockResolvedValueOnce({ ok: true, json: async () => mockOddsData }) // odds call
       .mockResolvedValueOnce({ ok: true, json: async () => mockScores }); // scores call (for the live sport)
 
@@ -363,19 +354,19 @@ describe('fetchLiveMatches (integration with mocked fetch)', () => {
   });
 
   it('handles 401 as "Invalid API Key"', async () => {
-    (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 401 });
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: false, status: 401 });
 
     await expect(fetchLiveMatches('bad-key')).rejects.toThrow('Invalid API Key');
   });
 
   it('handles 429 as "API Rate limit exceeded"', async () => {
-    (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 429 });
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: false, status: 429 });
 
     await expect(fetchLiveMatches('key')).rejects.toThrow('API Rate limit exceeded');
   });
 
   it('falls back gracefully on network error (re-throws after logging)', async () => {
-    (global.fetch as any).mockRejectedValueOnce(new Error('Network down'));
+    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Network down'));
 
     await expect(fetchLiveMatches('key')).rejects.toThrow('Network down');
   });

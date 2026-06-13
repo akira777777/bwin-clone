@@ -105,9 +105,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
           }, 2000);
         }, 800);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsSubmitting(false);
-      setFormError(err?.message || 'Authentication failed. Please try again.');
+      setFormError(err instanceof Error ? err.message : 'Authentication failed. Please try again.');
     } finally {
       // only turn off submitting in the error path or simulation
       if (!hasRealClient) {

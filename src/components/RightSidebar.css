@@ -550,3 +550,83 @@
 .clear-all-btn:hover {
   color: var(--bwin-red);
 }
+
+/* User Balance display in Slip */
+.balance-indicator-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--bwin-border);
+  font-size: 13px;
+}
+
+.balance-label {
+  color: var(--bwin-gray-text);
+}
+
+.balance-value {
+  color: var(--bwin-white);
+  font-weight: bold;
+}
+
+.balance-value.insufficient {
+  color: var(--bwin-red);
+}
+
+.insufficient-balance-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(255, 51, 51, 0.12);
+  border: 1px solid rgba(255, 51, 51, 0.3);
+  color: #ff3333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+/* Placed Bets Cash Out */
+.pb-footer-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--bwin-border);
+  padding-top: 8px;
+  margin-top: 10px;
+}
+
+.pb-footer-wrapper .pb-footer {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.btn-cashout {
+  width: 100%;
+  background-color: rgba(255, 204, 0, 0.1);
+  color: var(--bwin-yellow);
+  border: 1px solid var(--bwin-yellow);
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-cashout:hover:not(:disabled) {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+}
+
+.btn-cashout:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

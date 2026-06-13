@@ -10,6 +10,8 @@ interface LeftSidebarProps {
   activeLeague: string | null;
   setActiveLeague: (league: string | null) => void;
   matches: MatchData[];
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
 }
 
 interface LeagueInfo {
@@ -52,7 +54,15 @@ const SPORT_ICONS: Record<string, string> = {
   'MMA': '🥋',
 };
 
-const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSport, setActiveSport, activeLeague, setActiveLeague, matches }) => {
+const LeftSidebar: React.FC<LeftSidebarProps> = ({ 
+  activeSport, 
+  setActiveSport, 
+  activeLeague, 
+  setActiveLeague, 
+  matches,
+  searchQuery,
+  setSearchQuery
+}) => {
   const sportsList: Sport[] = ['Football', 'Tennis', 'Basketball', 'Ice Hockey'];
   const extraSports: Sport[] = ['Boxing', 'Cricket', 'Darts', 'Formula 1', 'MMA'];
 
@@ -115,11 +125,13 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSport, setActiveSport, 
       setActiveSport(league.sport);
     }
     setActiveLeague(activeLeague === league.name ? null : league.name);
+    setSearchQuery('');
   };
 
   const handleSportClick = (sport: Sport) => {
     setActiveSport(sport);
     setActiveLeague(null);
+    setSearchQuery('');
   };
 
   return (
@@ -128,7 +140,13 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSport, setActiveSport, 
       <div className="sidebar-section">
         <div className="search-box">
           <Search size={16} className="search-icon" />
-          <input type="text" placeholder="Search events..." className="search-input" />
+          <input 
+            type="text" 
+            placeholder="Search events..." 
+            className="search-input" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
       </div>
 

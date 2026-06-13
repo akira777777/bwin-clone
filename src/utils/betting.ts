@@ -63,3 +63,28 @@ export function getCombinations<T>(array: T[], size: number): T[][] {
   helper(0, []);
   return result;
 }
+
+/**
+ * Check if a betting selection won based on match score.
+ */
+export function checkIsSelectionWon(selection: string, score: string | undefined): boolean {
+  if (!score) return false;
+  const parts = score.split('-');
+  if (parts.length !== 2) return false;
+  const s1 = parseInt(parts[0].trim());
+  const s2 = parseInt(parts[1].trim());
+  if (isNaN(s1) || isNaN(s2)) return false;
+
+  if (selection === 'home') return s1 > s2;
+  if (selection === 'draw') return s1 === s2;
+  if (selection === 'away') return s1 < s2;
+  if (selection === 'over25') return (s1 + s2) > 2.5;
+  if (selection === 'under25') return (s1 + s2) < 2.5;
+  if (selection === 'btts_yes') return s1 > 0 && s2 > 0;
+  if (selection === 'btts_no') return s1 === 0 || s2 === 0;
+  if (selection === 'dc_1x') return s1 >= s2;
+  if (selection === 'dc_x2') return s1 <= s2;
+  if (selection === 'dc_12') return s1 !== s2;
+
+  return false;
+}

@@ -1,1 +1,43 @@
-/* App-level styles — cleaned from unused Vite scaffold */
+/* App-level styles */
+
+.global-toast-notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  max-width: 350px;
+  animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .global-toast-notification {
+    top: auto;
+    bottom: 80px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+    font-size: 12px;
+    padding: 10px 15px;
+    animation: slideInUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+}
+
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
