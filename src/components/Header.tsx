@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign } from 'lucide-react';
 import type { Category, AppNotification } from '../App';
 import type { OddsFormat } from '../utils/betting';
+import { t } from '../utils/i18n';
 import './Header.css';
 
 interface HeaderProps {
@@ -23,6 +24,7 @@ interface HeaderProps {
   notifications: AppNotification[];
   markNotificationsAsRead: () => void;
   clearNotifications: () => void;
+  onLogoClick: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -43,7 +45,8 @@ const Header: React.FC<HeaderProps> = ({
   setLanguage,
   notifications,
   markNotificationsAsRead,
-  clearNotifications
+  clearNotifications,
+  onLogoClick
 }) => {
   const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
 
@@ -51,13 +54,11 @@ const Header: React.FC<HeaderProps> = ({
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [isOddsOpen, setIsOddsOpen] = useState(false);
 
   // Refs for clicking outside to close
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
-  const oddsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -70,9 +71,6 @@ const Header: React.FC<HeaderProps> = ({
       }
       if (languageRef.current && !languageRef.current.contains(target)) {
         setIsLanguageOpen(false);
-      }
-      if (oddsRef.current && !oddsRef.current.contains(target)) {
-        setIsOddsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -104,7 +102,7 @@ const Header: React.FC<HeaderProps> = ({
           <button className="mobile-toggle-btn" onClick={toggleMobileMenu}>
             <Menu size={24} />
           </button>
-          <div className="logo" onClick={() => setActiveCategory('Sports')}>
+          <div className="logo" onClick={onLogoClick} style={{ cursor: 'pointer' }}>
             <span style={{ color: 'var(--bwin-white)', fontWeight: 'bold', fontSize: '24px' }}>
               bwin<span style={{ color: 'var(--bwin-yellow)' }}>.</span>
             </span>
@@ -112,36 +110,6 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         
         <div className="header-right">
-          {/* Odds Format Dropdown */}
-          <div className="header-dropdown-container" ref={oddsRef}>
-            <button className="header-dropdown-trigger" onClick={() => setIsOddsOpen(!isOddsOpen)}>
-              Odds: <span className="highlight-text">{oddsFormat === 'decimal' ? 'Dec' : oddsFormat === 'fractional' ? 'Frac' : 'Amer'}</span>
-              <ChevronDown size={12} className="chevron-icon" />
-            </button>
-            {isOddsOpen && (
-              <div className="header-dropdown-menu odds-menu animate-fade-in">
-                <div 
-                  className={`menu-item ${oddsFormat === 'decimal' ? 'active' : ''}`}
-                  onClick={() => { setOddsFormat('decimal'); setIsOddsOpen(false); }}
-                >
-                  Decimal (e.g. 2.00)
-                </div>
-                <div 
-                  className={`menu-item ${oddsFormat === 'fractional' ? 'active' : ''}`}
-                  onClick={() => { setOddsFormat('fractional'); setIsOddsOpen(false); }}
-                >
-                  Fractional (e.g. 1/1)
-                </div>
-                <div 
-                  className={`menu-item ${oddsFormat === 'american' ? 'active' : ''}`}
-                  onClick={() => { setOddsFormat('american'); setIsOddsOpen(false); }}
-                >
-                  American (e.g. +100)
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Language Dropdown */}
           <div className="header-dropdown-container" ref={languageRef}>
             <button className="header-dropdown-trigger lang-trigger" onClick={() => setIsLanguageOpen(!isLanguageOpen)}>
@@ -245,30 +213,30 @@ const Header: React.FC<HeaderProps> = ({
                     <div className="vip-progress-bar-wrapper">
                       <div className="vip-progress-bar" style={{ width: '65%' }}></div>
                     </div>
-                    <span className="vip-progress-subtext">350 points to Gold VIP status</span>
+                    <span className="vip-progress-subtext">{t('Gold VIP Progress', language)}</span>
                   </div>
 
                   <div className="balance-breakdown">
                     <div className="balance-row">
-                      <span>Real Balance:</span>
+                      <span>{t('Real Balance', language)}:</span>
                       <span className="amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
                     </div>
                     <div className="balance-row">
-                      <span>Bonus Balance:</span>
+                      <span>{t('Bonus Balance', language)}:</span>
                       <span className="amount bonus-amount">€50.00</span>
                     </div>
                     <div className="balance-row">
-                      <span>Pending Bets:</span>
+                      <span>{t('Pending Bets', language)}:</span>
                       <span className="amount pending-amount">€25.00</span>
                     </div>
                   </div>
 
                   <div className="profile-actions-list">
                     <button className="menu-action-btn deposit-btn" onClick={() => { onDeposit(500); setIsProfileOpen(false); }}>
-                      <DollarSign size={14} /> Quick Deposit €500
+                      <DollarSign size={14} /> {t('Quick Deposit', language)}
                     </button>
                     <button className="menu-action-btn logout-btn" onClick={() => { if (onLogout) onLogout(); setIsProfileOpen(false); }}>
-                      <LogOut size={14} /> Log Out
+                      <LogOut size={14} /> {t('Log Out', language)}
                     </button>
                   </div>
                 </div>
@@ -276,8 +244,8 @@ const Header: React.FC<HeaderProps> = ({
             </div>
           ) : (
             <>
-              <button className="btn-login" onClick={() => openAuthModal('login')}>Log In</button>
-              <button className="btn-register" onClick={() => openAuthModal('register')}>Register</button>
+              <button className="btn-login" onClick={() => openAuthModal('login')}>{t('Log In', language)}</button>
+              <button className="btn-register" onClick={() => openAuthModal('register')}>{t('Register', language)}</button>
             </>
           )}
           
@@ -297,7 +265,7 @@ const Header: React.FC<HeaderProps> = ({
               className={activeCategory === category ? 'active' : ''}
               onClick={() => setActiveCategory(category)}
             >
-              {category}
+              {t(category, language)}
             </li>
           ))}
         </ul>
