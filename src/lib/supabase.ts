@@ -1,14 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-// These must be the PUBLIC anon key + project URL.
-// The raw postgresql:// connection string (with password) must NEVER be used in the browser.
+// These must be the PUBLIC anon key + project URL (from Supabase Dashboard → Settings → API).
+// NEVER put the postgresql://... connection string or the DB password here.
+// Using wrong values will cause "Invalid API key" on login/auth calls.
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
   console.warn(
-    '[Supabase] Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY. ' +
-    'Using a no-op client. Add the keys to .env to enable real auth + persistence.'
+    '[Supabase] Missing or invalid VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY.\n' +
+    'Go to your Supabase project → Settings → API and copy the "Project URL" and "anon" key.\n' +
+    'Do NOT use the postgresql connection string here. Real auth and DB persistence will be disabled until fixed.'
   );
 }
 
