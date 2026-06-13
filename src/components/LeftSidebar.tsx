@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Search, Star, ChevronRight } from 'lucide-react';
 import type { Sport } from '../App';
 import type { MatchData } from '../data/matches';
+import { t } from '../utils/i18n';
 import './LeftSidebar.css';
 
 interface LeftSidebarProps {
@@ -12,6 +13,7 @@ interface LeftSidebarProps {
   matches: MatchData[];
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
+  language?: string;
 }
 
 interface LeagueInfo {
@@ -61,7 +63,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   setActiveLeague, 
   matches,
   searchQuery = '',
-  setSearchQuery = () => {}
+  setSearchQuery = () => {},
+  language = 'en'
 }) => {
   const sportsList: Sport[] = ['Football', 'Tennis', 'Basketball', 'Ice Hockey'];
   const extraSports: Sport[] = ['Boxing', 'Cricket', 'Darts', 'Formula 1', 'MMA'];
@@ -142,7 +145,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           <Search size={16} className="search-icon" />
           <input 
             type="text" 
-            placeholder="Search events..." 
+            placeholder={t('Search events...', language)} 
             className="search-input" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -154,7 +157,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
       <div className="sidebar-section">
         <h3 className="section-title">
           <Star size={12} className="title-icon" />
-          Popular
+          {t('Popular', language)}
         </h3>
         <ul className="sidebar-list">
           {popularLeagues.map(league => {
@@ -185,7 +188,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
       {/* Sports A-Z */}
       <div className="sidebar-section">
-        <h3 className="section-title">Sports A-Z</h3>
+        <h3 className="section-title">{t('Sports A-Z', language)}</h3>
         <ul className="sidebar-list">
           {sportsList.map(sport => {
             const stats = sportStats[sport];
@@ -196,7 +199,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 onClick={() => handleSportClick(sport)}
               >
                 <span className="sport-emoji">{SPORT_ICONS[sport]}</span>
-                <span className="sport-name">{sport}</span>
+                <span className="sport-name">{t(sport, language)}</span>
                 <div className="item-meta">
                   {stats?.live > 0 && (
                     <span className="live-dot-badge">
@@ -214,7 +217,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
       {/* Leagues for current sport */}
       <div className="sidebar-section">
-        <h3 className="section-title">{SPORT_ICONS[activeSport]} {activeSport} Leagues</h3>
+        <h3 className="section-title">{SPORT_ICONS[activeSport]} {t(activeSport, language)} - {t('Leagues', language)}</h3>
         <ul className="sidebar-list leagues-list">
           {currentLeagues.map(league => {
             const stats = leagueStats[league.name];
@@ -243,7 +246,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
       {/* Extra Sports */}
       <div className="sidebar-section">
-        <h3 className="section-title">More Sports</h3>
+        <h3 className="section-title">{t('More Sports', language)}</h3>
         <ul className="sidebar-list">
           {extraSports.map(sport => (
             <li 
@@ -252,7 +255,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
               onClick={() => handleSportClick(sport)}
             >
               <span className="sport-emoji">{SPORT_ICONS[sport]}</span>
-              <span className="sport-name">{sport}</span>
+              <span className="sport-name">{t(sport, language)}</span>
             </li>
           ))}
         </ul>
