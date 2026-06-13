@@ -210,7 +210,7 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* User Balance Pill */}
           <div className="balance-pill" key={balance}>
-            <span className="balance-amount">€{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span className="balance-amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
             <button className="balance-deposit-btn" onClick={() => onDeposit(500)} title="Quick Deposit €500">+</button>
           </div>
 
@@ -251,7 +251,7 @@ const Header: React.FC<HeaderProps> = ({
                   <div className="balance-breakdown">
                     <div className="balance-row">
                       <span>Real Balance:</span>
-                      <span className="amount">€{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      <span className="amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
                     </div>
                     <div className="balance-row">
                       <span>Bonus Balance:</span>

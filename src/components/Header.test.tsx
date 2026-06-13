@@ -99,4 +99,86 @@ describe('Header (RTL component tests)', () => {
     expect(typeof toggleMobileMenu).toBe('function');
     expect(typeof toggleMobileSlip).toBe('function');
   });
+
+  it('renders odds format dropdown and handles selection', async () => {
+    const user = userEvent.setup();
+    const setOddsFormat = vi.fn();
+    render(<Header {...createProps({ setOddsFormat, oddsFormat: 'decimal' })} />);
+
+    // Click to open odds dropdown
+    const oddsButton = screen.getByText('Odds:').closest('button')!;
+    await user.click(oddsButton);
+
+    // Verify format options are present
+    expect(screen.getByText('Decimal (e.g. 2.00)')).toBeInTheDocument();
+    expect(screen.getByText('Fractional (e.g. 1/1)')).toBeInTheDocument();
+    expect(screen.getByText('American (e.g. +100)')).toBeInTheDocument();
+
+    // Click fractional
+    await user.click(screen.getByText('Fractional (e.g. 1/1)'));
+    expect(setOddsFormat).toHaveBeenCalledWith('fractional');
+  });
+
+  it('renders language dropdown and handles selection', async () => {
+    const user = userEvent.setup();
+    const setLanguage = vi.fn();
+    render(<Header {...createProps({ setLanguage, language: 'en' })} />);
+
+    // Click to open language dropdown
+    const langButton = screen.getByText('EN').closest('button')!;
+    await user.click(langButton);
+
+    // Verify language options are present
+    expect(screen.getByText('Deutsch')).toBeInTheDocument();
+    expect(screen.getByText('Русский')).toBeInTheDocument();
+    expect(screen.getByText('Español')).toBeInTheDocument();
+
+    // Click Deutsch
+    await user.click(screen.getByText('Deutsch'));
+    expect(setLanguage).toHaveBeenCalledWith('de');
+  });
+
+  it('renders user profile dropdown with balance, VIP status, and actions when logged in', async () => {
+    const user = userEvent.setup();
+    const onLogout = vi.fn();
+    const onDeposit = vi.fn();
+    render(
+      <Header
+        {...createProps({
+          isLoggedIn: true,
+          userEmail: 'alex@example.com',
+          balance: 1500,
+          onLogout,
+          onDeposit,
+        })}
+      />
+    );
+
+    // Should display email prefix as name
+    expect(screen.getByText('alex')).toBeInTheDocument();
+
+    // Trigger profile dropdown
+    const profileBtn = screen.getByText('alex').closest('button')!;
+    await user.click(profileBtn);
+
+    // Verify VIP badge and email inside
+    expect(screen.getByText('alex@example.com')).toBeInTheDocument();
+    expect(screen.getByText('Silver VIP')).toBeInTheDocument();
+
+    // Verify progress text and balance rows
+    const expectedNoSpace = ('€' + (1500).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })).replace(/\s/g, '');
+    expect(screen.getByText('350 points to Gold VIP status')).toBeInTheDocument();
+    expect(screen.getByText((_, el) => el?.className === 'amount' && el.textContent?.replace(/\s/g, '') === expectedNoSpace)).toBeInTheDocument();
+    expect(screen.getByText('€50.00')).toBeInTheDocument();
+
+    // Click Deposit
+    await user.click(screen.getByText('Quick Deposit €500'));
+    expect(onDeposit).toHaveBeenCalledWith(500);
+
+    // Re-trigger profile dropdown and log out
+    await user.click(profileBtn);
+    await user.click(screen.getByText('Log Out'));
+    expect(onLogout).toHaveBeenCalled();
+  });
 });
+
