@@ -5,6 +5,7 @@ import type { MatchData } from '../data/matches';
 import { leagueOutrights } from '../data/leaguesData';
 import { getCombinations, checkIsSelectionWon, formatOdds } from '../utils/betting';
 import type { OddsFormat } from '../utils/betting';
+import { t } from '../utils/i18n';
 import './RightSidebar.css';
 
 interface RightSidebarProps {
@@ -20,7 +21,32 @@ interface RightSidebarProps {
   onCashOut?: (id: string, amount: number) => void;
   isSelfExcluded?: boolean;
   oddsFormat?: OddsFormat;
+  language?: string;
 }
+
+const translateSelection = (selection: string, lang: string): string => {
+  if (selection === 'Draw') return t('Draw', lang);
+  if (selection === 'Yes') return t('Yes', lang);
+  if (selection === 'No') return t('No', lang);
+  
+  if (selection.includes(':')) {
+    const parts = selection.split(':');
+    const marketName = parts[0].trim();
+    const outcome = parts[1].trim();
+    
+    const translatedMarket = t(marketName, lang);
+    let translatedOutcome = outcome;
+    if (outcome === 'Draw') translatedOutcome = t('Draw', lang);
+    else if (outcome === 'Yes') translatedOutcome = t('Yes', lang);
+    else if (outcome === 'No') translatedOutcome = t('No', lang);
+    else if (outcome === 'Over 2.5') translatedOutcome = t('Over 2.5', lang);
+    else if (outcome === 'Under 2.5') translatedOutcome = t('Under 2.5', lang);
+    
+    return `${translatedMarket}: ${translatedOutcome}`;
+  }
+  
+  return selection;
+};
 
 // Lookup current live odds
 const getCurrentOdds = (bet: Bet, matches: MatchData[]): number => {
