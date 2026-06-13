@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import './AuthModal.css';
 
 interface AuthModalProps {
@@ -23,8 +24,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Clear sensitive fields when switching tabs (avoid leaking passwords between login/register)
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional UX reset on user-initiated tab change (same pattern as other effects in the codebase)
+  // Clear sensitive fields when switching tabs (avoid leaking passwords between login/register).
+  // Intentional batch of state resets on user action (tab change). We disable the rule
+  // for the whole effect because each set* is a deliberate "reset form for new mode".
+  /* eslint-disable react-hooks/set-state-in-effect */
   React.useEffect(() => {
     setPassword('');
     setConfirmPassword('');
@@ -32,10 +35,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
     setShowConfirmPassword(false);
     setFormError(null);
   }, [activeTab]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
 
@@ -51,22 +55,68 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
 
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const message = activeTab === 'login' 
-        ? 'Successfully logged in! Welcome back.' 
-        : 'Account created! Welcome to bwin.';
-      setSuccessMessage(message);
-      
-      setTimeout(() => {
-        setSuccessMessage(null);
-        if (onSuccess && email.trim()) {
-          onSuccess(email.trim(), activeTab === 'register');
+    const trimmedEmail = email.trim();
+
+    // If real Supabase keys are configured, use real auth
+    const hasRealClient = import.meta.env.VITE_SUPABASE_URL && 
+                         !import.meta.env.VITE_SUPABASE_URL.includes('placeholder');
+
+    try {
+      if (hasRealClient) {
+        if (activeTab === 'login') {
+          const { error } = await supabase.auth.signInWithPassword({
+            email: trimmedEmail,
+            password,
+          });
+          if (error) throw error;
+        } else {
+          const { error } = await supabase.auth.signUp({
+            email: trimmedEmail,
+            password,
+          });
+          if (error) throw error;
         }
-        onClose();
-      }, 2000);
-    }, 1000);
+
+        // Real auth succeeded — Supabase will fire onAuthStateChange in App.tsx
+        setSuccessMessage(
+          activeTab === 'login' 
+            ? 'Successfully logged in! Welcome back.' 
+            : 'Account created! Welcome to bwin.'
+        );
+
+        setTimeout(() => {
+          setSuccessMessage(null);
+          // onSuccess kept for backward compat with any parent simulation
+          if (onSuccess) onSuccess(trimmedEmail, activeTab === 'register');
+          onClose();
+        }, 1400);
+      } else {
+        // Fallback simulation (no Supabase keys yet)
+        setTimeout(() => {
+          setIsSubmitting(false);
+          const message = activeTab === 'login' 
+            ? 'Successfully logged in! Welcome back.' 
+            : 'Account created! Welcome to bwin.';
+          setSuccessMessage(message);
+          
+          setTimeout(() => {
+            setSuccessMessage(null);
+            if (onSuccess) onSuccess(trimmedEmail, activeTab === 'register');
+            onClose();
+          }, 2000);
+        }, 800);
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      setFormError(err?.message || 'Authentication failed. Please try again.');
+    } finally {
+      // only turn off submitting in the error path or simulation
+      if (!hasRealClient) {
+        // simulation already handled inside
+      } else {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   const handleForgotPassword = () => {
