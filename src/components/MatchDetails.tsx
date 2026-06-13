@@ -3,6 +3,7 @@ import type { Bet } from '../App';
 import type { MatchData } from '../data/matches';
 import { formatOdds } from '../utils/betting';
 import type { OddsFormat } from '../utils/betting';
+import { t } from '../utils/i18n';
 import './MatchDetails.css';
 
 interface MatchDetailsProps {
@@ -11,9 +12,10 @@ interface MatchDetailsProps {
   betSlip: Bet[];
   addBet: (bet: Bet) => void;
   oddsFormat: OddsFormat;
+  language?: string;
 }
 
-const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, addBet, oddsFormat }) => {
+const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, addBet, oddsFormat, language = 'en' }) => {
   const isBetSelected = (selection: string) => {
     return betSlip.some(b => b.id === `${match.id}-${selection}`);
   };
@@ -67,7 +69,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
   return (
     <div className="match-details-container">
       <button className="btn-back" onClick={onBack}>
-        &larr; Back to Events
+        &larr; {t('Back to Events', language)}
       </button>
 
       <div className="match-header">
@@ -77,7 +79,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
         </div>
         <div className="match-meta">
           {match.isLive ? (
-            <span className="live-badge">LIVE {match.time}</span>
+            <span className="live-badge">{t('LIVE', language)} {match.time}</span>
           ) : (
             <span className="upcoming-time">{match.time}</span>
           )}
@@ -88,7 +90,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
       <div className="markets-container">
         {/* Match Result Market */}
         <div className="market-group animation-slide-up" style={{ animationDelay: '0.0s' }}>
-          <div className="market-header">Match Result (1X2)</div>
+          <div className="market-header">{t('Match Result (1X2)', language)}</div>
           <div className="market-odds grid-3">
             {renderOddsButton('home', '1', match.odds.home, 'Match Result')}
             {renderOddsButton('draw', 'X', match.odds.draw, 'Match Result')}
@@ -99,10 +101,10 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
         {/* Total Goals Market */}
         {match.markets?.totalGoals && (
           <div className="market-group animation-slide-up" style={{ animationDelay: '0.1s' }}>
-            <div className="market-header">Total Goals - Over/Under 2.5</div>
+            <div className="market-header">{t('Total Goals - Over/Under 2.5', language)}</div>
             <div className="market-odds grid-2">
-              {renderOddsButton('over25', 'Over 2.5', match.markets.totalGoals.over25, 'Total Goals')}
-              {renderOddsButton('under25', 'Under 2.5', match.markets.totalGoals.under25, 'Total Goals')}
+              {renderOddsButton('over25', t('Over 2.5', language), match.markets.totalGoals.over25, 'Total Goals')}
+              {renderOddsButton('under25', t('Under 2.5', language), match.markets.totalGoals.under25, 'Total Goals')}
             </div>
           </div>
         )}
@@ -110,10 +112,10 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
         {/* Both Teams to Score Market */}
         {match.markets?.btts && (
           <div className="market-group animation-slide-up" style={{ animationDelay: '0.2s' }}>
-            <div className="market-header">Both Teams to Score</div>
+            <div className="market-header">{t('Both Teams to Score', language)}</div>
             <div className="market-odds grid-2">
-              {renderOddsButton('btts_yes', 'Yes', match.markets.btts.yes, 'BTTS')}
-              {renderOddsButton('btts_no', 'No', match.markets.btts.no, 'BTTS')}
+              {renderOddsButton('btts_yes', t('Yes', language), match.markets.btts.yes, 'BTTS')}
+              {renderOddsButton('btts_no', t('No', language), match.markets.btts.no, 'BTTS')}
             </div>
           </div>
         )}
@@ -121,7 +123,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
         {/* Double Chance Market */}
         {match.markets?.doubleChance && (
           <div className="market-group animation-slide-up" style={{ animationDelay: '0.3s' }}>
-            <div className="market-header">Double Chance</div>
+            <div className="market-header">{t('Double Chance', language)}</div>
             <div className="market-odds grid-3">
               {renderOddsButton('dc_1x', '1X', match.markets.doubleChance.homeDraw, 'Double Chance')}
               {renderOddsButton('dc_12', '12', match.markets.doubleChance.homeAway, 'Double Chance')}
@@ -132,7 +134,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
         
         {(!match.markets) && (
           <div className="no-markets">
-            Additional markets are currently not available for this event.
+            {t('No additional markets', language)}
           </div>
         )}
       </div>

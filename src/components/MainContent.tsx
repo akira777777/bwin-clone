@@ -225,7 +225,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   if (activeCategory === 'Casino' || activeCategory === 'Live Casino' || activeCategory === 'Poker') {
-    return <Casino />;
+    return <Casino language={language} />;
   }
 
   if (activeCategory === 'Virtuals') {
@@ -243,6 +243,7 @@ const MainContent: React.FC<MainContentProps> = ({
           betSlip={betSlip}
           addBet={addBet}
           oddsFormat={oddsFormat}
+          language={language}
         />
       </main>
     );
@@ -269,7 +270,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
       {isLoading && (
         <div style={{ textAlign: 'center', padding: '20px', color: 'var(--bwin-yellow)' }} aria-live="polite">
-          Loading live matches...
+          {language === 'ru' ? 'Загрузка матчей...' : language === 'de' ? 'Spiele werden geladen...' : language === 'es' ? 'Cargando partidos...' : 'Loading live matches...'}
         </div>
       )}
 
@@ -279,9 +280,11 @@ const MainContent: React.FC<MainContentProps> = ({
           <div className="league-info-block">
             <span className="league-flag-large">{LEAGUE_FLAGS[activeLeague] || '🏆'}</span>
             <div className="league-title-meta">
-              <span className="league-sport-label">{activeSport}</span>
+              <span className="league-sport-label">{t(activeSport, language)}</span>
               <h2>{activeLeague}</h2>
-              <span className="league-season-label">Season 2026/2027 • Live Hub</span>
+              <span className="league-season-label">
+                {language === 'ru' ? 'Сезон 2026/2027 • Лайв Центр' : language === 'de' ? 'Saison 2026/2027 • Live-Hub' : language === 'es' ? 'Temporada 2026/2027 • Centro en Vivo' : 'Season 2026/2027 • Live Hub'}
+              </span>
             </div>
           </div>
           
@@ -291,26 +294,26 @@ const MainContent: React.FC<MainContentProps> = ({
               className={`league-tab-btn ${activeTab === 'matches' ? 'active' : ''}`}
               onClick={() => setActiveTab('matches')}
             >
-              <Calendar size={14} /> Matches
+              <Calendar size={14} /> {t('Matches', language)}
             </button>
             <button 
               className={`league-tab-btn ${activeTab === 'standings' ? 'active' : ''}`}
               onClick={() => setActiveTab('standings')}
             >
-              <Trophy size={14} /> Standings
+              <Trophy size={14} /> {t('Standings', language)}
             </button>
             <button 
               className={`league-tab-btn ${activeTab === 'outrights' ? 'active' : ''}`}
               onClick={() => setActiveTab('outrights')}
             >
-              <TrendingUp size={14} /> Outrights
+              <TrendingUp size={14} /> {t('Outrights', language)}
             </button>
             {stats.length > 0 && (
               <button 
                 className={`league-tab-btn ${activeTab === 'stats' ? 'active' : ''}`}
                 onClick={() => setActiveTab('stats')}
               >
-                <User size={14} /> Stats
+                <User size={14} /> {t('Stats', language)}
               </button>
             )}
           </div>
@@ -320,22 +323,24 @@ const MainContent: React.FC<MainContentProps> = ({
         activeCategory === 'Live Betting' ? (
           <section className="promo-banner live-betting-banner">
             <div className="promo-content">
-              <div className="promo-badge">Live</div>
-              <h2>Live Betting — Real-time Action</h2>
-              <p>Follow the matches and place your bets as the game unfolds. Odds update every 3 seconds!</p>
+              <div className="promo-badge">{language === 'ru' ? 'Лайв' : language === 'de' ? 'Live' : language === 'es' ? 'En Vivo' : 'Live'}</div>
+              <h2>{language === 'ru' ? 'Лайв ставки — Действие в реальном времени' : language === 'de' ? 'Live-Wetten — Action in Echtzeit' : language === 'es' ? 'Apuestas en Vivo — Acción en Tiempo Real' : 'Live Betting — Real-time Action'}</h2>
+              <p>
+                {language === 'ru' ? 'Следите за матчами и делайте ставки по ходу игры. Коэффициенты обновляются каждые 3 секунды!' : language === 'de' ? 'Verfolgen Sie die Spiele und platzieren Sie Ihre Wetten live. Die Quoten werden alle 3 Sekunden aktualisiert!' : language === 'es' ? 'Siga los partidos y realice sus apuestas en vivo. ¡Las cuotas se actualizan cada 3 segundos!' : 'Follow the matches and place your bets as the game unfolds. Odds update every 3 seconds!'}
+              </p>
               <button className="btn-promo live-btn" onClick={() => showToast('Live Betting activated!')}>
-                Start Live Betting
+                {language === 'ru' ? 'Начать лайв ставки' : language === 'de' ? 'Live-Wetten starten' : language === 'es' ? 'Comenzar apuestas en vivo' : 'Start Live Betting'}
               </button>
             </div>
           </section>
         ) : (
           <section className="promo-banner risk-free-banner">
             <div className="promo-content">
-              <div className="promo-badge">New Players Only</div>
-              <h2>Your First Bet is Insured up to $50</h2>
-              <p>Place a bet. If it doesn't win, we will refund 100% of your stake as a Free Bet!</p>
+              <div className="promo-badge">{language === 'ru' ? 'Только для новых игроков' : language === 'de' ? 'Nur für neue Spieler' : language === 'es' ? 'Solo nuevos jugadores' : 'New Players Only'}</div>
+              <h2>{t('Promo Insurance', language)}</h2>
+              <p>{t('Promo Insurance Desc', language)}</p>
               <button className="btn-promo risk-free-btn" onClick={() => showToast('Bonus activated! Please register an account.')}>
-                Claim Risk-Free Bet
+                {t('Claim Promo', language)}
               </button>
             </div>
           </section>
@@ -352,7 +357,7 @@ const MainContent: React.FC<MainContentProps> = ({
               onClick={() => setActiveSport(sport)}
               aria-pressed={activeSport === sport}
             >
-              {sport}
+              {t(sport, language)}
             </button>
           ))}
         </nav>
@@ -365,7 +370,7 @@ const MainContent: React.FC<MainContentProps> = ({
           {liveMatches.length > 0 && (
             <section className="matches-section">
               <header className="section-header">
-                <h3>Live Now</h3>
+                <h3>{t('Live Now', language)}</h3>
               </header>
               <div className="matches-list">
                 {liveMatches.map(match => (
@@ -386,7 +391,7 @@ const MainContent: React.FC<MainContentProps> = ({
           {activeCategory !== 'Live Betting' && upcomingMatches.length > 0 && (
             <section className="matches-section">
               <header className="section-header">
-                <h3>Upcoming Matches</h3>
+                <h3>{t('Upcoming Matches', language)}</h3>
               </header>
               <div className="matches-list">
                 {upcomingMatches.map(match => (
@@ -406,8 +411,8 @@ const MainContent: React.FC<MainContentProps> = ({
           {(activeCategory === 'Live Betting' ? liveMatches.length === 0 : filteredMatches.length === 0) && (
             <div style={{ textAlign: 'center', padding: '40px', color: 'var(--bwin-gray-text)' }}>
               {activeCategory === 'Live Betting' 
-                ? `No live matches currently available for ${activeLeague || activeSport}.`
-                : `No matches currently available for ${activeLeague || activeSport}.`}
+                ? (language === 'ru' ? `Нет доступных лайв матчей для ${activeLeague || t(activeSport, language)}.` : language === 'de' ? `Derzeit keine Live-Spiele für ${activeLeague || t(activeSport, language)}.` : language === 'es' ? `No hay partidos en vivo disponibles para ${activeLeague || t(activeSport, language)}.` : `No live matches currently available for ${activeLeague || t(activeSport, language)}.`)
+                : (language === 'ru' ? `Нет доступных матчей для ${activeLeague || t(activeSport, language)}.` : language === 'de' ? `Derzeit keine Spiele für ${activeLeague || t(activeSport, language)}.` : language === 'es' ? `No hay partidos disponibles para ${activeLeague || t(activeSport, language)}.` : `No matches currently available for ${activeLeague || t(activeSport, language)}.`)}
             </div>
           )}
         </>
@@ -422,48 +427,48 @@ const MainContent: React.FC<MainContentProps> = ({
                 <thead>
                   {activeSport === 'Tennis' ? (
                     <tr>
-                      <th style={{ width: '50px' }}>Rank</th>
-                      <th>Player</th>
-                      <th>Country</th>
-                      <th style={{ textAlign: 'right' }}>Ranking Points</th>
+                      <th style={{ width: '50px' }}>{language === 'ru' ? 'Ранг' : language === 'de' ? 'Rang' : language === 'es' ? 'Rango' : 'Rank'}</th>
+                      <th>{language === 'ru' ? 'Игрок' : language === 'de' ? 'Spieler' : language === 'es' ? 'Jugador' : 'Player'}</th>
+                      <th>{language === 'ru' ? 'Страна' : language === 'de' ? 'Land' : language === 'es' ? 'País' : 'Country'}</th>
+                      <th style={{ textAlign: 'right' }}>{language === 'ru' ? 'Очки рейтинга' : language === 'de' ? 'Punkte' : language === 'es' ? 'Puntos' : 'Ranking Points'}</th>
                     </tr>
                   ) : activeSport === 'Basketball' && activeLeague === 'NBA' ? (
                     <tr>
-                      <th style={{ width: '50px' }}>Pos</th>
-                      <th>Team</th>
-                      <th style={{ width: '100px' }}>Conf</th>
-                      <th style={{ width: '100px', textAlign: 'center' }}>Record (W-L)</th>
+                      <th style={{ width: '50px' }}>{language === 'ru' ? 'Поз' : language === 'de' ? 'Pos' : language === 'es' ? 'Pos' : 'Pos'}</th>
+                      <th>{language === 'ru' ? 'Команда' : language === 'de' ? 'Team' : language === 'es' ? 'Equipo' : 'Team'}</th>
+                      <th style={{ width: '100px' }}>{language === 'ru' ? 'Конф' : language === 'de' ? 'Konf' : language === 'es' ? 'Conf' : 'Conf'}</th>
+                      <th style={{ width: '100px', textAlign: 'center' }}>{language === 'ru' ? 'Рекорд (В-П)' : language === 'de' ? 'Bilanz (S-N)' : language === 'es' ? 'Récord (G-P)' : 'Record (W-L)'}</th>
                       <th style={{ width: '100px', textAlign: 'right' }}>GB</th>
                     </tr>
                   ) : activeSport === 'Basketball' && activeLeague !== 'NBA' ? (
                     <tr>
-                      <th style={{ width: '50px' }}>Pos</th>
-                      <th>Team</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>P</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>W</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>L</th>
-                      <th style={{ width: '80px', textAlign: 'right' }}>PTS</th>
+                      <th style={{ width: '50px' }}>{language === 'ru' ? 'Поз' : language === 'de' ? 'Pos' : language === 'es' ? 'Pos' : 'Pos'}</th>
+                      <th>{language === 'ru' ? 'Команда' : language === 'de' ? 'Team' : language === 'es' ? 'Equipo' : 'Team'}</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>{language === 'ru' ? 'И' : language === 'de' ? 'S' : language === 'es' ? 'PJ' : 'P'}</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>{language === 'ru' ? 'В' : language === 'de' ? 'G' : language === 'es' ? 'G' : 'W'}</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>{language === 'ru' ? 'П' : language === 'de' ? 'V' : language === 'es' ? 'P' : 'L'}</th>
+                      <th style={{ width: '80px', textAlign: 'right' }}>{language === 'ru' ? 'ОЧК' : language === 'de' ? 'PKT' : language === 'es' ? 'PTS' : 'PTS'}</th>
                     </tr>
                   ) : activeSport === 'Ice Hockey' ? (
                     <tr>
-                      <th style={{ width: '50px' }}>Pos</th>
-                      <th>Team</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>P</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>W</th>
-                      <th style={{ width: '80px', textAlign: 'center' }}>L</th>
-                      <th style={{ width: '80px', textAlign: 'right' }}>PTS</th>
+                      <th style={{ width: '50px' }}>{language === 'ru' ? 'Поз' : language === 'de' ? 'Pos' : language === 'es' ? 'Pos' : 'Pos'}</th>
+                      <th>{language === 'ru' ? 'Команда' : language === 'de' ? 'Team' : language === 'es' ? 'Equipo' : 'Team'}</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>{language === 'ru' ? 'И' : language === 'de' ? 'S' : language === 'es' ? 'PJ' : 'P'}</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>{language === 'ru' ? 'В' : language === 'de' ? 'G' : language === 'es' ? 'G' : 'W'}</th>
+                      <th style={{ width: '80px', textAlign: 'center' }}>{language === 'ru' ? 'П' : language === 'de' ? 'V' : language === 'es' ? 'P' : 'L'}</th>
+                      <th style={{ width: '80px', textAlign: 'right' }}>{language === 'ru' ? 'ОЧК' : language === 'de' ? 'PKT' : language === 'es' ? 'PTS' : 'PTS'}</th>
                     </tr>
                   ) : (
                     /* Football */
                     <tr>
-                      <th style={{ width: '50px' }}>Pos</th>
-                      <th>Team</th>
-                      <th style={{ width: '60px', textAlign: 'center' }}>P</th>
-                      <th style={{ width: '60px', textAlign: 'center' }}>W</th>
-                      <th style={{ width: '60px', textAlign: 'center' }}>D</th>
-                      <th style={{ width: '60px', textAlign: 'center' }}>L</th>
-                      <th style={{ width: '100px', textAlign: 'center' }}>Goals</th>
-                      <th style={{ width: '60px', textAlign: 'right' }}>PTS</th>
+                      <th style={{ width: '50px' }}>{language === 'ru' ? 'Поз' : language === 'de' ? 'Pos' : language === 'es' ? 'Pos' : 'Pos'}</th>
+                      <th>{language === 'ru' ? 'Команда' : language === 'de' ? 'Team' : language === 'es' ? 'Equipo' : 'Team'}</th>
+                      <th style={{ width: '60px', textAlign: 'center' }}>{language === 'ru' ? 'И' : language === 'de' ? 'S' : language === 'es' ? 'PJ' : 'P'}</th>
+                      <th style={{ width: '60px', textAlign: 'center' }}>{language === 'ru' ? 'В' : language === 'de' ? 'G' : language === 'es' ? 'G' : 'W'}</th>
+                      <th style={{ width: '60px', textAlign: 'center' }}>{language === 'ru' ? 'Н' : language === 'de' ? 'U' : language === 'es' ? 'E' : 'D'}</th>
+                      <th style={{ width: '60px', textAlign: 'center' }}>{language === 'ru' ? 'П' : language === 'de' ? 'V' : language === 'es' ? 'P' : 'L'}</th>
+                      <th style={{ width: '100px', textAlign: 'center' }}>{language === 'ru' ? 'Голы' : language === 'de' ? 'Tore' : language === 'es' ? 'Goles' : 'Goals'}</th>
+                      <th style={{ width: '60px', textAlign: 'right' }}>{language === 'ru' ? 'ОЧК' : language === 'de' ? 'PKT' : language === 'es' ? 'PTS' : 'PTS'}</th>
                     </tr>
                   )}
                 </thead>
@@ -516,7 +521,7 @@ const MainContent: React.FC<MainContentProps> = ({
             </div>
           ) : (
             <div style={{ textAlign: 'center', padding: '40px', color: 'var(--bwin-gray-text)' }}>
-              No standing data currently available for {activeLeague}.
+              {language === 'ru' ? `Таблица временно недоступна для ${activeLeague}.` : language === 'de' ? `Derzeit keine Tabellendaten für ${activeLeague}.` : language === 'es' ? `No hay datos de clasificación disponibles para ${activeLeague}.` : `No standing data currently available for ${activeLeague}.`}
             </div>
           )}
         </section>
@@ -554,7 +559,7 @@ const MainContent: React.FC<MainContentProps> = ({
             </div>
           ) : (
             <div style={{ textAlign: 'center', padding: '40px', color: 'var(--bwin-gray-text)' }}>
-              No outright winner odds currently available for {activeLeague}.
+              {language === 'ru' ? `Ставки на победителя временно недоступны для ${activeLeague}.` : language === 'de' ? `Derzeit keine Quoten für Gesamtsieger für ${activeLeague}.` : language === 'es' ? `No hay apuestas de ganador final disponibles para ${activeLeague}.` : `No outright winner odds currently available for ${activeLeague}.`}
             </div>
           )}
         </section>
@@ -568,9 +573,9 @@ const MainContent: React.FC<MainContentProps> = ({
               <table className="stats-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '50px' }}>Pos</th>
-                    <th>Player</th>
-                    <th>Team / Country</th>
+                    <th style={{ width: '50px' }}>{language === 'ru' ? 'Поз' : language === 'de' ? 'Pos' : language === 'es' ? 'Pos' : 'Pos'}</th>
+                    <th>{language === 'ru' ? 'Игрок' : language === 'de' ? 'Spieler' : language === 'es' ? 'Jugador' : 'Player'}</th>
+                    <th>{language === 'ru' ? 'Команда / Страна' : language === 'de' ? 'Team / Land' : language === 'es' ? 'Equipo / País' : 'Team / Country'}</th>
                     <th style={{ textAlign: 'right' }}>{stats[0].statName}</th>
                   </tr>
                 </thead>
@@ -588,7 +593,7 @@ const MainContent: React.FC<MainContentProps> = ({
             </div>
           ) : (
             <div style={{ textAlign: 'center', padding: '40px', color: 'var(--bwin-gray-text)' }}>
-              No player statistics currently available for {activeLeague}.
+              {language === 'ru' ? `Статистика игроков временно недоступна для ${activeLeague}.` : language === 'de' ? `Derzeit keine Spielerstatistiken für ${activeLeague}.` : language === 'es' ? `No hay estadísticas de jugadores disponibles para ${activeLeague}.` : `No player statistics currently available for ${activeLeague}.`}
             </div>
           )}
         </section>
