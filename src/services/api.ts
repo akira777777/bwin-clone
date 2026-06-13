@@ -88,7 +88,11 @@ export const fetchLiveMatches = async (apiKey: string): Promise<any[]> => {
       scores.forEach(s => scoresMap.set(s.id, s));
     }));
 
-    return transformToMatchData(data, scoresMap);
+    const transformed = transformToMatchData(data, scoresMap);
+    // #region agent log
+    fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'A',location:'api.ts:fetchLiveMatches',message:'API transform complete',data:{rawCount:data.length,transformedCount:transformed.length,filteredOut:data.length-transformed.length,liveSportKeys:topSportKeys.length},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+    return transformed;
   } catch (error) {
     console.error('Error fetching live matches:', error);
     throw error;

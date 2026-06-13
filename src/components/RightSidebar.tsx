@@ -103,8 +103,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   }, [betSlip, matches]);
 
   const hasOddsChanged = useMemo(() => {
-    return Object.values(oddsStatus).some(status => status.changed);
-  }, [oddsStatus]);
+    const changed = Object.values(oddsStatus).some(status => status.changed);
+    if (betSlip.length > 0) {
+      // #region agent log
+      fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'E',location:'RightSidebar.tsx:hasOddsChanged',message:'odds status computed',data:{betCount:betSlip.length,hasOddsChanged:changed,statuses:betSlip.map(b=>({id:b.id,storedOdds:b.odds,current:oddsStatus[b.id]?.current,changed:oddsStatus[b.id]?.changed}))},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+    }
+    return changed;
+  }, [oddsStatus, betSlip]);
 
   const acceptOddsChanges = () => {
     setBetSlip(prev => prev.map(bet => ({
