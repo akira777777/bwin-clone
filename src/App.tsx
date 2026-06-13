@@ -112,12 +112,22 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Clear stale league filter when loaded matches no longer include the selected league
+  useEffect(() => {
+    if (activeLeague && !matches.some(m => m.league === activeLeague && m.sport === activeSport)) {
+      setActiveLeague(null);
+    }
+  }, [matches, activeLeague, activeSport]);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSlipOpen, setIsMobileSlipOpen] = useState(false);
 
   const addBet = useCallback((bet: Bet) => {
     setBetSlip(prev => {
       const exists = prev.find(b => b.id === bet.id);
+      // #region agent log
+      fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'C',location:'App.tsx:addBet',message:'bet toggled',data:{betId:bet.id,action:exists?'remove':'add',prevCount:prev.length,newCount:exists?prev.length-1:prev.length+1},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       if (exists) return prev.filter(b => b.id !== bet.id); // Toggle off if already added
       return [...prev, bet];
     });

@@ -62,6 +62,12 @@ const MainContent: React.FC<MainContentProps> = ({
   const [isUsingMock, setIsUsingMock] = useState<boolean>(!initialKey);
   const apiKeyInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'B',location:'MainContent.tsx:mount',message:'initial API key state',data:{envKeyPresent:!!envKey,localStorageKeyPresent:!!localStorage.getItem('odds_api_key'),initialKeyPresent:!!initialKey,isKeyModalOpen:!initialKey,isUsingMock:!initialKey},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
+  }, []);
+
   // Reset league active tab to 'matches' when the league changes
   useEffect(() => {
     setActiveTab('matches');
@@ -70,8 +76,14 @@ const MainContent: React.FC<MainContentProps> = ({
   const loadRealMatches = async (key: string) => {
     setIsLoading(true);
     setError(null);
+    // #region agent log
+    fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'A-B',location:'MainContent.tsx:loadRealMatches:entry',message:'loadRealMatches called',data:{hasKey:!!key,keyLength:key?.length||0,isKeyModalOpen,isUsingMock,activeSport,activeLeague},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     try {
       const realMatches = await fetchLiveMatches(key);
+      // #region agent log
+      fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'A-D',location:'MainContent.tsx:loadRealMatches:success',message:'fetchLiveMatches returned',data:{matchCount:realMatches.length,sports:[...new Set(realMatches.map((m: MatchData)=>m.sport))],leagues:[...new Set(realMatches.map((m: MatchData)=>m.league))].slice(0,8),liveCount:realMatches.filter((m: MatchData)=>m.isLive).length},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       if (realMatches.length > 0) {
         setMatches(realMatches);
         setIsUsingMock(false);
@@ -82,6 +94,9 @@ const MainContent: React.FC<MainContentProps> = ({
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load live matches. Using mock data.';
+      // #region agent log
+      fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'A-B',location:'MainContent.tsx:loadRealMatches:error',message:'fetchLiveMatches failed',data:{errorMessage},timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       setError(errorMessage);
       setMatches(initialMatches);
       setIsUsingMock(true);
@@ -130,6 +145,9 @@ const MainContent: React.FC<MainContentProps> = ({
     if (activeLeague) {
       list = list.filter(m => m.league === activeLeague);
     }
+    // #region agent log
+    fetch('http://127.0.0.1:7255/ingest/55fa2d79-84a7-4a3e-959a-92ef52a657d8',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bbad23'},body:JSON.stringify({sessionId:'bbad23',runId:'pre-fix',hypothesisId:'D',location:'MainContent.tsx:filteredMatches',message:'matches filtered',data:{totalMatches:matches.length,filteredCount:list.length,activeSport,activeLeague,availableLeagues:[...new Set(matches.filter(m=>m.sport===activeSport).map(m=>m.league))].slice(0,10)},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     return list;
   }, [matches, activeSport, activeLeague]);
 
