@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Menu, ShoppingCart } from 'lucide-react';
+import { Search, Menu, ShoppingCart, User, LogOut } from 'lucide-react';
 import type { Category } from '../App';
 import './Header.css';
 
@@ -10,6 +10,9 @@ interface HeaderProps {
   toggleMobileMenu: () => void;
   toggleMobileSlip: () => void;
   betSlipCount: number;
+  isLoggedIn?: boolean;
+  userEmail?: string | null;
+  onLogout?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -18,7 +21,10 @@ const Header: React.FC<HeaderProps> = ({
   openAuthModal,
   toggleMobileMenu,
   toggleMobileSlip,
-  betSlipCount
+  betSlipCount,
+  isLoggedIn = false,
+  userEmail,
+  onLogout
 }) => {
   const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
 
@@ -37,8 +43,36 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         
         <div className="header-right">
-          <button className="btn-login" onClick={() => openAuthModal('login')}>Log In</button>
-          <button className="btn-register" onClick={() => openAuthModal('register')}>Register</button>
+          {isLoggedIn ? (
+            <>
+              <span 
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: 4, 
+                  color: 'var(--bwin-gray-text)', 
+                  fontSize: 13, 
+                  marginRight: 6 
+                }} 
+                title={userEmail || undefined}
+              >
+                <User size={14} /> {userEmail ? userEmail.split('@')[0] : 'Account'}
+              </span>
+              <button 
+                className="btn-login" 
+                onClick={onLogout}
+                style={{ padding: '6px 10px', fontSize: 12 }}
+                aria-label="Log out"
+              >
+                <LogOut size={14} style={{ marginRight: 4 }} /> Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn-login" onClick={() => openAuthModal('login')}>Log In</button>
+              <button className="btn-register" onClick={() => openAuthModal('register')}>Register</button>
+            </>
+          )}
           
           {/* Mobile bet slip toggle */}
           <button className="mobile-slip-btn" onClick={toggleMobileSlip}>

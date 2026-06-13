@@ -46,6 +46,10 @@ function App() {
   
   const [isWelcomePopupOpen, setIsWelcomePopupOpen] = useState(false);
 
+  // Auth state (user "авторизация"): makes login/register actually affect UI
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
   const [matches, setMatches] = useState<MatchData[]>(initialMatches);
 
   // Simulate real-time odds fluctuations
@@ -158,6 +162,17 @@ function App() {
     setIsAuthModalOpen(true);
   }, []);
 
+  const handleAuthSuccess = useCallback((email: string) => {
+    setUserEmail(email);
+    setIsLoggedIn(true);
+    // modal will close itself via its internal success timeout + onClose
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    setIsLoggedIn(false);
+    setUserEmail(null);
+  }, []);
+
   const handleCategoryChange = useCallback((cat: Category) => {
     setActiveCategory(cat);
     setSelectedMatchId(null);
@@ -190,6 +205,9 @@ function App() {
         toggleMobileMenu={toggleMobileMenu}
         toggleMobileSlip={toggleMobileSlip}
         betSlipCount={betSlip.length}
+        isLoggedIn={isLoggedIn}
+        userEmail={userEmail}
+        onLogout={handleLogout}
       />
       
       <div className="main-layout">
@@ -239,10 +257,11 @@ function App() {
             isOpen={isAuthModalOpen} 
             onClose={() => setIsAuthModalOpen(false)} 
             type={authType} 
+            onSuccess={handleAuthSuccess}
           />
         )}
 
-        {isWelcomePopupOpen && (
+        {!isLoggedIn && isWelcomePopupOpen && (
           <WelcomePopup 
             isOpen={isWelcomePopupOpen} 
             onClose={() => setIsWelcomePopupOpen(false)}

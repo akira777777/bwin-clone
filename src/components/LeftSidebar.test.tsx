@@ -45,11 +45,11 @@ describe('LeftSidebar (RTL component tests)', () => {
     const setActiveLeague = vi.fn();
     render(<LeftSidebar {...createProps({ activeSport: 'Football', setActiveLeague })} />);
 
-    // Premier League should be present for Football (use getAllByText and pick one)
-    const pls = screen.getAllByText('Premier League');
-    expect(pls.length).toBeGreaterThan(0);
+    // Leagues appear in both "Popular" and the full list — use getAllByText
+    const premierLeagues = screen.getAllByText('Premier League');
+    expect(premierLeagues.length).toBeGreaterThan(0);
 
-    await user.click(pls[0]);
+    await user.click(premierLeagues[0]);
     expect(setActiveLeague).toHaveBeenCalledWith('Premier League');
   });
 

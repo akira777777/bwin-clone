@@ -6,9 +6,10 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   type: 'login' | 'register';
+  onSuccess?: (email: string, isNewAccount: boolean) => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialType }) => {
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialType, onSuccess }) => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(initialType);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -21,6 +22,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Clear sensitive fields when switching tabs (avoid leaking passwords between login/register)
+  React.useEffect(() => {
+    setPassword('');
+    setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setFormError(null);
+  }, [activeTab]);
 
   if (!isOpen) return null;
 
@@ -43,14 +53,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
     // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
-      setSuccessMessage(
-        activeTab === 'login' 
-          ? 'Successfully logged in! Welcome back.' 
-          : 'Account created! Welcome to bwin.'
-      );
+      const message = activeTab === 'login' 
+        ? 'Successfully logged in! Welcome back.' 
+        : 'Account created! Welcome to bwin.';
+      setSuccessMessage(message);
       
       setTimeout(() => {
         setSuccessMessage(null);
+        if (onSuccess && email.trim()) {
+          onSuccess(email.trim(), activeTab === 'register');
+        }
         onClose();
       }, 2000);
     }, 1000);
