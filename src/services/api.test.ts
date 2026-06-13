@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { transformToMatchData, type OddsApiMatch } from './api';
+import { transformToMatchData, fetchLiveMatches, type OddsApiMatch } from './api';
 import type { MatchData } from '../data/matches';
 
 describe('transformToMatchData (data transformation)', () => {
@@ -300,5 +300,83 @@ describe('transformToMatchData (data transformation)', () => {
     expect(result[0].time).not.toBe('Live');
     expect(result[0].time).not.toContain('Today');
     expect(result[0].time.length).toBeGreaterThan(5);
+  });
+});
+
+describe('fetchLiveMatches (integration with mocked fetch)', () => {
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    vi.stubGlobal('fetch', originalFetch);
+    vi.clearAllMocks();
+  });
+
+  it('throws if no apiKey provided', async () => {
+    await expect(fetchLiveMatches('')).rejects.toThrow('API Key is required');
+  });
+
+  it('fetches odds, determines live sports, fetches scores for top ones, and returns transformed data', async () => {
+    const mockOddsData = [
+      {
+        id: 'api-1',
+        sport_key: 'soccer_epl',
+        sport_title: 'Premier League',
+        commence_time: '2026-06-13T20:00:00Z',
+        home_team: 'Arsenal',
+        away_team: 'Chelsea',
+        bookmakers: [
+          {
+            key: 'unibet',
+            title: 'Unibet',
+            markets: [{ key: 'h2h', outcomes: [
+              { name: 'Arsenal', price: 1.65 },
+              { name: 'Chelsea', price: 5.2 },
+              { name: 'Draw', price: 3.8 },
+            ] }],
+          },
+        ],
+      },
+    ];
+
+    const mockScores = [
+      { id: 'api-1', completed: false, scores: [
+        { name: 'Arsenal', score: '2' },
+        { name: 'Chelsea', score: '1' },
+      ] },
+    ];
+
+    (global.fetch as any)
+      .mockResolvedValueOnce({ ok: true, json: async () => mockOddsData }) // odds call
+      .mockResolvedValueOnce({ ok: true, json: async () => mockScores }); // scores call (for the live sport)
+
+    const result = await fetchLiveMatches('fake-key');
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(result).toHaveLength(1);
+    expect(result[0].sport).toBe('Football');
+    expect(result[0].score).toBe('2 - 1'); // attached from scores
+    expect(result[0].isLive).toBe(true);
+  });
+
+  it('handles 401 as "Invalid API Key"', async () => {
+    (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 401 });
+
+    await expect(fetchLiveMatches('bad-key')).rejects.toThrow('Invalid API Key');
+  });
+
+  it('handles 429 as "API Rate limit exceeded"', async () => {
+    (global.fetch as any).mockResolvedValueOnce({ ok: false, status: 429 });
+
+    await expect(fetchLiveMatches('key')).rejects.toThrow('API Rate limit exceeded');
+  });
+
+  it('falls back gracefully on network error (re-throws after logging)', async () => {
+    (global.fetch as any).mockRejectedValueOnce(new Error('Network down'));
+
+    await expect(fetchLiveMatches('key')).rejects.toThrow('Network down');
   });
 });
