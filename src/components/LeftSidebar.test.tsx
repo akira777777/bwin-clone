@@ -20,23 +20,23 @@ describe('LeftSidebar (RTL component tests)', () => {
     vi.clearAllMocks();
   });
 
-  it('renders sport navigation buttons and highlights the active sport', () => {
+  it('renders sport navigation items and highlights the active sport', () => {
     render(<LeftSidebar {...createProps({ activeSport: 'Tennis' })} />);
 
-    const tennisBtn = screen.getByRole('button', { name: 'Tennis' });
-    expect(tennisBtn).toHaveClass('active'); // or the component's active class
+    const tennisItem = screen.getByText('Tennis').closest('li');
+    expect(tennisItem).toHaveClass('active');
 
-    // Other sports present
-    expect(screen.getByRole('button', { name: 'Football' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Basketball' })).toBeInTheDocument();
+    // Other sports present as list items
+    expect(screen.getByText('Football')).toBeInTheDocument();
+    expect(screen.getByText('Basketball')).toBeInTheDocument();
   });
 
-  it('calls setActiveSport when a sport button is clicked', async () => {
+  it('calls setActiveSport when a sport item is clicked', async () => {
     const user = userEvent.setup();
     const setActiveSport = vi.fn();
     render(<LeftSidebar {...createProps({ setActiveSport })} />);
 
-    await user.click(screen.getByRole('button', { name: 'Ice Hockey' }));
+    await user.click(screen.getByText('Ice Hockey'));
     expect(setActiveSport).toHaveBeenCalledWith('Ice Hockey');
   });
 
@@ -45,26 +45,23 @@ describe('LeftSidebar (RTL component tests)', () => {
     const setActiveLeague = vi.fn();
     render(<LeftSidebar {...createProps({ activeSport: 'Football', setActiveLeague })} />);
 
-    // Premier League should be present for Football
-    const pl = screen.getByText('Premier League');
-    expect(pl).toBeInTheDocument();
+    // Premier League should be present for Football (use getAllByText and pick one)
+    const pls = screen.getAllByText('Premier League');
+    expect(pls.length).toBeGreaterThan(0);
 
-    await user.click(pl);
+    await user.click(pls[0]);
     expect(setActiveLeague).toHaveBeenCalledWith('Premier League');
   });
 
-  it('clears league when clicking the active league again (or shows a clear option)', async () => {
+  it('toggles activeLeague when clicking a league item (deselects if already active)', async () => {
     const user = userEvent.setup();
     const setActiveLeague = vi.fn();
     render(<LeftSidebar {...createProps({ activeSport: 'Football', activeLeague: 'La Liga', setActiveLeague })} />);
 
-    // Depending on exact UX, either the active league button or a "clear" element
-    // We keep the test flexible: just assert the setter can be driven
-    const laLiga = screen.getByText('La Liga');
-    await user.click(laLiga);
+    const laLigas = screen.getAllByText('La Liga');
+    await user.click(laLigas[0]);
 
-    // If it toggles off, it would call with null; if it re-selects, same value.
-    // The important thing is the handler is wired.
-    expect(setActiveLeague).toHaveBeenCalled();
+    // The handler toggles: if same, calls with null
+    expect(setActiveLeague).toHaveBeenCalledWith(null);
   });
 });
