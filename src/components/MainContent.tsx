@@ -7,6 +7,7 @@ import MatchDetails from './MatchDetails';
 import MatchRow from './MatchRow';
 import { Casino } from './Casino';
 import { Virtuals } from './Virtuals';
+import { initialMatches } from '../data/matches';
 import type { MatchData } from '../data/matches';
 import { leagueStandings, leagueOutrights, leagueStatsData } from '../data/leaguesData';
 import './MainContent.css';
@@ -76,11 +77,13 @@ const MainContent: React.FC<MainContentProps> = ({
         setIsUsingMock(false);
       } else {
         setError('No matches found for today. Using mock data.');
+        setMatches(initialMatches);
         setIsUsingMock(true);
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load live matches. Using mock data.';
       setError(errorMessage);
+      setMatches(initialMatches);
       setIsUsingMock(true);
     } finally {
       setIsLoading(false);
@@ -100,6 +103,7 @@ const MainContent: React.FC<MainContentProps> = ({
   const handleSkipApiKey = () => {
     setIsKeyModalOpen(false);
     setIsUsingMock(true);
+    setMatches(initialMatches);
   };
 
   useEffect(() => {
