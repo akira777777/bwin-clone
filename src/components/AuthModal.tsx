@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Eye, EyeOff } from 'lucide-react';
 import { supabase, hasRealSupabaseConfig } from '../lib/supabase';
+import { t } from '../utils/i18n';
 import './AuthModal.css';
 
 interface AuthModalProps {
@@ -8,9 +9,10 @@ interface AuthModalProps {
   onClose: () => void;
   type: 'login' | 'register';
   onSuccess?: (email: string, isNewAccount: boolean) => void;
+  language?: string;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialType, onSuccess }) => {
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialType, onSuccess, language = 'en' }) => {
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(initialType);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -24,10 +26,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
   const [confirmPassword, setConfirmPassword] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Clear sensitive fields when switching tabs (avoid leaking passwords between login/register).
-  // Intentional batch of state resets on user action (tab change). We disable the rule
-  // for the whole effect because each set* is a deliberate "reset form for new mode".
-  /* eslint-disable react-hooks/set-state-in-effect */
+  // Clear sensitive fields when switching tabs
   React.useEffect(() => {
     setPassword('');
     setConfirmPassword('');
@@ -35,29 +34,106 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
     setShowConfirmPassword(false);
     setFormError(null);
   }, [activeTab]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   if (!isOpen) return null;
+
+  // Local translations for auth-specific strings
+  const getAuthText = (key: string): string => {
+    const dicts: Record<string, Record<string, string>> = {
+      ru: {
+        'Passwords do not match': 'Пароли не совпадают',
+        'Password must be at least 6 characters': 'Пароль должен быть не менее 6 символов',
+        'Successfully logged in! Welcome back.': 'Вход выполнен успешно! С возвращением.',
+        'Account created! Welcome to bwin.': 'Аккаунт создан! Добро пожаловать на bwin.',
+        'Authentication failed. Please try again.': 'Ошибка аутентификации. Пожалуйста, попробуйте еще раз.',
+        'Please enter your email first': 'Пожалуйста, введите сначала ваш email',
+        'Password reset link sent to ': 'Ссылка для сброса пароля отправлена на ',
+        'Email / Username': 'Email / Имя пользователя',
+        'Enter your email': 'Введите ваш email',
+        'Password': 'Пароль',
+        'Enter your password': 'Введите ваш пароль',
+        'Confirm Password': 'Подтвердите пароль',
+        'Confirm your password': 'Повторите пароль',
+        'Remember me': 'Запомнить меня',
+        'Forgot Password?': 'Забыли пароль?',
+        'I agree to the ': 'Я согласен с ',
+        'Terms & Conditions': 'Условиями и Положениями',
+        'Logging in...': 'Вход...',
+        'Creating account...': 'Создание аккаунта...',
+        'Register Now': 'Зарегистрироваться',
+        'Don\'t have an account? ': 'Нет аккаунта? ',
+        'Already have an account? ': 'Уже есть аккаунт? ',
+      },
+      de: {
+        'Passwords do not match': 'Passwörter stimmen nicht überein',
+        'Password must be at least 6 characters': 'Das Passwort muss mindestens 6 Zeichen lang sein',
+        'Successfully logged in! Welcome back.': 'Erfolgreich eingeloggt! Willkommen zurück.',
+        'Account created! Welcome to bwin.': 'Konto erstellt! Willkommen bei bwin.',
+        'Authentication failed. Please try again.': 'Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+        'Please enter your email first': 'Bitte geben Sie zuerst Ihre E-Mail-Adresse ein',
+        'Password reset link sent to ': 'Link zum Zurücksetzen des Passworts gesendet an ',
+        'Email / Username': 'E-Mail / Benutzername',
+        'Enter your email': 'Geben Sie Ihre E-Mail ein',
+        'Password': 'Passwort',
+        'Enter your password': 'Geben Sie Ihr Passwort ein',
+        'Confirm Password': 'Kennwort bestätigen',
+        'Confirm your password': 'Bestätigen Sie Ihr Passwort',
+        'Remember me': 'Angemeldet bleiben',
+        'Forgot Password?': 'Passwort vergessen?',
+        'I agree to the ': 'Ich stimme den ',
+        'Terms & Conditions': 'Allgemeinen Geschäftsbedingungen zu',
+        'Logging in...': 'Einloggen...',
+        'Creating account...': 'Konto wird erstellt...',
+        'Register Now': 'Jetzt registrieren',
+        'Don\'t have an account? ': 'Haben Sie noch kein Konto? ',
+        'Already have an account? ': 'Haben Sie bereits ein Konto? ',
+      },
+      es: {
+        'Passwords do not match': 'Las contraseñas no coinciden',
+        'Password must be at least 6 characters': 'La contraseña debe tener al menos 6 caracteres',
+        'Successfully logged in! Welcome back.': '¡Inicio de sesión correcto! Bienvenido de nuevo.',
+        'Account created! Welcome to bwin.': '¡Cuenta creada! Bienvenido a bwin.',
+        'Authentication failed. Please try again.': 'Error de autenticación. Por favor, inténtelo de nuevo.',
+        'Please enter your email first': 'Por favor, introduzca su correo primero',
+        'Password reset link sent to ': 'Enlace de restablecimiento enviado a ',
+        'Email / Username': 'Correo / Usuario',
+        'Enter your email': 'Introduzca su correo electrónico',
+        'Password': 'Contraseña',
+        'Enter your password': 'Introduzca su contraseña',
+        'Confirm Password': 'Confirmar Contraseña',
+        'Confirm your password': 'Confirme su contraseña',
+        'Remember me': 'Recordarme',
+        'Forgot Password?': '¿Olvidó su contraseña?',
+        'I agree to the ': 'Acepto los ',
+        'Terms & Conditions': 'Términos y Condiciones',
+        'Logging in...': 'Iniciando sesión...',
+        'Creating account...': 'Creando cuenta...',
+        'Register Now': 'Registrarse Ahora',
+        'Don\'t have an account? ': '¿No tiene una cuenta? ',
+        'Already have an account? ': '¿Ya tiene una cuenta? ',
+      }
+    };
+
+    return dicts[language]?.[key] || key;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
 
     if (activeTab === 'register' && password !== confirmPassword) {
-      setFormError('Passwords do not match');
+      setFormError(getAuthText('Passwords do not match'));
       return;
     }
 
     if (password.length < 6) {
-      setFormError('Password must be at least 6 characters');
+      setFormError(getAuthText('Password must be at least 6 characters'));
       return;
     }
 
     setIsSubmitting(true);
 
     const trimmedEmail = email.trim();
-
-    // If real Supabase keys are configured, use real auth
     const hasRealClient = hasRealSupabaseConfig;
 
     try {
@@ -76,26 +152,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
           if (error) throw error;
         }
 
-        // Real auth succeeded — Supabase will fire onAuthStateChange in App.tsx
         setSuccessMessage(
           activeTab === 'login' 
-            ? 'Successfully logged in! Welcome back.' 
-            : 'Account created! Welcome to bwin.'
+            ? getAuthText('Successfully logged in! Welcome back.')
+            : getAuthText('Account created! Welcome to bwin.')
         );
 
         setTimeout(() => {
           setSuccessMessage(null);
-          // onSuccess kept for backward compat with any parent simulation
           if (onSuccess) onSuccess(trimmedEmail, activeTab === 'register');
           onClose();
         }, 1400);
       } else {
-        // Fallback simulation (no Supabase keys yet)
+        // Fallback simulation
         setTimeout(() => {
           setIsSubmitting(false);
           const message = activeTab === 'login' 
-            ? 'Successfully logged in! Welcome back.' 
-            : 'Account created! Welcome to bwin.';
+            ? getAuthText('Successfully logged in! Welcome back.')
+            : getAuthText('Account created! Welcome to bwin.');
           setSuccessMessage(message);
           
           setTimeout(() => {
@@ -107,12 +181,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
       }
     } catch (err: unknown) {
       setIsSubmitting(false);
-      setFormError(err instanceof Error ? err.message : 'Authentication failed. Please try again.');
+      setFormError(err instanceof Error ? err.message : getAuthText('Authentication failed. Please try again.'));
     } finally {
-      // only turn off submitting in the error path or simulation
-      if (!hasRealClient) {
-        // simulation already handled inside
-      } else {
+      if (hasRealClient) {
         setIsSubmitting(false);
       }
     }
@@ -120,11 +191,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
 
   const handleForgotPassword = () => {
     if (!email) {
-      setFormError('Please enter your email first');
+      setFormError(getAuthText('Please enter your email first'));
       return;
     }
     setFormError(null);
-    setSuccessMessage(`Password reset link sent to ${email}`);
+    setSuccessMessage(`${getAuthText('Password reset link sent to ')}${email}`);
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
@@ -149,13 +220,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
             className={`auth-tab ${activeTab === 'login' ? 'active' : ''}`}
             onClick={() => { setActiveTab('login'); setFormError(null); }}
           >
-            Log In
+            {t('Log In', language)}
           </button>
           <button 
             className={`auth-tab ${activeTab === 'register' ? 'active' : ''}`}
             onClick={() => { setActiveTab('register'); setFormError(null); }}
           >
-            Register
+            {t('Register', language)}
           </button>
         </div>
 
@@ -167,11 +238,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="auth-email">Email / Username</label>
+            <label htmlFor="auth-email">{getAuthText('Email / Username')}</label>
             <input 
               id="auth-email"
               type="text" 
-              placeholder="Enter your email" 
+              placeholder={getAuthText('Enter your email')} 
               required 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -180,12 +251,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
           </div>
 
           <div className="form-group">
-            <label htmlFor="auth-password">Password</label>
+            <label htmlFor="auth-password">{getAuthText('Password')}</label>
             <div className="password-wrapper">
               <input 
                 id="auth-password"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password" 
+                placeholder={getAuthText('Enter your password')} 
                 required 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -204,12 +275,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
 
           {activeTab === 'register' && (
             <div className="form-group">
-              <label htmlFor="auth-confirm-password">Confirm Password</label>
+              <label htmlFor="auth-confirm-password">{getAuthText('Confirm Password')}</label>
               <div className="password-wrapper">
                 <input 
                   id="auth-confirm-password"
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="Confirm your password" 
+                  placeholder={getAuthText('Confirm your password')} 
                   required 
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -235,14 +306,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
                   checked={rememberMe} 
                   onChange={(e) => setRememberMe(e.target.checked)} 
                 />
-                <span>Remember me</span>
+                <span>{getAuthText('Remember me')}</span>
               </label>
               <button 
                 type="button" 
                 className="forgot-password" 
                 onClick={handleForgotPassword}
               >
-                Forgot Password?
+                {getAuthText('Forgot Password?')}
               </button>
             </div>
           )}
@@ -251,7 +322,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
             <div className="form-options">
               <label className="remember-me">
                 <input type="checkbox" required />
-                <span>I agree to the <a href="#" onClick={(e) => e.preventDefault()}>Terms & Conditions</a></span>
+                <span>
+                  {getAuthText('I agree to the ')}
+                  <a href="#" onClick={(e) => e.preventDefault()}>{getAuthText('Terms & Conditions')}</a>
+                </span>
               </label>
             </div>
           )}
@@ -262,16 +336,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
             disabled={isSubmitting}
           >
             {isSubmitting 
-              ? (activeTab === 'login' ? 'Logging in...' : 'Creating account...') 
-              : (activeTab === 'login' ? 'Log In' : 'Register Now')}
+              ? (activeTab === 'login' ? getAuthText('Logging in...') : getAuthText('Creating account...')) 
+              : (activeTab === 'login' ? t('Log In', language) : getAuthText('Register Now'))}
           </button>
         </form>
 
         <div className="auth-footer">
           {activeTab === 'login' ? (
-            <p>Don't have an account? <button type="button" className="auth-switch" onClick={() => setActiveTab('register')}>Register Now</button></p>
+            <p>
+              {getAuthText('Don\'t have an account? ')}
+              <button type="button" className="auth-switch" onClick={() => setActiveTab('register')}>{getAuthText('Register Now')}</button>
+            </p>
           ) : (
-            <p>Already have an account? <button type="button" className="auth-switch" onClick={() => setActiveTab('login')}>Log In</button></p>
+            <p>
+              {getAuthText('Already have an account? ')}
+              <button type="button" className="auth-switch" onClick={() => setActiveTab('login')}>{t('Log In', language)}</button>
+            </p>
           )}
         </div>
       </div>
