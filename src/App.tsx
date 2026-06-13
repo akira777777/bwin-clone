@@ -843,6 +843,7 @@ function App() {
             isOpen={isWelcomePopupOpen} 
             onClose={() => setIsWelcomePopupOpen(false)}
             openRegister={() => openAuthModal('register')}
+            language={language}
           />
         )}
       </Suspense>
