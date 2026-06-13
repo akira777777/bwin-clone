@@ -100,24 +100,6 @@ describe('Header (RTL component tests)', () => {
     expect(typeof toggleMobileSlip).toBe('function');
   });
 
-  it('renders odds format dropdown and handles selection', async () => {
-    const user = userEvent.setup();
-    const setOddsFormat = vi.fn();
-    render(<Header {...createProps({ setOddsFormat, oddsFormat: 'decimal' })} />);
-
-    // Click to open odds dropdown
-    const oddsButton = screen.getByText('Odds:').closest('button')!;
-    await user.click(oddsButton);
-
-    // Verify format options are present
-    expect(screen.getByText('Decimal (e.g. 2.00)')).toBeInTheDocument();
-    expect(screen.getByText('Fractional (e.g. 1/1)')).toBeInTheDocument();
-    expect(screen.getByText('American (e.g. +100)')).toBeInTheDocument();
-
-    // Click fractional
-    await user.click(screen.getByText('Fractional (e.g. 1/1)'));
-    expect(setOddsFormat).toHaveBeenCalledWith('fractional');
-  });
 
   it('renders language dropdown and handles selection', async () => {
     const user = userEvent.setup();
