@@ -8,6 +8,7 @@ import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
 import { toggleBet, generateBetId } from './utils/betting';
 import { supabase } from './lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 // Lazy loading modals to reduce initial bundle size
 const AuthModal = React.lazy(() => import('./components/AuthModal'));
@@ -48,7 +49,7 @@ function App() {
   const [isWelcomePopupOpen, setIsWelcomePopupOpen] = useState(false);
 
   // Real Supabase auth state (replaces previous fake isLoggedIn + userEmail)
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const isLoggedIn = !!user;
   const userEmail = user?.email ?? null;
 
@@ -163,7 +164,7 @@ function App() {
     }
 
     if (data) {
-      const mapped: PlacedBet[] = data.map((row: any) => ({
+      const mapped: PlacedBet[] = data.map((row) => ({
         id: row.id,
         date: new Date(row.created_at).toLocaleString(),
         stake: Number(row.stake),
@@ -258,9 +259,10 @@ function App() {
     };
   }, [loadPlacedBets]);
 
-  const handleAuthSuccess = useCallback((_email: string) => {
+  const handleAuthSuccess = useCallback((/* email: string */) => {
     // This is now mostly a no-op because onAuthStateChange will fire and set the real user.
     // Kept for the simulation fallback path when no Supabase keys are configured.
+    // The param is required by the AuthModal onSuccess prop but unused here.
   }, []);
 
   const handleLogout = useCallback(async () => {
