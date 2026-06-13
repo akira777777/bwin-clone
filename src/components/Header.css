@@ -216,3 +216,454 @@
     font-size: 14px;
   }
 }
+
+/* Header Dropdowns general container */
+.header-dropdown-container {
+  position: relative;
+}
+
+.header-dropdown-trigger {
+  background: transparent;
+  color: var(--bwin-white);
+  border: 1px solid var(--bwin-border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  transition: all 0.2s;
+}
+
+.header-dropdown-trigger:hover {
+  background-color: var(--bwin-darker);
+  border-color: var(--bwin-yellow);
+}
+
+.header-dropdown-trigger .chevron-icon {
+  color: var(--bwin-gray-text);
+  transition: transform 0.2s;
+}
+
+.header-dropdown-trigger:focus .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.highlight-text {
+  color: var(--bwin-yellow);
+  font-weight: 600;
+}
+
+/* Base Dropdown Menu */
+.header-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: #1a1a1a;
+  border: 1px solid var(--bwin-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  min-width: 160px;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-dropdown-menu.odds-menu,
+.header-dropdown-menu.lang-menu {
+  width: 180px;
+}
+
+.header-dropdown-menu .menu-item {
+  padding: 10px 16px;
+  color: var(--bwin-white);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.15s;
+}
+
+.header-dropdown-menu .menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--bwin-yellow);
+}
+
+.header-dropdown-menu .menu-item.active {
+  background-color: rgba(243, 176, 0, 0.1);
+  color: var(--bwin-yellow);
+  font-weight: 600;
+  border-left: 3px solid var(--bwin-yellow);
+  padding-left: 13px;
+}
+
+/* Icon Trigger Buttons (Bell) */
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--bwin-border);
+  color: var(--bwin-white);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.icon-btn:hover {
+  border-color: var(--bwin-yellow);
+  background-color: var(--bwin-darker);
+  color: var(--bwin-yellow);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #ff3b30;
+  color: #fff;
+  font-size: 9px;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 1px 5px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--bwin-black);
+}
+
+/* Notifications Menu Specific */
+.notifications-menu {
+  width: 320px;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--bwin-border);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--bwin-white);
+  background-color: #222;
+}
+
+.notifications-header .clear-btn {
+  background: none;
+  border: none;
+  color: var(--bwin-yellow);
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.notifications-header .clear-btn:hover {
+  text-decoration: underline;
+}
+
+.notifications-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notifications-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--bwin-gray-text);
+  font-size: 13px;
+}
+
+.notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.15s;
+  position: relative;
+}
+
+.notification-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.notification-item.unread {
+  background-color: rgba(243, 176, 0, 0.03);
+}
+
+.notification-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-msg {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--bwin-white);
+  margin: 0 0 4px 0;
+}
+
+.notification-time {
+  font-size: 10px;
+  color: var(--bwin-gray-text);
+}
+
+.unread-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--bwin-yellow);
+  border-radius: 50%;
+  position: absolute;
+  right: 12px;
+  top: 18px;
+}
+
+/* User Profile Trigger and Menu */
+.profile-trigger-btn {
+  background: transparent;
+  border: 1px solid var(--bwin-border);
+  color: var(--bwin-white);
+  height: 32px;
+  padding: 0 10px 0 6px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.profile-trigger-btn:hover {
+  border-color: var(--bwin-yellow);
+  background-color: var(--bwin-darker);
+}
+
+.profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bwin-yellow) 0%, #d89600 100%);
+  color: var(--bwin-black);
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-name {
+  font-size: 12px;
+  font-weight: 600;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* User Profile Dropdown Menu Card */
+.profile-menu {
+  width: 280px;
+  padding: 16px;
+}
+
+.profile-menu-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.profile-large-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bwin-yellow) 0%, #d89600 100%);
+  color: var(--bwin-black);
+  font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(243, 176, 0, 0.4);
+}
+
+.profile-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-email {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bwin-white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vip-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.vip-badge {
+  font-size: 10px;
+  color: var(--bwin-yellow);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* VIP Progress Area */
+.vip-progress-section {
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.vip-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  font-weight: bold;
+  color: var(--bwin-gray-text);
+  margin-bottom: 4px;
+}
+
+.vip-progress-bar-wrapper {
+  height: 6px;
+  background-color: #333;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.vip-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #d89600 0%, var(--bwin-yellow) 100%);
+  border-radius: 3px;
+}
+
+.vip-progress-subtext {
+  font-size: 10px;
+  color: var(--bwin-gray-text);
+  display: block;
+}
+
+/* Balance Details breakdown */
+.balance-breakdown {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 0;
+  margin-bottom: 16px;
+}
+
+.balance-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: var(--bwin-gray-text);
+}
+
+.balance-row:last-child {
+  margin-bottom: 0;
+}
+
+.balance-row .amount {
+  color: var(--bwin-white);
+  font-weight: bold;
+}
+
+.balance-row .amount.bonus-amount {
+  color: #30d158;
+}
+
+.balance-row .amount.pending-amount {
+  color: var(--bwin-yellow);
+}
+
+/* Action Links list */
+.profile-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-action-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.menu-action-btn.deposit-btn {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  border: none;
+}
+
+.menu-action-btn.deposit-btn:hover {
+  background-color: var(--bwin-yellow-hover);
+  transform: translateY(-1px);
+}
+
+.menu-action-btn.logout-btn {
+  background-color: transparent;
+  color: #ff453a;
+  border: 1px solid rgba(255, 69, 58, 0.3);
+}
+
+.menu-action-btn.logout-btn:hover {
+  background-color: rgba(255, 69, 58, 0.1);
+  border-color: #ff453a;
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .header-dropdown-container:not(.profile-container) {
+    display: none; /* Hide flags and odds selector on small mobile */
+  }
+
+  .bell-btn {
+    display: none;
+  }
+}
+

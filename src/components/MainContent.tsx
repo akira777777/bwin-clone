@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Key, TrendingUp, Trophy, Calendar, User } from 'lucide-react';
 import type { Bet, Category, Sport } from '../App';
 import { fetchLiveMatches } from '../services/api';
+import { formatOdds } from '../utils/betting';
+import type { OddsFormat } from '../utils/betting';
 
 import MatchDetails from './MatchDetails';
 import MatchRow from './MatchRow';
@@ -25,6 +27,7 @@ interface MainContentProps {
   matches: MatchData[];
   setMatches: React.Dispatch<React.SetStateAction<MatchData[]>>;
   searchQuery?: string;
+  oddsFormat: OddsFormat;
 }
 
 const LEAGUE_FLAGS: Record<string, string> = {
@@ -48,7 +51,7 @@ const LEAGUE_FLAGS: Record<string, string> = {
 const MainContent: React.FC<MainContentProps> = ({ 
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
-  matches, setMatches, searchQuery = ''
+  matches, setMatches, searchQuery = '', oddsFormat
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');
@@ -237,6 +240,7 @@ const MainContent: React.FC<MainContentProps> = ({
           onBack={() => setSelectedMatchId(null)} 
           betSlip={betSlip}
           addBet={addBet}
+          oddsFormat={oddsFormat}
         />
       </main>
     );
@@ -369,6 +373,7 @@ const MainContent: React.FC<MainContentProps> = ({
                     betSlip={betSlip} 
                     addBet={addBet} 
                     onSelectMatch={setSelectedMatchId} 
+                    oddsFormat={oddsFormat}
                   />
                 ))}
               </div>
@@ -389,6 +394,7 @@ const MainContent: React.FC<MainContentProps> = ({
                     betSlip={betSlip} 
                     addBet={addBet} 
                     onSelectMatch={setSelectedMatchId} 
+                    oddsFormat={oddsFormat}
                   />
                 ))}
               </div>
@@ -536,7 +542,7 @@ const MainContent: React.FC<MainContentProps> = ({
                           onClick={() => handleOutrightBetClick(outright.title, option.selection, option.odds, option.id)}
                         >
                           <span className="option-name">{option.selection}</span>
-                          <span className="option-odds">{option.odds.toFixed(2)}</span>
+                          <span className="option-odds">{formatOdds(option.odds, oddsFormat)}</span>
                         </button>
                       );
                     })}

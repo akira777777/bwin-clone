@@ -93,13 +93,81 @@ function App() {
   const isLoggedIn = !!user;
   const userEmail = user?.email ?? null;
 
+  // New features state
+  const [oddsFormat, setOddsFormat] = useState<OddsFormat>(() => {
+    return (localStorage.getItem('bwin_odds_format') as OddsFormat) || 'decimal';
+  });
+  const [language, setLanguage] = useState<string>(() => {
+    return localStorage.getItem('bwin_language') || 'en';
+  });
+  const [notifications, setNotifications] = useState<AppNotification[]>(() => {
+    const stored = localStorage.getItem('bwin_notifications');
+    if (stored) {
+      try { return JSON.parse(stored); } catch (e) {}
+    }
+    return [
+      {
+        id: 'welcome',
+        message: '👋 Welcome to bwin! Get your first bet insured up to $50.',
+        time: new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+        read: false,
+        type: 'system'
+      }
+    ];
+  });
+
+  // Sync to localStorage
+  useEffect(() => {
+    localStorage.setItem('bwin_odds_format', oddsFormat);
+  }, [oddsFormat]);
+
+  useEffect(() => {
+    localStorage.setItem('bwin_language', language);
+  }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem('bwin_notifications', JSON.stringify(notifications));
+  }, [notifications]);
+
+  const markNotificationsAsRead = useCallback(() => {
+    setNotifications(prev => prev.map(n => n.read ? n : { ...n, read: true }));
+  }, []);
+
+  const clearNotifications = useCallback(() => {
+    setNotifications([]);
+  }, []);
+
   const [matches, setMatches] = useState<MatchData[]>(initialMatches);
   const [searchQuery, setSearchQuery] = useState('');
   const [balance, setBalance] = useState<number>(1000);
   const [globalToast, setGlobalToast] = useState<string | null>(null);
 
-  const triggerGlobalToast = useCallback((message: string) => {
+  const triggerGlobalToast = useCallback((message: string, type?: AppNotification['type']) => {
     setGlobalToast(message);
+    
+    // Determine type from message if not provided
+    let notifType: AppNotification['type'] = type || 'system';
+    if (message.includes('GOAL') || message.includes('scores') || message.includes('score')) {
+      notifType = 'goal';
+    } else if (message.includes('WON') || message.includes('won') || message.includes('cashed out') || message.includes('Cashed out')) {
+      notifType = 'bet_won';
+    } else if (message.includes('Lost') || message.includes('lost')) {
+      notifType = 'bet_lost';
+    } else if (message.includes('Deposit successful') || message.includes('added to your balance')) {
+      notifType = 'deposit';
+    }
+
+    setNotifications(prev => [
+      {
+        id: Math.random().toString(36).substring(2, 11),
+        message,
+        time: new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+        read: false,
+        type: notifType
+      },
+      ...prev.slice(0, 49)
+    ]);
+
     const timer = setTimeout(() => {
       setGlobalToast(prev => prev === message ? null : prev);
     }, 4500);
@@ -671,6 +739,13 @@ function App() {
         onLogout={handleLogout}
         balance={balance}
         onDeposit={handleDeposit}
+        oddsFormat={oddsFormat}
+        setOddsFormat={setOddsFormat}
+        language={language}
+        setLanguage={setLanguage}
+        notifications={notifications}
+        markNotificationsAsRead={markNotificationsAsRead}
+        clearNotifications={clearNotifications}
       />
 
       {selfExclusionEndTime > Date.now() && (
@@ -718,6 +793,7 @@ function App() {
             matches={matches}
             setMatches={setMatches}
             searchQuery={searchQuery}
+            oddsFormat={oddsFormat}
           />
         </div>
 
@@ -734,6 +810,7 @@ function App() {
             balance={balance}
             onCashOut={handleCashOut}
             isSelfExcluded={selfExclusionEndTime > Date.now()}
+            oddsFormat={oddsFormat}
           />
         </div>
       </div>

@@ -2,15 +2,18 @@ import React from 'react';
 import { PlayCircle, Clock } from 'lucide-react';
 import type { MatchData } from '../data/matches';
 import type { Bet } from '../App';
+import { formatOdds } from '../utils/betting';
+import type { OddsFormat } from '../utils/betting';
 
 interface MatchRowProps {
   match: MatchData;
   betSlip: Bet[];
   addBet: (bet: Bet) => void;
   onSelectMatch: (id: string) => void;
+  oddsFormat: OddsFormat;
 }
 
-const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMatch }) => {
+const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMatch, oddsFormat }) => {
   const isBetSelected = (selection: string) => {
     return betSlip.some(b => b.id === `${match.id}-${selection}`);
   };
@@ -46,7 +49,7 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
         onClick={(e) => handleOddsClick(e, selection, val)}
       >
         <span className="odds-label">{label}</span>
-        <span className="odds-value">{val.toFixed(2)}</span>
+        <span className="odds-value">{formatOdds(val, oddsFormat)}</span>
       </button>
     );
   };
@@ -85,6 +88,5 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
 // Ensure it only re-renders if match data changes or betSlip changes specifically for this match
 // Since checking betSlip length is easy, we might just pass `isSelected` individually or compare carefully
 export default React.memo(MatchRow, (prev, next) => {
-  // Simple check: if match is identical and betSlip length is same (assuming no edits without adding/removing)
-  return prev.match === next.match && prev.betSlip === next.betSlip;
+  return prev.match === next.match && prev.betSlip === next.betSlip && prev.oddsFormat === next.oddsFormat;
 });

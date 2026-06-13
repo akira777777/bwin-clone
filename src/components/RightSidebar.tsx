@@ -3,7 +3,8 @@ import { Trash2, X, CheckCircle2, AlertTriangle, TrendingUp, TrendingDown } from
 import type { Bet, PlacedBet } from '../App';
 import type { MatchData } from '../data/matches';
 import { leagueOutrights } from '../data/leaguesData';
-import { getCombinations, checkIsSelectionWon } from '../utils/betting';
+import { getCombinations, checkIsSelectionWon, formatOdds } from '../utils/betting';
+import type { OddsFormat } from '../utils/betting';
 import './RightSidebar.css';
 
 interface RightSidebarProps {
@@ -18,6 +19,7 @@ interface RightSidebarProps {
   balance?: number;
   onCashOut?: (id: string, amount: number) => void;
   isSelfExcluded?: boolean;
+  oddsFormat?: OddsFormat;
 }
 
 // Lookup current live odds
@@ -66,7 +68,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   matches, 
   balance = 1000, 
   onCashOut = () => {},
-  isSelfExcluded = false
+  isSelfExcluded = false,
+  oddsFormat = 'decimal'
 }) => {
   const [activeTab, setActiveTab] = useState<'betslip' | 'mybets'>('betslip');
   const [betMode, setBetMode] = useState<'single' | 'multi' | 'system'>('multi');
@@ -377,11 +380,11 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                         <span className="bet-selection">{bet.selection}</span>
                         <div className="odds-display-box">
                           {hasBetChanged && (
-                            <span className="old-odds">{bet.odds.toFixed(2)}</span>
+                            <span className="old-odds">{formatOdds(bet.odds, oddsFormat)}</span>
                           )}
                           <span className={`bet-odds ${hasBetChanged ? (status.direction === 'up' ? 'up' : 'down') : ''}`}>
                             {hasBetChanged && (status.direction === 'up' ? <TrendingUp size={12} /> : <TrendingDown size={12} />)}
-                            {(status?.current ?? bet.odds).toFixed(2)}
+                            {formatOdds(status?.current ?? bet.odds, oddsFormat)}
                           </span>
                         </div>
                       </div>
@@ -430,7 +433,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     </div>
                     <div className="summary-row">
                       <span className="summary-label">Total Odds:</span>
-                      <span className="summary-value">{totalMultiOdds.toFixed(2)}</span>
+                      <span className="summary-value">{formatOdds(totalMultiOdds, oddsFormat)}</span>
                     </div>
                     <div className="summary-row">
                       <span className="summary-label">Possible Win:</span>
@@ -563,7 +566,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                             <span className="pb-selection">{b.selection}</span>
                             <span className="pb-match-title">{b.match}</span>
                           </div>
-                          <span className="pb-odds">{b.odds.toFixed(2)}</span>
+                          <span className="pb-odds">{formatOdds(b.odds, oddsFormat)}</span>
                         </div>
                       ))}
                     </div>

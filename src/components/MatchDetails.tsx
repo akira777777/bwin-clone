@@ -1,6 +1,8 @@
 import React from 'react';
 import type { Bet } from '../App';
 import type { MatchData } from '../data/matches';
+import { formatOdds } from '../utils/betting';
+import type { OddsFormat } from '../utils/betting';
 import './MatchDetails.css';
 
 interface MatchDetailsProps {
@@ -8,9 +10,10 @@ interface MatchDetailsProps {
   onBack: () => void;
   betSlip: Bet[];
   addBet: (bet: Bet) => void;
+  oddsFormat: OddsFormat;
 }
 
-const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, addBet }) => {
+const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, addBet, oddsFormat }) => {
   const isBetSelected = (selection: string) => {
     return betSlip.some(b => b.id === `${match.id}-${selection}`);
   };
@@ -56,7 +59,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onBack, betSlip, add
         onClick={() => handleOddsClick(selection, val, marketName)}
       >
         <span className="odds-label">{label}</span>
-        <span className="odds-value">{val.toFixed(2)}</span>
+        <span className="odds-value">{formatOdds(val, oddsFormat)}</span>
       </button>
     );
   };
