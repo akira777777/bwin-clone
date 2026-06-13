@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import Header from './Header';
 import type { Category } from '../App';
+import type { OddsFormat } from '../utils/betting';
 
 const createProps = (overrides: Partial<Parameters<typeof Header>[0]> = {}) => ({
   activeCategory: 'Sports' as Category,
@@ -15,6 +16,13 @@ const createProps = (overrides: Partial<Parameters<typeof Header>[0]> = {}) => (
   isLoggedIn: false,
   userEmail: null,
   onLogout: vi.fn(),
+  oddsFormat: 'decimal' as OddsFormat,
+  setOddsFormat: vi.fn(),
+  language: 'en',
+  setLanguage: vi.fn(),
+  notifications: [],
+  markNotificationsAsRead: vi.fn(),
+  clearNotifications: vi.fn(),
   ...overrides,
 });
 
