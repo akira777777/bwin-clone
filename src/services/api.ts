@@ -125,7 +125,7 @@ export const transformToMatchData = (apiData: OddsApiMatch[], scoresMap: Map<str
       });
     }
 
-    let sport = '';
+    let sport: MatchData['sport'] | '' = '';
     // Map API keys to our internal Sport strings
     if (item.sport_key.includes('soccer') || item.sport_key.includes('football')) sport = 'Football';
     else if (item.sport_key.includes('basketball')) sport = 'Basketball';

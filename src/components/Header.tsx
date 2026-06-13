@@ -13,8 +13,8 @@ interface HeaderProps {
   isLoggedIn?: boolean;
   userEmail?: string | null;
   onLogout?: () => void;
-  balance: number;
-  onDeposit: (amount: number) => void;
+  balance?: number;
+  onDeposit?: (amount: number) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -27,8 +27,8 @@ const Header: React.FC<HeaderProps> = ({
   isLoggedIn = false,
   userEmail,
   onLogout,
-  balance,
-  onDeposit
+  balance = 1000,
+  onDeposit = () => {}
 }) => {
   const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
 

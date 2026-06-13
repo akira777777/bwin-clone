@@ -6,7 +6,7 @@ import RightSidebar from './components/RightSidebar';
 import Footer from './components/Footer';
 import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
-import { toggleBet, generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
+import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
 import { supabase, hasRealSupabaseConfig } from './lib/supabase';
 import type { User } from '@supabase/supabase-js';
 import './App.css';
@@ -53,6 +53,24 @@ function App() {
   const [authType, setAuthType] = useState<'login' | 'register'>('login');
   
   const [isWelcomePopupOpen, setIsWelcomePopupOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSlipOpen, setIsMobileSlipOpen] = useState(false);
+
+  const addBet = useCallback((bet: Bet) => {
+    setBetSlip(prev => {
+      const exists = prev.find(b => b.id === bet.id);
+      if (exists) return prev.filter(b => b.id !== bet.id); // Toggle off if already added
+      return [...prev, bet];
+    });
+  }, []);
+
+  const removeBet = useCallback((id: string) => {
+    setBetSlip(prev => prev.filter(b => b.id !== id));
+  }, []);
+
+  const clearBetSlip = useCallback(() => {
+    setBetSlip([]);
+  }, []);
 
   // Real Supabase auth state (replaces previous fake isLoggedIn + userEmail)
   const [user, setUser] = useState<User | null>(null);
@@ -253,7 +271,7 @@ function App() {
 
         // Odds fluctuations
         let newOdds = { ...match.odds };
-        let newTrend = { ...match.trend };
+        let newTrend = match.trend ? { ...match.trend } : { home: null, draw: null, away: null } as { home: Trend; draw: Trend; away: Trend };
 
         if (!isFinished && Math.random() < 0.4) {
           const changeOdds = (oldOdds: number, isWinnerTeam: boolean): { val: number, trend: Trend } => {
@@ -427,6 +445,41 @@ function App() {
       }
     }
   }, [matches, placedBets, balance, updateBalance, user, triggerGlobalToast]);
+
+  // Load placed bets from Supabase for the current user (called on login and after place)
+  // Defined before handlePlaceBet to avoid TDZ and allow inclusion in its deps.
+  const loadPlacedBets = useCallback(async () => {
+    const hasRealClient = hasRealSupabaseConfig;
+
+    if (!user || !hasRealClient) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('placed_bets')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Failed to load placed bets:', error);
+        return;
+      }
+
+      if (data) {
+        const mapped: PlacedBet[] = data.map((row) => ({
+          id: row.id,
+          date: new Date(row.created_at).toLocaleString(),
+          stake: Number(row.stake),
+          potentialReturn: Number(row.potential_return),
+          type: row.type,
+          status: row.status,
+          bets: row.bets as Bet[],
+        }));
+        setPlacedBets(mapped);
+      }
+    } catch (e) {
+      console.error('Failed to load placed bets from Supabase:', e);
+    }
+  }, [user]);
 
   const handlePlaceBet = useCallback(async (stake: number, potentialReturn: number, type: 'Single' | 'Multi' | 'System' = 'Multi') => {
     if (betSlip.length === 0 || stake <= 0 || balance < stake) return;
