@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, ShoppingCart, User, LogOut, Bell, Globe, ChevronDown, Award, DollarSign } from 'lucide-react';
+import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign } from 'lucide-react';
 import type { Category, AppNotification } from '../App';
 import type { OddsFormat } from '../utils/betting';
 import './Header.css';

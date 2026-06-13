@@ -8,7 +8,7 @@ import FooterModal from './components/FooterModal';
 import LiveChatWidget from './components/LiveChatWidget';
 import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
-import { generateBetId, getCombinations, checkIsSelectionWon, formatOdds } from './utils/betting';
+import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
 import type { OddsFormat } from './utils/betting';
 import { supabase, hasRealSupabaseConfig } from './lib/supabase';
 import type { User } from '@supabase/supabase-js';
