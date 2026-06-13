@@ -754,6 +754,7 @@ function App() {
         notifications={notifications}
         markNotificationsAsRead={markNotificationsAsRead}
         clearNotifications={clearNotifications}
+        onLogoClick={handleLogoClick}
       />
 
       {selfExclusionEndTime > Date.now() && (
@@ -784,6 +785,7 @@ function App() {
             matches={matches}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            language={language}
           />
         </div>
         
@@ -802,6 +804,7 @@ function App() {
             setMatches={setMatches}
             searchQuery={searchQuery}
             oddsFormat={oddsFormat}
+            language={language}
           />
         </div>
 
@@ -819,6 +822,7 @@ function App() {
             onCashOut={handleCashOut}
             isSelfExcluded={selfExclusionEndTime > Date.now()}
             oddsFormat={oddsFormat}
+            language={language}
           />
         </div>
       </div>
@@ -830,6 +834,7 @@ function App() {
             onClose={() => setIsAuthModalOpen(false)} 
             type={authType} 
             onSuccess={handleAuthSuccess}
+            language={language}
           />
         )}
 
@@ -845,6 +850,7 @@ function App() {
       <Footer 
         setActiveCategory={handleCategoryChange}
         setActiveFooterTab={setActiveFooterTab}
+        language={language}
       />
 
       <FooterModal 
@@ -858,6 +864,7 @@ function App() {
         setSelfExclusionEndTime={setSelfExclusionEndTime}
         onStartLiveChat={() => setIsLiveChatOpen(true)}
         triggerToast={triggerGlobalToast}
+        language={language}
       />
 
       <LiveChatWidget 
@@ -866,6 +873,7 @@ function App() {
         balance={balance}
         placedBetsCount={placedBets.length}
         selfExclusionEndTime={selfExclusionEndTime}
+        language={language}
       />
       
       {/* Mobile Overlay */}
