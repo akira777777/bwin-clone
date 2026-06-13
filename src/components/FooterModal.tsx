@@ -519,9 +519,9 @@ const FooterModal: React.FC<FooterModalProps> = ({
                 <h4>⚠️ {language === 'ru' ? 'Временное самоисключение аккаунта' : language === 'de' ? 'Temporärer Selbstausschluss des Kontos' : language === 'es' ? 'Autoexclusión Temporal de la Cuenta' : 'Temporary Account Self-Exclusion'}</h4>
                 <p className="rg-sub-desc">{language === 'ru' ? 'Заблокируйте свой аккаунт немедленно. Ставки будут полностью заблокированы.' : language === 'de' ? 'Sperren Sie Ihr Konto sofort. Platzieren von Wetten wird während dieser Zeit deaktiviert.' : language === 'es' ? 'Bloquee su cuenta de inmediato. Las apuestas se desactivarán por completo durante este tiempo.' : 'Lock your account immediately. Placing bets will be entirely disabled during this time.'}</p>
                 
-                {selfExclusionEndTime > Date.now() ? (
+                {isSelfExcluded ? (
                   <div className="exclusion-active-indicator">
-                    🔒 {language === 'ru' ? 'Аккаунт заблокирован. Исключение истекает через:' : language === 'de' ? 'Konto gesperrt. Ausschluss läuft ab in:' : language === 'es' ? 'Cuenta bloqueada. La exclusión vence en:' : 'Account Locked. Exclusion expires in:'} <span>{formatExclusionTimeLeft()}</span>
+                    🔒 {language === 'ru' ? 'Аккаунт заблокирован. Исключение истекает через:' : language === 'de' ? 'Konto gesperrt. Ausschluss läuft ab in:' : language === 'es' ? 'Cuenta bloqueada. La exclusión vence en:' : 'Account Locked. Exclusion expires in:'} <span>{exclusionTimeLeftText}</span>
                   </div>
                 ) : (
                   <div className="exclusion-inputs">
