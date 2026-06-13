@@ -4,6 +4,7 @@ import type { Bet, Category, Sport } from '../App';
 import { fetchLiveMatches } from '../services/api';
 import { formatOdds } from '../utils/betting';
 import type { OddsFormat } from '../utils/betting';
+import { t } from '../utils/i18n';
 
 import MatchDetails from './MatchDetails';
 import MatchRow from './MatchRow';
@@ -28,6 +29,7 @@ interface MainContentProps {
   setMatches: React.Dispatch<React.SetStateAction<MatchData[]>>;
   searchQuery?: string;
   oddsFormat: OddsFormat;
+  language?: string;
 }
 
 const LEAGUE_FLAGS: Record<string, string> = {
@@ -51,7 +53,7 @@ const LEAGUE_FLAGS: Record<string, string> = {
 const MainContent: React.FC<MainContentProps> = ({ 
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
-  matches, setMatches, searchQuery = '', oddsFormat
+  matches, setMatches, searchQuery = '', oddsFormat, language = 'en'
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');

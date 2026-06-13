@@ -95,7 +95,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   balance = 1000, 
   onCashOut = () => {},
   isSelfExcluded = false,
-  oddsFormat = 'decimal'
+  oddsFormat = 'decimal',
+  language = 'en'
 }) => {
   const [activeTab, setActiveTab] = useState<'betslip' | 'mybets'>('betslip');
   const [betMode, setBetMode] = useState<'single' | 'multi' | 'system'>('multi');
@@ -310,8 +311,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
       {showSuccess && (
         <div className="bet-success-overlay">
           <CheckCircle2 size={48} color="var(--bwin-green)" className="success-icon" />
-          <h3>Bet Placed!</h3>
-          <p>Ticket registered. Good luck!</p>
+          <h3>{t('Bet Placed!', language)}</h3>
+          <p>{t('Ticket registered. Good luck!', language)}</p>
         </div>
       )}
 
@@ -328,13 +329,13 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           className={`sidebar-tab ${activeTab === 'betslip' ? 'active' : ''}`}
           onClick={() => setActiveTab('betslip')}
         >
-          Bet Slip {betSlip.length > 0 && <span className="tab-badge">{betSlip.length}</span>}
+          {t('Bet Slip', language)} {betSlip.length > 0 && <span className="tab-badge">{betSlip.length}</span>}
         </button>
         <button 
           className={`sidebar-tab ${activeTab === 'mybets' ? 'active' : ''}`}
           onClick={() => setActiveTab('mybets')}
         >
-          My Bets {placedBets.length > 0 && <span className="tab-badge">{placedBets.length}</span>}
+          {t('My Bets', language)} {placedBets.length > 0 && <span className="tab-badge">{placedBets.length}</span>}
         </button>
       </div>
 
@@ -347,37 +348,37 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 className={`mode-btn ${betMode === 'single' ? 'active' : ''}`}
                 onClick={() => setBetMode('single')}
               >
-                Single
+                {t('Single', language)}
               </button>
               <button 
                 className={`mode-btn ${betMode === 'multi' ? 'active' : ''}`}
                 onClick={() => setBetMode('multi')}
               >
-                Multi
+                {t('Multi', language)}
               </button>
               {isSystemAvailable && (
                 <button 
                   className={`mode-btn ${betMode === 'system' ? 'active' : ''}`}
                   onClick={() => setBetMode('system')}
                 >
-                  System
+                  {t('System', language)}
                 </button>
               )}
             </div>
           )}
 
           <div className="bet-slip-header">
-            <h2>{betMode === 'single' ? 'Single Bets' : betMode === 'system' ? 'System Accumulators' : 'Multi Accumulator'}</h2>
+            <h2>{betMode === 'single' ? t('Single Bets', language) : betMode === 'system' ? t('System Accumulators', language) : t('Multi Accumulator', language)}</h2>
             {betSlip.length > 0 && (
-              <button onClick={clearBetSlip} className="clear-all-btn">Clear All</button>
+              <button onClick={clearBetSlip} className="clear-all-btn">{t('Clear All', language)}</button>
             )}
           </div>
           
           <div className="bet-slip-content">
             {betSlip.length === 0 ? (
               <div className="empty-slip">
-                <p>Your bet slip is empty.</p>
-                <p style={{ fontSize: '12px', marginTop: '10px', color: 'var(--bwin-gray-text)' }}>Click on odds to add selections to your bet slip.</p>
+                <p>{t('Empty Slip', language)}</p>
+                <p style={{ fontSize: '12px', marginTop: '10px', color: 'var(--bwin-gray-text)' }}>{t('Click to add', language)}</p>
               </div>
             ) : (
               <div className="bet-items-container">
@@ -386,10 +387,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                   <div className="odds-changed-warning">
                     <div className="warning-text">
                       <AlertTriangle size={16} />
-                      <span>Odds have changed!</span>
+                      <span>{t('Odds have changed!', language)}</span>
                     </div>
                     <button className="accept-odds-btn" onClick={acceptOddsChanges}>
-                      Accept Changes
+                      {t('Accept Changes', language)}
                     </button>
                   </div>
                 )}
@@ -403,7 +404,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                         <Trash2 size={15} />
                       </button>
                       <div className="bet-item-header">
-                        <span className="bet-selection">{bet.selection}</span>
+                        <span className="bet-selection">{translateSelection(bet.selection, language)}</span>
                         <div className="odds-display-box">
                           {hasBetChanged && (
                             <span className="old-odds">{formatOdds(bet.odds, oddsFormat)}</span>
@@ -421,7 +422,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                         <div className="single-stake-container">
                           <input 
                             type="number"
-                            placeholder="Stake"
+                            placeholder={t('Stake', language)}
                             value={singleStakes[bet.id] || ''}
                             onChange={(e) => {
                               const val = e.target.value;
@@ -430,7 +431,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                             min="0"
                           />
                           <div className="single-return-preview">
-                            Return: <span>€{((parseFloat(singleStakes[bet.id]) || 0) * (status?.current ?? bet.odds)).toFixed(2)}</span>
+                            {t('Return', language)}: <span>€{((parseFloat(singleStakes[bet.id]) || 0) * (status?.current ?? bet.odds)).toFixed(2)}</span>
                           </div>
                         </div>
                       )}
@@ -448,7 +449,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 {betMode === 'multi' && (
                   <div className="footer-calculations">
                     <div className="bet-stake">
-                      <label>Total Stake (€):</label>
+                      <label>{t('Total Stake', language)} (€):</label>
                       <input 
                         type="number" 
                         value={multiStake} 
@@ -458,11 +459,11 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                       />
                     </div>
                     <div className="summary-row">
-                      <span className="summary-label">Total Odds:</span>
+                      <span className="summary-label">{t('Total Odds', language)}:</span>
                       <span className="summary-value">{formatOdds(totalMultiOdds, oddsFormat)}</span>
                     </div>
                     <div className="summary-row">
-                      <span className="summary-label">Possible Win:</span>
+                      <span className="summary-label">{t('Possible Win', language)}:</span>
                       <span className="summary-value highlight">€{multiPotentialReturn}</span>
                     </div>
                   </div>
@@ -472,11 +473,11 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 {betMode === 'single' && (
                   <div className="footer-calculations">
                     <div className="summary-row">
-                      <span className="summary-label">Total Stake:</span>
+                      <span className="summary-label">{t('Total Stake', language)}:</span>
                       <span className="summary-value">€{singleTotalStake.toFixed(2)}</span>
                     </div>
                     <div className="summary-row">
-                      <span className="summary-label">Possible Win:</span>
+                      <span className="summary-label">{t('Possible Win', language)}:</span>
                       <span className="summary-value highlight">€{singlePotentialReturn}</span>
                     </div>
                   </div>
@@ -486,7 +487,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 {betMode === 'system' && (
                   <div className="footer-calculations">
                     <div className="system-config-row">
-                      <label>System size:</label>
+                      <label>{language === 'ru' ? 'Размер системы' : language === 'de' ? 'Systemgröße' : language === 'es' ? 'Tamaño del sistema' : 'System size'}:</label>
                       <select 
                         value={systemSize}
                         onChange={(e) => setSystemSize(parseInt(e.target.value))}
@@ -500,7 +501,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     </div>
 
                     <div className="bet-stake">
-                      <label>Stake per bet (€):</label>
+                      <label>{t('Stake', language)} ({language === 'ru' ? 'на комбинацию' : 'per bet'}) (€):</label>
                       <input 
                         type="number" 
                         value={systemStake} 
@@ -510,15 +511,15 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                       />
                     </div>
                     <div className="summary-row">
-                      <span className="summary-label">Total Bets:</span>
+                      <span className="summary-label">{language === 'ru' ? 'Всего ставок' : language === 'de' ? 'Wetten Gesamt' : language === 'es' ? 'Apuestas Totales' : 'Total Bets'}:</span>
                       <span className="summary-value">{systemCombinations.length}</span>
                     </div>
                     <div className="summary-row">
-                      <span className="summary-label">Total Stake:</span>
+                      <span className="summary-label">{t('Total Stake', language)}:</span>
                       <span className="summary-value">€{systemTotalStake}</span>
                     </div>
                     <div className="summary-row">
-                      <span className="summary-label">Max. Win:</span>
+                      <span className="summary-label">{t('Max. Win', language)}:</span>
                       <span className="summary-value highlight">€{systemMaxReturn}</span>
                     </div>
                   </div>
@@ -528,7 +529,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             
             {betSlip.length > 0 && (
               <div className="balance-indicator-row">
-                <span className="balance-label">Your Balance:</span>
+                <span className="balance-label">{t('Your Balance', language)}:</span>
                 <span className={`balance-value ${isBalanceInsufficient ? 'insufficient' : ''}`}>
                   €{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
@@ -538,14 +539,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
             {betSlip.length > 0 && isBalanceInsufficient && (
               <div className="insufficient-balance-warning">
                 <AlertTriangle size={14} />
-                <span>Insufficient balance!</span>
+                <span>{t('Insufficient Balance', language)}!</span>
               </div>
             )}
 
             {betSlip.length > 0 && isSelfExcluded && (
               <div className="insufficient-balance-warning self-exclusion-warning" style={{ backgroundColor: 'rgba(220, 53, 69, 0.1)', borderColor: 'rgba(220, 53, 69, 0.2)', color: '#dc3545' }}>
                 <AlertTriangle size={14} />
-                <span>Account Self-Excluded! Betting is locked.</span>
+                <span>{language === 'ru' ? 'Аккаунт временно заблокирован! Ставки недоступны.' : 'Account Self-Excluded! Betting is locked.'}</span>
               </div>
             )}
             
@@ -562,7 +563,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               }
               onClick={handlePlaceBetClick}
             >
-              {hasOddsChanged ? 'Accept Odds to Bet' : isSelfExcluded ? 'Self-Excluded' : isBalanceInsufficient ? 'Insufficient Balance' : 'Place Bet'}
+              {hasOddsChanged ? t('Accept Odds to Bet', language) : isSelfExcluded ? t('Self-Excluded', language) : isBalanceInsufficient ? t('Insufficient Balance', language) : t('Place Bet', language)}
             </button>
           </div>
         </>
@@ -570,7 +571,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         <div className="my-bets-content">
           {placedBets.length === 0 ? (
             <div className="empty-slip">
-              <p>You have no recent bets.</p>
+              <p>{t('You have no recent bets.', language)}</p>
             </div>
           ) : (
             <div className="placed-bets-list">
@@ -580,16 +581,16 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                   <div key={pb.id} className="placed-bet-card">
                     <div className="pb-header">
                       <div className="pb-type-date">
-                        <span className="pb-type-tag">{pb.type}</span>
+                        <span className="pb-type-tag">{pb.type === 'Single' ? t('Single', language) : pb.type === 'Multi' ? t('Multi', language) : t('System', language)}</span>
                         <span className="pb-date">{pb.date}</span>
                       </div>
-                      <span className={`pb-status status-${pb.status.toLowerCase()}`}>{pb.status}</span>
+                      <span className={`pb-status status-${pb.status.toLowerCase()}`}>{pb.status === 'Pending' ? (language === 'ru' ? 'В игре' : pb.status) : pb.status === 'Won' ? (language === 'ru' ? 'Выигрыш' : pb.status) : (language === 'ru' ? 'Проигрыш' : pb.status)}</span>
                     </div>
                     <div className="pb-selections">
                       {pb.bets.map(b => (
                         <div key={b.id} className="pb-selection-row">
                           <div className="pb-selection-info">
-                            <span className="pb-selection">{b.selection}</span>
+                            <span className="pb-selection">{translateSelection(b.selection, language)}</span>
                             <span className="pb-match-title">{b.match}</span>
                           </div>
                           <span className="pb-odds">{formatOdds(b.odds, oddsFormat)}</span>
@@ -598,19 +599,19 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                     </div>
                     <div className="pb-footer-wrapper">
                       <div className="pb-footer">
-                        <div className="pb-stake">Stake: <span>€{pb.stake.toFixed(2)}</span></div>
+                        <div className="pb-stake">{t('Stake', language)}: <span>€{pb.stake.toFixed(2)}</span></div>
                         <div className="pb-return">
-                          {pb.status === 'Won' && pb.metadata?.cashed_out ? 'Cashed Out:' : 'To Return:'} 
+                          {pb.status === 'Won' && pb.metadata?.cashed_out ? `${t('Cashed Out', language)}:` : `${t('To Return', language)}:`} 
                           <span>€{pb.potentialReturn.toFixed(2)}</span>
                         </div>
                       </div>
                       {pb.status === 'Pending' && cashoutVal > 0 && (
                         <button 
-                          className="btn-cashout" 
+                           className="btn-cashout" 
                           disabled={cashingOutId !== null}
                           onClick={() => handleCashOutClick(pb.id, cashoutVal)}
                         >
-                          {cashingOutId === pb.id ? 'Cashing out...' : `Cash Out €${cashoutVal.toFixed(2)}`}
+                          {cashingOutId === pb.id ? t('Cashing out...', language) : `${t('Cash Out', language)} €${cashoutVal.toFixed(2)}`}
                         </button>
                       )}
                     </div>
