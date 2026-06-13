@@ -112,6 +112,13 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Clear stale league filter when loaded matches no longer include the selected league
+  useEffect(() => {
+    if (activeLeague && !matches.some(m => m.league === activeLeague && m.sport === activeSport)) {
+      setActiveLeague(null);
+    }
+  }, [matches, activeLeague, activeSport]);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSlipOpen, setIsMobileSlipOpen] = useState(false);
 

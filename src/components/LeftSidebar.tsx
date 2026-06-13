@@ -78,7 +78,37 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSport, setActiveSport, 
     return stats;
   }, [matches]);
 
-  const currentLeagues = LEAGUES.filter(l => l.sport === activeSport);
+  const currentLeagues = useMemo(() => {
+    const hardcodedForSport = LEAGUES.filter(l => l.sport === activeSport);
+    const hardcodedByName = new Map(hardcodedForSport.map(l => [l.name, l]));
+    const fromMatches = new Map<string, LeagueInfo>();
+
+    matches
+      .filter(m => m.sport === activeSport)
+      .forEach(m => {
+        if (!fromMatches.has(m.league)) {
+          const hardcoded = hardcodedByName.get(m.league);
+          fromMatches.set(m.league, {
+            name: m.league,
+            flag: hardcoded?.flag ?? '🏆',
+            sport: activeSport,
+          });
+        }
+      });
+
+    if (fromMatches.size > 0) {
+      return Array.from(fromMatches.values()).sort(
+        (a, b) => (leagueStats[b.name]?.total ?? 0) - (leagueStats[a.name]?.total ?? 0)
+      );
+    }
+
+    return hardcodedForSport;
+  }, [matches, activeSport, leagueStats]);
+
+  const popularLeagues = useMemo(() => {
+    const withMatches = currentLeagues.filter(l => (leagueStats[l.name]?.total ?? 0) > 0);
+    return (withMatches.length > 0 ? withMatches : currentLeagues).slice(0, 4);
+  }, [currentLeagues, leagueStats]);
 
   const handleLeagueClick = (league: LeagueInfo) => {
     if (league.sport !== activeSport) {
@@ -109,7 +139,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ activeSport, setActiveSport, 
           Popular
         </h3>
         <ul className="sidebar-list">
-          {currentLeagues.slice(0, 4).map(league => {
+          {popularLeagues.map(league => {
             const stats = leagueStats[league.name];
             return (
               <li 
