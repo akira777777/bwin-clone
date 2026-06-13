@@ -1,9 +1,27 @@
 import React from 'react';
+import type { Category } from '../App';
 import './Footer.css';
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  setActiveCategory: (cat: Category) => void;
+  setActiveFooterTab: (tab: string | null) => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFooterLinkClick = (e: React.MouseEvent, tab: string) => {
+    e.preventDefault();
+    setActiveFooterTab(tab);
+    scrollToTop();
+  };
+
+  const handleCategoryLinkClick = (e: React.MouseEvent, cat: Category) => {
+    e.preventDefault();
+    setActiveCategory(cat);
+    scrollToTop();
   };
 
   return (
@@ -12,31 +30,31 @@ const Footer: React.FC = () => {
         <div className="footer-section">
           <h4>About bwin</h4>
           <ul>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>About Us</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Terms and Conditions</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Privacy Policy</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Cookie Policy</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Responsible Gaming</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'About Us')}>About Us</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Terms and Conditions')}>Terms and Conditions</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Privacy Policy')}>Privacy Policy</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Cookie Policy')}>Cookie Policy</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Responsible Gaming')}>Responsible Gaming</a></li>
           </ul>
         </div>
         
         <div className="footer-section">
           <h4>Help & Support</h4>
           <ul>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Help Center</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Contact Us</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Deposits & Withdrawals</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Betting Rules</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Help Center')}>Help Center</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Contact Us')}>Contact Us</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Deposits & Withdrawals')}>Deposits & Withdrawals</a></li>
+            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Betting Rules')}>Betting Rules</a></li>
           </ul>
         </div>
         
         <div className="footer-section">
           <h4>Sports & Betting</h4>
           <ul>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Live Betting</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Live Casino</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Poker</a></li>
-            <li><a href="#" onClick={(e) => { e.preventDefault(); scrollToTop(); }}>Virtuals</a></li>
+            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Live Betting')}>Live Betting</a></li>
+            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Live Casino')}>Live Casino</a></li>
+            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Poker')}>Poker</a></li>
+            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Virtuals')}>Virtuals</a></li>
           </ul>
         </div>
       </div>
