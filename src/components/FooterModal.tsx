@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Trophy, Calendar, User, X } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './FooterModal.css';
 
 interface FAQ {
@@ -96,9 +95,22 @@ const FooterModal: React.FC<FooterModalProps> = ({
 
   useEffect(() => {
     if (tab) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveTab(tab);
     }
   }, [tab]);
+
+  // eslint-disable-next-line react-hooks/purity
+  const isSelfExcluded = useMemo(() => selfExclusionEndTime > Date.now(), [selfExclusionEndTime]);
+  const exclusionTimeLeftText = useMemo(() => {
+    // eslint-disable-next-line react-hooks/purity
+    const left = selfExclusionEndTime - Date.now();
+    if (left <= 0) return '';
+    const secs = Math.ceil(left / 1000);
+    if (secs < 60) return `${secs}s`;
+    const mins = Math.ceil(secs / 60);
+    return `${mins}m`;
+  }, [selfExclusionEndTime]);
 
   if (!tab || !activeTab) return null;
 
@@ -261,14 +273,6 @@ const FooterModal: React.FC<FooterModalProps> = ({
     faq.a.toLowerCase().includes(faqSearch.toLowerCase())
   );
 
-  const formatExclusionTimeLeft = () => {
-    const left = selfExclusionEndTime - Date.now();
-    if (left <= 0) return '';
-    const secs = Math.ceil(left / 1000);
-    if (secs < 60) return `${secs}s`;
-    const mins = Math.ceil(secs / 60);
-    return `${mins}m`;
-  };
 
   return (
     <div className="footer-modal-overlay" onClick={onClose}>

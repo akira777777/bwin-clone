@@ -39,8 +39,6 @@ const Header: React.FC<HeaderProps> = ({
   onLogout,
   balance = 1000,
   onDeposit = () => {},
-  oddsFormat,
-  setOddsFormat,
   language,
   setLanguage,
   notifications,

@@ -132,7 +132,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   const hasOddsChanged = useMemo(() => {
     const changed = Object.values(oddsStatus).some(status => status.changed);
     return changed;
-  }, [oddsStatus, betSlip]);
+  }, [oddsStatus]);
 
   const acceptOddsChanges = () => {
     setBetSlip(prev => prev.map(bet => ({

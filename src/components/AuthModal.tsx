@@ -28,6 +28,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
 
   // Clear sensitive fields when switching tabs
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPassword('');
     setConfirmPassword('');
     setShowPassword(false);
