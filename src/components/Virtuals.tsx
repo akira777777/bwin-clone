@@ -67,7 +67,7 @@ export const Virtuals: React.FC = () => {
         <div className="promo-content">
           <h2>Virtual Sports</h2>
           <p>Non-stop betting action. Events start every 3 minutes!</p>
-          <button className="btn-promo" onClick={() => showToast('Virtual Sports — выбери событие ниже!')}>
+          <button className="btn-promo" onClick={() => showToast('Virtual Sports — Select an event below!')}>
             Start Betting
           </button>
         </div>

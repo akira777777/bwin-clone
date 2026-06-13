@@ -10,8 +10,8 @@ interface LeftSidebarProps {
   activeLeague: string | null;
   setActiveLeague: (league: string | null) => void;
   matches: MatchData[];
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
 }
 
 interface LeagueInfo {
@@ -60,8 +60,8 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   activeLeague, 
   setActiveLeague, 
   matches,
-  searchQuery,
-  setSearchQuery
+  searchQuery = '',
+  setSearchQuery = () => {}
 }) => {
   const sportsList: Sport[] = ['Football', 'Tennis', 'Basketball', 'Ice Hockey'];
   const extraSports: Sport[] = ['Boxing', 'Cricket', 'Darts', 'Formula 1', 'MMA'];

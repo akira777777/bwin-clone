@@ -15,8 +15,8 @@ interface RightSidebarProps {
   onPlaceBet: (stake: number, potentialReturn: number, type: 'Single' | 'Multi' | 'System') => void;
   closeMobileSlip?: () => void;
   matches: MatchData[];
-  balance: number;
-  onCashOut: (id: string, amount: number) => void;
+  balance?: number;
+  onCashOut?: (id: string, amount: number) => void;
 }
 
 // Lookup current live odds
@@ -55,7 +55,16 @@ const getCurrentOdds = (bet: Bet, matches: MatchData[]): number => {
 };
 
 const RightSidebar: React.FC<RightSidebarProps> = ({ 
-  betSlip, setBetSlip, removeBet, clearBetSlip, placedBets, onPlaceBet, closeMobileSlip, matches, balance, onCashOut 
+  betSlip, 
+  setBetSlip, 
+  removeBet, 
+  clearBetSlip, 
+  placedBets, 
+  onPlaceBet, 
+  closeMobileSlip, 
+  matches, 
+  balance = 1000, 
+  onCashOut = () => {} 
 }) => {
   const [activeTab, setActiveTab] = useState<'betslip' | 'mybets'>('betslip');
   const [betMode, setBetMode] = useState<'single' | 'multi' | 'system'>('multi');

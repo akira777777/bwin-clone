@@ -24,7 +24,7 @@ interface MainContentProps {
   setSelectedMatchId: (id: string | null) => void;
   matches: MatchData[];
   setMatches: React.Dispatch<React.SetStateAction<MatchData[]>>;
-  searchQuery: string;
+  searchQuery?: string;
 }
 
 const LEAGUE_FLAGS: Record<string, string> = {
@@ -48,7 +48,7 @@ const LEAGUE_FLAGS: Record<string, string> = {
 const MainContent: React.FC<MainContentProps> = ({ 
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
-  matches, setMatches, searchQuery
+  matches, setMatches, searchQuery = ''
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');
