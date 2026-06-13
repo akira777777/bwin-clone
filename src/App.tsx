@@ -703,6 +703,14 @@ function App() {
     setIsMobileMenuOpen(false);
   }, []);
 
+  const handleLogoClick = useCallback(() => {
+    setActiveCategory('Sports');
+    setActiveSport('Football');
+    setSelectedMatchId(null);
+    setActiveLeague(null);
+    setSearchQuery('');
+  }, []);
+
   const handleSportChange = useCallback((sport: Sport) => {
     setActiveSport(sport);
     setSelectedMatchId(null);
