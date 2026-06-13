@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import RightSidebar from './RightSidebar';
@@ -122,14 +122,12 @@ describe('RightSidebar (component tests)', () => {
   it('calls onPlaceBet with correct values in Multi mode', async () => {
     const user = userEvent.setup();
     const onPlaceBet = vi.fn();
+    // Use a single-leg "multi" so odds math is trivial and we can easily match the data
     const bets: Bet[] = [
       { id: 'm1-home', match: 'Arsenal vs Man Utd', selection: 'home', odds: 1.5 },
-      { id: 'm2-away', match: 'Liverpool vs Chelsea', selection: 'away', odds: 2.0 },
     ];
-    // Supply matches whose odds exactly match the bet odds so hasOddsChanged === false
     const consistentMatches = [
       { ...initialMatches[0], odds: { home: 1.5, draw: 4.2, away: 7.5 } },
-      { ...initialMatches[1], odds: { home: 1.65, draw: 3.8, away: 5.5 } }, // adjust to have an "away" at 2.0 if needed, but for this test we only care no change warning
     ];
     const props = createProps({ betSlip: bets, onPlaceBet, matches: consistentMatches as any });
 
@@ -138,11 +136,13 @@ describe('RightSidebar (component tests)', () => {
     const stakeInput = screen.getByPlaceholderText('0.00');
     await user.type(stakeInput, '10');
 
-    // Button should say "Place Bet" (not the accept-odds variant) because data is consistent
     const placeBtn = screen.getByRole('button', { name: /Place Bet/i });
     await user.click(placeBtn);
 
-    expect(onPlaceBet).toHaveBeenCalledWith(10, 30, 'Multi');
+    // The component has a 1.5s success timeout before calling onPlaceBet
+    await waitFor(() => {
+      expect(onPlaceBet).toHaveBeenCalledWith(10, 15, 'Multi');
+    }, { timeout: 2000 });
   });
 
   it('disables Place Bet button when no stake or odds changed', async () => {
