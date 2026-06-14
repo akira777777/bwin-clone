@@ -32,6 +32,8 @@ interface MainContentProps {
   searchQuery?: string;
   oddsFormat: OddsFormat;
   language?: string;
+  favorites?: string[];
+  toggleFavorite?: (id: string) => void;
 }
 
 const LEAGUE_FLAGS: Record<string, string> = {
@@ -55,10 +57,12 @@ const LEAGUE_FLAGS: Record<string, string> = {
 const MainContent: React.FC<MainContentProps> = ({ 
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
-  matches, setMatches, searchQuery = '', oddsFormat, language = 'en'
+  matches, setMatches, searchQuery = '', oddsFormat, language = 'en',
+  favorites = [], toggleFavorite
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');
+  const [promoIndex, setPromoIndex] = useState(0);
   
   const [prevLeague, setPrevLeague] = useState<string | null>(activeLeague);
   if (activeLeague !== prevLeague) {
@@ -327,7 +331,7 @@ const MainContent: React.FC<MainContentProps> = ({
           </div>
         </section>
       ) : (
-        /* Promotional Banner — different for Live Betting vs Sports */
+        /* Promo Carousel */
         activeCategory === 'Live Betting' ? (
           <section className="promo-banner live-betting-banner">
             <div className="promo-content">
@@ -342,16 +346,7 @@ const MainContent: React.FC<MainContentProps> = ({
             </div>
           </section>
         ) : (
-          <section className="promo-banner risk-free-banner">
-            <div className="promo-content">
-              <div className="promo-badge">{language === 'ru' ? 'Только для новых игроков' : language === 'de' ? 'Nur für neue Spieler' : language === 'es' ? 'Solo nuevos jugadores' : 'New Players Only'}</div>
-              <h2>{t('Promo Insurance', language)}</h2>
-              <p>{t('Promo Insurance Desc', language)}</p>
-              <button className="btn-promo risk-free-btn" onClick={() => showToast('Bonus activated! Please register an account.')}>
-                {t('Claim Promo', language)}
-              </button>
-            </div>
-          </section>
+          <PromoCarousel language={language} promoIndex={promoIndex} setPromoIndex={setPromoIndex} onAction={showToast} />
         )
       )}
 
@@ -389,6 +384,8 @@ const MainContent: React.FC<MainContentProps> = ({
                     addBet={addBet} 
                     onSelectMatch={setSelectedMatchId} 
                     oddsFormat={oddsFormat}
+                    isFavorite={favorites.includes(match.id)}
+                    onToggleFavorite={toggleFavorite}
                   />
                 ))}
               </div>
@@ -410,6 +407,8 @@ const MainContent: React.FC<MainContentProps> = ({
                     addBet={addBet} 
                     onSelectMatch={setSelectedMatchId} 
                     oddsFormat={oddsFormat}
+                    isFavorite={favorites.includes(match.id)}
+                    onToggleFavorite={toggleFavorite}
                   />
                 ))}
               </div>
@@ -611,3 +610,91 @@ const MainContent: React.FC<MainContentProps> = ({
 };
 
 export default React.memo(MainContent);
+
+/* ============================================================
+   Promo Carousel Sub-Component
+   ============================================================ */
+interface PromoSlide {
+  badge: string;
+  title: string;
+  desc: string;
+  cta: string;
+  gradient: string;
+  borderColor: string;
+  badgeBg: string;
+}
+
+const promoSlides: Record<string, PromoSlide[]> = {
+  en: [
+    { badge: 'New Players Only', title: 'First Bet Insurance up to €50', desc: 'Place your first bet risk-free. If it loses, we refund your stake up to €50!', cta: 'Claim Now', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
+    { badge: 'Combo Boost', title: 'Up to 40% Bonus on Accumulators', desc: 'Add 3+ selections and unlock boosted returns. More legs = bigger bonus!', cta: 'Build Your Combo', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
+    { badge: 'Weekend Special', title: 'Cashback on Live Bets', desc: 'Get 10% cashback on all live bets this weekend. No wagering requirements!', cta: 'Opt In', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
+    { badge: 'Free Bet', title: 'Refer a Friend — Get €20 Free Bet', desc: 'Invite friends to bwin and earn €20 free bet for each referral. No limit!', cta: 'Invite Now', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+  ],
+  ru: [
+    { badge: 'Новым игрокам', title: 'Страховка первой ставки до €50', desc: 'Сделайте первую ставку без риска. Если проиграете — вернём ставку до €50!', cta: 'Получить', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
+    { badge: 'Комбо-бонус', title: 'До 40% бонуса на экспрессы', desc: 'Добавьте 3+ события и получите увеличенную выплату. Больше событий = больше бонус!', cta: 'Собрать экспресс', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
+    { badge: 'Акция выходных', title: 'Кэшбэк на лайв ставки', desc: 'Получите 10% кэшбэк на все лайв ставки в эти выходные. Без условий отыгрыша!', cta: 'Принять участие', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
+    { badge: 'Фрибет', title: 'Приведи друга — получи €20', desc: 'Пригласите друзей на bwin и получите фрибет €20 за каждого. Без ограничений!', cta: 'Пригласить', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+  ],
+  de: [
+    { badge: 'Nur Neukunden', title: 'Erste Wette versichert bis €50', desc: 'Platzieren Sie Ihre erste Wette risikofrei. Bei Verlust erstatten wir bis €50!', cta: 'Jetzt sichern', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
+    { badge: 'Kombi-Boost', title: 'Bis zu 40% Bonus auf Kombis', desc: '3+ Auswahlen für erhöhte Gewinne. Mehr Tipps = mehr Bonus!', cta: 'Kombi erstellen', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
+    { badge: 'Wochenend-Special', title: 'Cashback auf Live-Wetten', desc: '10% Cashback auf alle Live-Wetten dieses Wochenende!', cta: 'Teilnehmen', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
+    { badge: 'Gratiswette', title: 'Freund werben — €20 Gratiswette', desc: 'Laden Sie Freunde ein und erhalten €20 Gratiswette pro Empfehlung!', cta: 'Einladen', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+  ],
+  es: [
+    { badge: 'Solo nuevos', title: 'Seguro de primera apuesta hasta €50', desc: 'Haz tu primera apuesta sin riesgo. Si pierdes, devolvemos hasta €50!', cta: 'Reclamar', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
+    { badge: 'Combo Boost', title: 'Hasta 40% bonus en combinadas', desc: 'Añade 3+ selecciones y desbloquea mayores ganancias!', cta: 'Crear combinada', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
+    { badge: 'Fin de semana', title: 'Cashback en apuestas en vivo', desc: '10% de cashback en todas las apuestas en vivo este fin de semana!', cta: 'Participar', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
+    { badge: 'Apuesta gratis', title: 'Invita un amigo — €20 gratis', desc: 'Invita amigos a bwin y gana €20 gratis por cada referido!', cta: 'Invitar', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+  ],
+};
+
+function PromoCarousel({ language, promoIndex, setPromoIndex, onAction }: {
+  language: string;
+  promoIndex: number;
+  setPromoIndex: (i: number | ((p: number) => number)) => void;
+  onAction: (msg: string) => void;
+}) {
+  const slides = promoSlides[language] || promoSlides.en;
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPromoIndex((prev: number) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length, setPromoIndex]);
+
+  const slide = slides[promoIndex % slides.length];
+
+  return (
+    <section 
+      className="promo-carousel"
+      style={{ background: slide.gradient, borderLeft: `4px solid ${slide.borderColor}` }}
+    >
+      <div className="promo-carousel-inner" key={promoIndex}>
+        <div className="promo-content">
+          <div className="promo-badge" style={{ backgroundColor: slide.badgeBg, color: '#000' }}>
+            {slide.badge}
+          </div>
+          <h2>{slide.title}</h2>
+          <p>{slide.desc}</p>
+          <button className="btn-promo risk-free-btn" onClick={() => onAction(slide.cta + ' clicked!')}>
+            {slide.cta}
+          </button>
+        </div>
+      </div>
+      <div className="promo-dots">
+        {slides.map((_, i) => (
+          <button 
+            key={i}
+            className={`promo-dot ${i === promoIndex % slides.length ? 'active' : ''}`}
+            onClick={() => setPromoIndex(i)}
+            aria-label={`Go to promo ${i + 1}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}

@@ -6,6 +6,7 @@ import RightSidebar from './components/RightSidebar';
 import Footer from './components/Footer';
 import FooterModal from './components/FooterModal';
 import LiveChatWidget from './components/LiveChatWidget';
+import LiveTicker from './components/LiveTicker';
 import { initialMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
 import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
@@ -141,6 +142,25 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [balance, setBalance] = useState<number>(1000);
   const [globalToast, setGlobalToast] = useState<string | null>(null);
+
+  // Favorites system
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const stored = localStorage.getItem('bwin_favorites');
+    if (stored) {
+      try { return JSON.parse(stored); } catch { /* invalid */ }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('bwin_favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = useCallback((id: string) => {
+    setFavorites(prev =>
+      prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
+    );
+  }, []);
 
   const triggerGlobalToast = useCallback((message: string, type?: AppNotification['type']) => {
     setGlobalToast(message);
@@ -762,6 +782,8 @@ function App() {
         onLogoClick={handleLogoClick}
       />
 
+      <LiveTicker matches={matches} onSelectMatch={setSelectedMatchId} />
+
       {isSelfExcluded && (
         <div className="self-exclusion-alert-banner" role="alert" style={{
           backgroundColor: '#dc3545',
@@ -791,6 +813,8 @@ function App() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             language={language}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
           />
         </div>
         
@@ -810,6 +834,8 @@ function App() {
             searchQuery={searchQuery}
             oddsFormat={oddsFormat}
             language={language}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
           />
         </div>
 

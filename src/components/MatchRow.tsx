@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayCircle, Clock } from 'lucide-react';
+import { PlayCircle, Clock, Star, ChevronRight } from 'lucide-react';
 import type { MatchData } from '../data/matches';
 import type { Bet } from '../App';
 import { formatOdds } from '../utils/betting';
@@ -11,9 +11,11 @@ interface MatchRowProps {
   addBet: (bet: Bet) => void;
   onSelectMatch: (id: string) => void;
   oddsFormat: OddsFormat;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
 }
 
-const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMatch, oddsFormat }) => {
+const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMatch, oddsFormat, isFavorite = false, onToggleFavorite }) => {
   const isBetSelected = (selection: string) => {
     return betSlip.some(b => b.id === `${match.id}-${selection}`);
   };
@@ -30,9 +32,19 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
     addBet(bet);
   };
 
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleFavorite?.(match.id);
+  };
+
+  // Count additional markets
+  const extraMarkets = match.markets 
+    ? Object.keys(match.markets).length 
+    : 0;
+
   const renderOddsButton = (selection: 'home' | 'draw' | 'away', label: string, val: number) => {
     if (val === 0) {
-      return <div className="odds-btn" style={{ opacity: 0.2, cursor: 'default' }}>-</div>;
+      return <div className="odds-btn disabled-odds" style={{ opacity: 0.2, cursor: 'default' }}>-</div>;
     }
 
     const isSelected = isBetSelected(selection);
@@ -40,8 +52,8 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
     
     let btnClass = 'odds-btn';
     if (isSelected) btnClass += ' selected';
-    if (trendClass === 'up') btnClass += ' trend-up';
-    if (trendClass === 'down') btnClass += ' trend-down';
+    if (trendClass === 'up') btnClass += ' trend-up odds-flash-up';
+    if (trendClass === 'down') btnClass += ' trend-down odds-flash-down';
 
     return (
       <button 
@@ -55,7 +67,16 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
   };
 
   return (
-    <div className="match-row" onClick={() => onSelectMatch(match.id)} style={{ cursor: 'pointer' }}>
+    <div className={`match-row ${match.isLive ? 'match-row-live' : ''}`} onClick={() => onSelectMatch(match.id)} style={{ cursor: 'pointer' }}>
+      {/* Favorite Star */}
+      <button 
+        className={`match-favorite-btn ${isFavorite ? 'favorited' : ''}`} 
+        onClick={handleFavoriteClick}
+        aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+      >
+        <Star size={14} fill={isFavorite ? 'var(--bwin-yellow)' : 'none'} />
+      </button>
+
       <div className="match-info">
         <div className="match-league">{match.league}</div>
         <div className="match-teams">
@@ -70,7 +91,10 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
         </div>
         <div className="match-status">
           {match.isLive ? (
-            <span className="live-time"><PlayCircle size={12} className="live-icon" /> {match.time}</span>
+            <span className="live-time">
+              <span className="live-pulse-dot" />
+              <PlayCircle size={12} className="live-icon" /> {match.time}
+            </span>
           ) : (
             <span className="upcoming-time"><Clock size={12} className="time-icon" /> {match.time}</span>
           )}
@@ -81,12 +105,16 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
         {renderOddsButton('draw', 'X', match.odds.draw)}
         {renderOddsButton('away', '2', match.odds.away)}
       </div>
+      {/* Extra markets count + arrow */}
+      <div className="match-more-markets" onClick={(e) => { e.stopPropagation(); onSelectMatch(match.id); }}>
+        {extraMarkets > 0 && <span className="market-count-badge">+{extraMarkets}</span>}
+        <ChevronRight size={16} className="match-chevron" />
+      </div>
     </div>
   );
 };
 
 // Ensure it only re-renders if match data changes or betSlip changes specifically for this match
-// Since checking betSlip length is easy, we might just pass `isSelected` individually or compare carefully
 export default React.memo(MatchRow, (prev, next) => {
-  return prev.match === next.match && prev.betSlip === next.betSlip && prev.oddsFormat === next.oddsFormat;
+  return prev.match === next.match && prev.betSlip === next.betSlip && prev.oddsFormat === next.oddsFormat && prev.isFavorite === next.isFavorite;
 });
