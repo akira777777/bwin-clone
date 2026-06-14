@@ -11,17 +11,18 @@ interface LiveTable {
   limits: string;
   color: string;
   videoUrl: string;
+  youtubeId: string;
 }
 
 const LIVE_TABLES: LiveTable[] = [
-  { id: 'lt1', name: 'Lightning Roulette', category: 'Roulette', dealer: 'Sofia', players: 847, limits: '€1 – €500', color: 'linear-gradient(135deg, #f7971e, #ffd200)', videoUrl: '/videos/roulette.mp4' },
-  { id: 'lt2', name: 'Immersive Roulette', category: 'Roulette', dealer: 'Maria', players: 312, limits: '€1 – €1,000', color: 'linear-gradient(135deg, #1f4037, #99f2c8)', videoUrl: '/videos/roulette.mp4' },
-  { id: 'lt3', name: 'Bwin Blackjack VIP', category: 'Blackjack', dealer: 'James', players: 7, limits: '€50 – €5,000', color: 'linear-gradient(135deg, #232526, #414345)', videoUrl: '/videos/blackjack.mp4' },
-  { id: 'lt4', name: 'Infinite Blackjack', category: 'Blackjack', dealer: 'Anna', players: 999, limits: '€1 – €200', color: 'linear-gradient(135deg, #1c1c1c, #303030)', videoUrl: '/videos/blackjack.mp4' },
-  { id: 'lt5', name: 'Speed Baccarat A', category: 'Baccarat', dealer: 'Chen', players: 128, limits: '€5 – €2,000', color: 'linear-gradient(135deg, #3a1c71, #d76d77)', videoUrl: '/videos/baccarat.mp4' },
-  { id: 'lt6', name: 'Mega Ball', category: 'Game Shows', dealer: 'Host', players: 12400, limits: '€0.10 – €250', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', videoUrl: '/videos/gameshow.mp4' },
-  { id: 'lt7', name: 'Crazy Time', category: 'Game Shows', dealer: 'Host', players: 6730, limits: '€0.10 – €100', color: 'linear-gradient(135deg, #f12711, #f5af19)', videoUrl: '/videos/gameshow.mp4' },
-  { id: 'lt8', name: 'Dragon Tiger', category: 'Baccarat', dealer: 'Mei', players: 67, limits: '€5 – €500', color: 'linear-gradient(135deg, #e44d26, #f16529)', videoUrl: '/videos/baccarat.mp4' },
+  { id: 'lt1', name: 'Lightning Roulette', category: 'Roulette', dealer: 'Sofia', players: 847, limits: '€1 – €500', color: 'linear-gradient(135deg, #f7971e, #ffd200)', videoUrl: '/videos/roulette.mp4', youtubeId: '83PKonTnHoA' },
+  { id: 'lt2', name: 'Immersive Roulette', category: 'Roulette', dealer: 'Maria', players: 312, limits: '€1 – €1,000', color: 'linear-gradient(135deg, #1f4037, #99f2c8)', videoUrl: '/videos/roulette.mp4', youtubeId: '83PKonTnHoA' },
+  { id: 'lt3', name: 'Bwin Blackjack VIP', category: 'Blackjack', dealer: 'James', players: 7, limits: '€50 – €5,000', color: 'linear-gradient(135deg, #232526, #414345)', videoUrl: '/videos/blackjack.mp4', youtubeId: 'dfE-7NV4Vh8' },
+  { id: 'lt4', name: 'Infinite Blackjack', category: 'Blackjack', dealer: 'Anna', players: 999, limits: '€1 – €200', color: 'linear-gradient(135deg, #1c1c1c, #303030)', videoUrl: '/videos/blackjack.mp4', youtubeId: 'dfE-7NV4Vh8' },
+  { id: 'lt5', name: 'Speed Baccarat A', category: 'Baccarat', dealer: 'Chen', players: 128, limits: '€5 – €2,000', color: 'linear-gradient(135deg, #3a1c71, #d76d77)', videoUrl: '/videos/baccarat.mp4', youtubeId: 'rvTKCUQK2TY' },
+  { id: 'lt6', name: 'Mega Ball', category: 'Game Shows', dealer: 'Host', players: 12400, limits: '€0.10 – €250', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', videoUrl: '/videos/gameshow.mp4', youtubeId: 'Df2LeqkHANs' },
+  { id: 'lt7', name: 'Crazy Time', category: 'Game Shows', dealer: 'Host', players: 6730, limits: '€0.10 – €100', color: 'linear-gradient(135deg, #f12711, #f5af19)', videoUrl: '/videos/gameshow.mp4', youtubeId: 'Df2LeqkHANs' },
+  { id: 'lt8', name: 'Dragon Tiger', category: 'Baccarat', dealer: 'Mei', players: 67, limits: '€5 – €500', color: 'linear-gradient(135deg, #e44d26, #f16529)', videoUrl: '/videos/baccarat.mp4', youtubeId: 'rvTKCUQK2TY' },
 ];
 
 type Filter = 'All' | 'Roulette' | 'Blackjack' | 'Baccarat' | 'Game Shows';
@@ -69,14 +70,24 @@ export const LiveCasino: React.FC<LiveCasinoProps> = ({ language = 'en' }) => {
         {tables.map(table => (
           <div key={table.id} className="lc-table-card" onClick={() => showToast(`Joining ${table.name}...`)}>
             <div className="lc-card-bg" style={{ background: table.color }}>
-              <video 
-                className="lc-video-bg" 
-                src={table.videoUrl} 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-              />
+              {table.youtubeId ? (
+                <iframe
+                  className="lc-video-bg lc-iframe-bg"
+                  src={`https://www.youtube.com/embed/${table.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${table.youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&enablejsapi=1`}
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
+                  title={table.name}
+                />
+              ) : (
+                <video 
+                  className="lc-video-bg" 
+                  src={table.videoUrl} 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                />
+              )}
               <div className="lc-card-bg-overlay" />
               <span className="lc-live-dot">● LIVE</span>
               <span className="lc-players">{table.players.toLocaleString()} {language === 'ru' ? 'игроков' : 'players'}</span>

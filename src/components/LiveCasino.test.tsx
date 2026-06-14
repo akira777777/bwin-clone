@@ -38,11 +38,11 @@ describe('LiveCasino Component Tests', () => {
     expect(screen.queryByText('Lightning Roulette')).not.toBeInTheDocument();
   });
 
-  it('renders video element with correct videoUrl in the card bg', () => {
+  it('renders iframe element with correct youtube embed URL in the card bg', () => {
     render(<LiveCasino />);
     
-    const videoElements = document.querySelectorAll('video');
-    expect(videoElements.length).toBeGreaterThan(0);
-    expect(videoElements[0]).toHaveAttribute('src', '/videos/roulette.mp4');
+    const iframeElements = document.querySelectorAll('iframe');
+    expect(iframeElements.length).toBeGreaterThan(0);
+    expect(iframeElements[0]).toHaveAttribute('src', expect.stringContaining('https://www.youtube.com/embed/83PKonTnHoA'));
   });
 });
