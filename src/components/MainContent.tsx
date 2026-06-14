@@ -9,6 +9,8 @@ import { t } from '../utils/i18n';
 import MatchDetails from './MatchDetails';
 import MatchRow from './MatchRow';
 import { Casino } from './Casino';
+import { LiveCasino } from './LiveCasino';
+import { Poker } from './Poker';
 import { Virtuals } from './Virtuals';
 import { initialMatches } from '../data/matches';
 import type { MatchData } from '../data/matches';
@@ -224,8 +226,14 @@ const MainContent: React.FC<MainContentProps> = ({
     );
   }
 
-  if (activeCategory === 'Casino' || activeCategory === 'Live Casino' || activeCategory === 'Poker') {
+  if (activeCategory === 'Casino') {
     return <Casino language={language} />;
+  }
+  if (activeCategory === 'Live Casino') {
+    return <LiveCasino language={language} />;
+  }
+  if (activeCategory === 'Poker') {
+    return <Poker language={language} />;
   }
 
   if (activeCategory === 'Virtuals') {
