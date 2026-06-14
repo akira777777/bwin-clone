@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import Header from './components/Header';
 import LeftSidebar from './components/LeftSidebar';
 import MainContent from './components/MainContent';
@@ -103,7 +103,7 @@ function App() {
   const [notifications, setNotifications] = useState<AppNotification[]>(() => {
     const stored = localStorage.getItem('bwin_notifications');
     if (stored) {
-      try { return JSON.parse(stored); } catch (e) {}
+      try { return JSON.parse(stored); } catch { /* invalid JSON */ }
     }
     return [
       {
@@ -181,6 +181,7 @@ function App() {
     if (stored !== null) {
       const val = parseFloat(stored);
       if (!isNaN(val)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setBalance(val);
         return;
       }
@@ -283,7 +284,7 @@ function App() {
             if (matchP) {
               const period = parseInt(matchP[1]);
               let minutes = parseInt(matchP[2]);
-              let seconds = parseInt(matchP[3]);
+              const seconds = parseInt(matchP[3]);
 
               minutes += 1;
               if (minutes >= 20) {
@@ -524,6 +525,7 @@ function App() {
     });
 
     if (updatedBetsCount > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPlacedBets(newPlacedBets);
       if (balanceAwarded > 0) {
         updateBalance(balance + balanceAwarded);
@@ -617,7 +619,7 @@ function App() {
     }
 
     clearBetSlip();
-  }, [betSlip, clearBetSlip, user, loadPlacedBets, balance, updateBalance]);
+  }, [betSlip, clearBetSlip, user, loadPlacedBets, balance, updateBalance, selfExclusionEndTime, triggerGlobalToast]);
 
   const handleCashOut = useCallback(async (betId: string, amount: number) => {
     updateBalance(balance + amount);
@@ -727,6 +729,9 @@ function App() {
   const toggleMobileSlip = useCallback(() => setIsMobileSlipOpen(prev => !prev), []);
   const closeMobileSlip = useCallback(() => setIsMobileSlipOpen(false), []);
 
+  // eslint-disable-next-line react-hooks/purity
+  const isSelfExcluded = useMemo(() => selfExclusionEndTime > Date.now(), [selfExclusionEndTime]);
+
   return (
     <div className={`app-container ${isMobileSlipOpen ? 'slip-open' : ''} ${isMobileMenuOpen ? 'menu-open' : ''}`}>
       {globalToast && (
@@ -757,7 +762,7 @@ function App() {
         onLogoClick={handleLogoClick}
       />
 
-      {selfExclusionEndTime > Date.now() && (
+      {isSelfExcluded && (
         <div className="self-exclusion-alert-banner" role="alert" style={{
           backgroundColor: '#dc3545',
           color: '#fff',
@@ -820,7 +825,7 @@ function App() {
             matches={matches}
             balance={balance}
             onCashOut={handleCashOut}
-            isSelfExcluded={selfExclusionEndTime > Date.now()}
+            isSelfExcluded={isSelfExcluded}
             oddsFormat={oddsFormat}
             language={language}
           />
