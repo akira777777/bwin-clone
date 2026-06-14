@@ -44,12 +44,43 @@
 }
 
 .lc-card-bg {
-  height: 110px;
+  height: 130px;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 12px;
+  overflow: hidden;
+}
+
+.lc-video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.75;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.lc-table-card:hover .lc-video-bg {
+  opacity: 0.95;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.lc-card-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 60%, rgba(0,0,0,0.6) 100%);
+  z-index: 1;
 }
 
 .lc-live-dot {
@@ -57,21 +88,25 @@
   font-weight: 800;
   color: #ff4444;
   letter-spacing: 0.8px;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.55);
   padding: 3px 8px;
   border-radius: 4px;
   width: fit-content;
   animation: lcPulse 1.4s infinite;
+  z-index: 2;
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
 }
 
 .lc-players {
   font-size: 11px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.9);
   font-weight: 600;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.55);
   padding: 3px 8px;
   border-radius: 4px;
   width: fit-content;
+  z-index: 2;
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
 }
 
 .lc-card-body {
