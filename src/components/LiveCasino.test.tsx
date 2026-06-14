@@ -45,4 +45,21 @@ describe('LiveCasino Component Tests', () => {
     expect(iframeElements.length).toBeGreaterThan(0);
     expect(iframeElements[0]).toHaveAttribute('src', expect.stringContaining('https://www.youtube.com/embed/83PKonTnHoA'));
   });
+
+  it('does not render iframe or video elements for Speed Baccarat A, Mega Ball, and Crazy Time', () => {
+    render(<LiveCasino />);
+    
+    const baccaratCard = screen.getByText('Speed Baccarat A').closest('.lc-table-card');
+    const megaBallCard = screen.getByText('Mega Ball').closest('.lc-table-card');
+    const crazyTimeCard = screen.getByText('Crazy Time').closest('.lc-table-card');
+
+    expect(baccaratCard?.querySelector('iframe')).toBeNull();
+    expect(baccaratCard?.querySelector('video')).toBeNull();
+    
+    expect(megaBallCard?.querySelector('iframe')).toBeNull();
+    expect(megaBallCard?.querySelector('video')).toBeNull();
+    
+    expect(crazyTimeCard?.querySelector('iframe')).toBeNull();
+    expect(crazyTimeCard?.querySelector('video')).toBeNull();
+  });
 });
