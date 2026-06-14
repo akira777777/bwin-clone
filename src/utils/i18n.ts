@@ -51,6 +51,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Bonus Balance': 'Bonus Balance',
     'Pending Bets': 'Pending Bets',
     'Quick Deposit': 'Quick Deposit €500',
+    'Crypto Deposit': 'Crypto Deposit',
     'Gold VIP Progress': '350 points to Gold VIP status',
     // Newly Added
     'Sports A-Z': 'Sports A-Z',
@@ -152,6 +153,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Bonus Balance': 'Бонусный баланс',
     'Pending Bets': 'Ставки в игре',
     'Quick Deposit': 'Быстрый депозит €500',
+    'Crypto Deposit': 'Криптодепозит',
     'Gold VIP Progress': '350 очков до статуса Gold VIP',
     // Newly Added
     'Sports A-Z': 'Все виды спорта',
@@ -253,6 +255,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Bonus Balance': 'Bonusguthaben',
     'Pending Bets': 'Offene Wetten',
     'Quick Deposit': 'Schnelleinzahlung €500',
+    'Crypto Deposit': 'Krypto-Einzahlung',
     'Gold VIP Progress': '350 Punkte bis zum Gold VIP Status',
     // Newly Added
     'Sports A-Z': 'Sport A-Z',
@@ -354,6 +357,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Bonus Balance': 'Saldo de Bono',
     'Pending Bets': 'Apuestas Pendientes',
     'Quick Deposit': 'Depósito Rápido €500',
+    'Crypto Deposit': 'Depósito Cripto',
     'Gold VIP Progress': '350 puntos para el estado VIP Oro',
     // Newly Added
     'Sports A-Z': 'Deportes A-Z',

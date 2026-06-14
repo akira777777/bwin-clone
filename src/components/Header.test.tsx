@@ -154,9 +154,9 @@ describe('Header (RTL component tests)', () => {
     expect(screen.getByText((_, el) => el?.className === 'amount' && el.textContent?.replace(/\s/g, '') === expectedNoSpace)).toBeInTheDocument();
     expect(screen.getByText('€50.00')).toBeInTheDocument();
 
-    // Click Deposit
-    await user.click(screen.getByText('Quick Deposit €500'));
-    expect(onDeposit).toHaveBeenCalledWith(500);
+    // Click Crypto Deposit — opens modal instead of calling onDeposit directly
+    await user.click(screen.getByText('Crypto Deposit'));
+    expect(await screen.findByText('Bitcoin Network')).toBeInTheDocument();
 
     // Re-trigger profile dropdown and log out
     await user.click(profileBtn);

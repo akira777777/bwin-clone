@@ -3,6 +3,7 @@ import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSig
 import type { Category, AppNotification } from '../App';
 import type { OddsFormat } from '../utils/betting';
 import { t } from '../utils/i18n';
+import CryptoDeposit from './CryptoDeposit';
 import './Header.css';
 
 interface HeaderProps {
@@ -53,6 +54,9 @@ const Header: React.FC<HeaderProps> = ({
   setSearchQuery = () => {}
 }) => {
   const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
+
+  // Deposit modal state
+  const [isCryptoDepositOpen, setIsCryptoDepositOpen] = useState(false);
 
   // Dropdown open states
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -110,6 +114,7 @@ const Header: React.FC<HeaderProps> = ({
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
+    <>
     <header className="header">
       <div className="header-top">
         <div className="header-left">
@@ -216,7 +221,7 @@ const Header: React.FC<HeaderProps> = ({
             <div className="balance-pill" key={balance}>
               <span className="balance-amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
             </div>
-            <button className="header-deposit-btn" onClick={() => onDeposit(500)} title={language === 'ru' ? 'Быстрый депозит €500' : 'Quick Deposit €500'}>
+            <button className="header-deposit-btn" onClick={() => setIsCryptoDepositOpen(true)}>
               {language === 'ru' ? 'Депозит' : language === 'de' ? 'Einzahlung' : language === 'es' ? 'Depósito' : 'Deposit'}
             </button>
           </div>
@@ -271,8 +276,8 @@ const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   <div className="profile-actions-list">
-                    <button className="menu-action-btn deposit-btn" onClick={() => { onDeposit(500); setIsProfileOpen(false); }}>
-                      <DollarSign size={14} /> {t('Quick Deposit', language)}
+                    <button className="menu-action-btn deposit-btn" onClick={() => { setIsCryptoDepositOpen(true); setIsProfileOpen(false); }}>
+                      <DollarSign size={14} /> {t('Crypto Deposit', language)}
                     </button>
                     <button className="menu-action-btn logout-btn" onClick={() => { if (onLogout) onLogout(); setIsProfileOpen(false); }}>
                       <LogOut size={14} /> {t('Log Out', language)}
@@ -322,6 +327,14 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </nav>
     </header>
+    {isCryptoDepositOpen && (
+      <CryptoDeposit
+        onDeposit={onDeposit}
+        onClose={() => setIsCryptoDepositOpen(false)}
+        language={language}
+      />
+    )}
+    </>
   );
 };
 
