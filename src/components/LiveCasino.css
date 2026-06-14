@@ -23,102 +23,441 @@
 
 .lc-tables-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(292px, 1fr));
+  gap: 18px;
   padding-bottom: 30px;
 }
 
 .lc-table-card {
-  background: var(--bwin-surface);
-  border: 1px solid var(--bwin-border);
-  border-radius: 12px;
+  background: linear-gradient(180deg, #1d1d1d 0%, #121212 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.28);
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
 .lc-table-card:hover {
-  border-color: rgba(255,59,59,0.35);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-  transform: translateY(-2px);
+  border-color: rgba(255,210,0,0.38);
+  box-shadow: 0 18px 34px rgba(0,0,0,0.42), 0 0 0 1px rgba(255,210,0,0.08);
+  transform: translateY(-3px);
 }
 
 .lc-card-bg {
-  height: 110px;
+  height: 172px;
   position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.lc-card-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.22), transparent 18%),
+    radial-gradient(circle at 72% 12%, rgba(255,255,255,0.12), transparent 22%),
+    linear-gradient(115deg, rgba(255,255,255,0.12), transparent 38%);
+  mix-blend-mode: screen;
+  opacity: 0.68;
+  z-index: 1;
+}
+
+.lc-card-video,
+.lc-live-preview,
+.lc-media-shade {
+  position: absolute;
+  inset: 0;
+}
+
+.lc-card-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.lc-live-preview {
+  z-index: 0;
+  overflow: hidden;
+}
+
+.lc-live-preview::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: -45%;
+  width: 42%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform: rotate(18deg);
+  animation: lcCameraSweep 4.8s ease-in-out infinite;
+}
+
+.lc-studio-wall {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px) 0 0 / 46px 100%,
+    radial-gradient(ellipse at center top, rgba(255,255,255,0.12), transparent 42%);
+  opacity: 0.65;
+}
+
+.lc-dealer-silhouette {
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  width: 50px;
+  height: 78px;
+  border-radius: 26px 26px 18px 18px;
+  background: linear-gradient(180deg, rgba(252,224,196,0.9) 0 30%, rgba(11,11,11,0.92) 31% 100%);
+  box-shadow: 0 0 30px rgba(0,0,0,0.45);
+  transform: translateX(-50%);
+  animation: lcDealerIdle 3.6s ease-in-out infinite;
+}
+
+.lc-table-felt {
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  width: 78%;
+  height: 92px;
+  border-radius: 50% 50% 18px 18px;
+  background: linear-gradient(180deg, rgba(18,95,62,0.96), rgba(5,42,27,0.98));
+  border: 3px solid rgba(255,255,255,0.2);
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.38);
+  transform: translateX(-50%);
+}
+
+.lc-game-prop {
+  position: absolute;
+  bottom: 28px;
+  z-index: 1;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.28);
+}
+
+.lc-game-prop-a {
+  left: 30%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#f8f8f8 0 12deg, #d82929 12deg 24deg);
+  animation: lcChipFloat 2.8s ease-in-out infinite;
+}
+
+.lc-game-prop-b {
+  right: 28%;
+  width: 20px;
+  height: 30px;
+  border-radius: 3px;
+  background: #f8f3df;
+  transform: rotate(8deg);
+  animation: lcCardFlip 3.4s ease-in-out infinite;
+}
+
+.lc-live-preview-blackjack .lc-table-felt {
+  background: linear-gradient(180deg, rgba(20,82,55,0.98), rgba(8,34,25,0.98));
+}
+
+.lc-live-preview-baccarat .lc-table-felt {
+  background: linear-gradient(180deg, rgba(87,34,79,0.98), rgba(34,10,32,0.98));
+}
+
+.lc-live-preview-show .lc-table-felt {
+  width: 58%;
+  background: linear-gradient(180deg, rgba(255,199,45,0.95), rgba(222,67,24,0.98));
+}
+
+.lc-live-preview-show .lc-game-prop-a {
+  width: 38px;
+  height: 38px;
+  left: 24%;
+}
+
+.lc-live-preview-show .lc-game-prop-b {
+  width: 42px;
+  height: 42px;
+  right: 21%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 22%, #10b8e8 23% 55%, #fefefe 56% 100%);
+}
+
+.lc-media-shade {
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.58) 0%, rgba(0,0,0,0.05) 42%, rgba(0,0,0,0.78) 100%),
+    linear-gradient(90deg, rgba(0,0,0,0.45), transparent 48%, rgba(0,0,0,0.32));
+}
+
+.lc-card-topbar,
+.lc-logo-overlay,
+.lc-table-status {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  z-index: 3;
+}
+
+.lc-card-topbar {
+  top: 12px;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  padding: 10px 12px;
+  align-items: center;
 }
 
 .lc-live-dot {
   font-size: 10px;
   font-weight: 800;
-  color: #ff4444;
+  color: #fff;
   letter-spacing: 0.8px;
-  background: rgba(0,0,0,0.5);
-  padding: 3px 8px;
-  border-radius: 4px;
+  background: #e52323;
+  padding: 4px 8px;
+  border-radius: 999px;
   width: fit-content;
-  animation: lcPulse 1.4s infinite;
+  box-shadow: 0 0 0 0 rgba(229,35,35,0.6);
+  animation: lcLiveBeacon 1.7s infinite;
+}
+
+.lc-stream-badge {
+  color: rgba(255,255,255,0.86);
+  background: rgba(8,8,8,0.55);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 4px 8px;
+  backdrop-filter: blur(8px);
+}
+
+.lc-logo-overlay {
+  bottom: 42px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-transform: uppercase;
+  text-shadow: 0 3px 12px rgba(0,0,0,0.85);
+}
+
+.lc-logo-overlay span {
+  color: #fff;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.2px;
+}
+
+.lc-logo-overlay small {
+  color: var(--bwin-yellow);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.lc-table-status {
+  bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.8);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .lc-players {
-  font-size: 11px;
-  color: rgba(255,255,255,0.75);
-  font-weight: 600;
-  background: rgba(0,0,0,0.45);
-  padding: 3px 8px;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.46);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 5px 9px;
+  border-radius: 999px;
   width: fit-content;
+  backdrop-filter: blur(8px);
+}
+
+.lc-player-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #36d66f;
+  box-shadow: 0 0 0 0 rgba(54,214,111,0.58);
+  animation: lcPlayerPulse 1.8s infinite;
+}
+
+.lc-table-status > span:last-child {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 5px 9px;
+  backdrop-filter: blur(8px);
 }
 
 .lc-card-body {
-  padding: 12px 14px 14px;
+  padding: 14px;
 }
 
-.lc-card-title {
+.lc-dealer-row {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.lc-dealer-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #141414;
+  background: linear-gradient(135deg, #fff0c0, var(--bwin-yellow));
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.lc-dealer-row div {
+  min-width: 0;
+}
+
+.lc-dealer-row span:not(.lc-dealer-avatar),
+.lc-card-meta span {
+  display: block;
+  color: rgba(255,255,255,0.45);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.lc-dealer-row strong {
+  display: block;
+  color: #fff;
   font-size: 14px;
   font-weight: 800;
-  color: #fff;
-  margin-bottom: 5px;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.lc-card-dealer {
+.lc-dealer-row em {
+  color: rgba(255,255,255,0.72);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 7px;
+  padding: 5px 7px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.lc-card-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.lc-card-meta div {
+  min-width: 0;
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 9px 10px;
+}
+
+.lc-card-meta strong {
+  display: block;
+  color: rgba(255,255,255,0.9);
   font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 4px;
-}
-
-.lc-card-limits {
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 12px;
+  font-weight: 800;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lc-join-btn {
   width: 100%;
-  background: #ff3b3b;
-  color: #fff;
+  background: var(--bwin-yellow);
+  color: #111;
   border: none;
-  border-radius: 6px;
-  padding: 9px;
+  border-radius: 8px;
+  padding: 10px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 900;
   cursor: pointer;
-  letter-spacing: 0.3px;
-  transition: opacity 0.18s, transform 0.12s;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  transition: filter 0.18s, transform 0.12s;
 }
 
-.lc-join-btn:hover { opacity: 0.87; transform: translateY(-1px); }
+.lc-join-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 .lc-join-btn:active { transform: scale(0.97); }
+
+.lc-nav-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 7px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: inherit;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.casino-nav button.active .lc-nav-count {
+  background: rgba(0,0,0,0.18);
+}
 
 @keyframes lcPulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.35; }
 }
 
+@keyframes lcLiveBeacon {
+  0% { box-shadow: 0 0 0 0 rgba(229,35,35,0.58); }
+  70% { box-shadow: 0 0 0 8px rgba(229,35,35,0); }
+  100% { box-shadow: 0 0 0 0 rgba(229,35,35,0); }
+}
+
+@keyframes lcPlayerPulse {
+  0% { box-shadow: 0 0 0 0 rgba(54,214,111,0.58); }
+  70% { box-shadow: 0 0 0 7px rgba(54,214,111,0); }
+  100% { box-shadow: 0 0 0 0 rgba(54,214,111,0); }
+}
+
+@keyframes lcCameraSweep {
+  0%, 42% { transform: translateX(0) rotate(18deg); opacity: 0; }
+  58% { opacity: 0.7; }
+  100% { transform: translateX(370%) rotate(18deg); opacity: 0; }
+}
+
+@keyframes lcDealerIdle {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-3px); }
+}
+
+@keyframes lcChipFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes lcCardFlip {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(-7deg) translateY(-3px); }
+}
+
 @media (max-width: 640px) {
-  .lc-tables-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .lc-tables-grid { grid-template-columns: 1fr; gap: 12px; }
+  .lc-card-bg { height: 158px; }
+  .lc-logo-overlay span { font-size: 17px; }
 }
