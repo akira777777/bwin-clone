@@ -43,6 +43,6 @@ describe('LiveCasino Component Tests', () => {
     
     const videoElements = document.querySelectorAll('video');
     expect(videoElements.length).toBeGreaterThan(0);
-    expect(videoElements[0]).toHaveAttribute('src', 'https://assets.mixkit.co/videos/preview/mixkit-spinning-roulette-wheel-in-a-casino-39967-large.mp4');
+    expect(videoElements[0]).toHaveAttribute('src', '/videos/roulette.mp4');
   });
 });
