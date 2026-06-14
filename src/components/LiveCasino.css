@@ -1,0 +1,124 @@
+.lc-badge {
+  background: #ff3b3b;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.lc-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  animation: lcPulse 1.2s infinite;
+}
+
+.lc-tables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  padding-bottom: 30px;
+}
+
+.lc-table-card {
+  background: var(--bwin-surface);
+  border: 1px solid var(--bwin-border);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.lc-table-card:hover {
+  border-color: rgba(255,59,59,0.35);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  transform: translateY(-2px);
+}
+
+.lc-card-bg {
+  height: 110px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.lc-live-dot {
+  font-size: 10px;
+  font-weight: 800;
+  color: #ff4444;
+  letter-spacing: 0.8px;
+  background: rgba(0,0,0,0.5);
+  padding: 3px 8px;
+  border-radius: 4px;
+  width: fit-content;
+  animation: lcPulse 1.4s infinite;
+}
+
+.lc-players {
+  font-size: 11px;
+  color: rgba(255,255,255,0.75);
+  font-weight: 600;
+  background: rgba(0,0,0,0.45);
+  padding: 3px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.lc-card-body {
+  padding: 12px 14px 14px;
+}
+
+.lc-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.lc-card-dealer {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 4px;
+}
+
+.lc-card-limits {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 12px;
+}
+
+.lc-join-btn {
+  width: 100%;
+  background: #ff3b3b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.18s, transform 0.12s;
+}
+
+.lc-join-btn:hover { opacity: 0.87; transform: translateY(-1px); }
+.lc-join-btn:active { transform: scale(0.97); }
+
+@keyframes lcPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+@media (max-width: 640px) {
+  .lc-tables-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+}
