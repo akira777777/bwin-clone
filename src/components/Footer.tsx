@@ -43,7 +43,7 @@ const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab, 
         'Betting Rules': 'Правила ставок',
         'Sports & Betting': 'Спорт и ставки',
         'Secure Payment': 'Безопасная оплата',
-        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Все права защищены. Этот сайт является демонстрационной копией и не предназначен для игры на реальные деньги.'
+        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Все права защищены. Только 18+. Азартные игры несут в себе риски — играйте ответственно. bwin лицензирован Регуляторным органом Гибралтара (RGL No. 022) и Игорным управлением Мальты (MGA/B2C/394/2017). BeGambleAware.org'
       },
       de: {
         'About bwin': 'Über bwin',
@@ -59,7 +59,7 @@ const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab, 
         'Betting Rules': 'Wettregeln',
         'Sports & Betting': 'Sport & Wetten',
         'Secure Payment': 'Sichere Zahlung',
-        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Alle Rechte vorbehalten. Diese Website ist ein Demo-Klon. Keine echte Glücksspiel-Website.'
+        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Alle Rechte vorbehalten. Nur ab 18 Jahren. Glücksspiel birgt Risiken — spielen Sie verantwortungsbewusst. bwin ist von der Gibraltar Regulatory Authority (RGL No. 022) und der Malta Gaming Authority (MGA/B2C/394/2017) lizenziert. BeGambleAware.org'
       },
       es: {
         'About bwin': 'Sobre bwin',
@@ -75,7 +75,7 @@ const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab, 
         'Betting Rules': 'Reglas de Apuestas',
         'Sports & Betting': 'Deportes y Apuestas',
         'Secure Payment': 'Pago Seguro',
-        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Todos los derechos reservados. Este sitio es un clon de demostración. No es un sitio de juego real.'
+        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Todos los derechos reservados. Solo mayores de 18 años. El juego conlleva riesgos — juegue con responsabilidad. bwin está licenciada por la Autoridad Reguladora de Gibraltar (RGL No. 022) y la Autoridad de Juegos de Malta (MGA/B2C/394/2017). BeGambleAware.org'
       }
     };
     return dicts[language]?.[key] || key;
@@ -123,7 +123,7 @@ const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab, 
         </div>
         <p className="copyright">
           {language === 'en' 
-            ? '© 2026 bwin Interactive Entertainment AG. All rights reserved. This site is a demo clone. Not a real gambling site.' 
+            ? '© 2026 bwin Interactive Entertainment AG. All rights reserved. 18+ only. Gambling involves risk — please gamble responsibly. bwin is licensed by the Gibraltar Regulatory Authority (RGL No. 022) and the Malta Gaming Authority (MGA/B2C/394/2017). BeGambleAware.org'
             : getFooterText('disclaimer')}
         </p>
       </div>

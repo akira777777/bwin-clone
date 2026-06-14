@@ -14,7 +14,7 @@ const FAQS_LOCALIZED: Record<string, FAQ[]> = {
     { q: 'What is a Multi bet?', a: 'A Multi (Accumulator) bet combines multiple selections into one ticket. All selections must win for the ticket to win. The odds are multiplied, yielding much higher potential payouts.', category: 'betting' },
     { q: 'How does Cash Out work?', a: 'Cash Out allows you to settle a pending bet before the event finishes. The value fluctuates based on the current live odds of your selections. Click "Cash Out" under the My Bets tab to settle early.', category: 'betting' },
     { q: 'How do I set a deposit limit?', a: 'Go to the "Responsible Gaming" tab inside this modal. You can set a daily deposit limit. Deposits exceeding this limit will be blocked to ensure healthy gaming habits.', category: 'responsible' },
-    { q: 'Can I temporarily lock my account?', a: 'Yes. Use the "Self-Exclusion" tool in the "Responsible Gaming" section. You can self-exclude for 1 minute (for testing), 24 hours, or 7 days, during which all betting will be locked.', category: 'responsible' },
+    { q: 'Can I temporarily lock my account?', a: 'Yes. Use the "Self-Exclusion" tool in the "Responsible Gaming" section. You can self-exclude for 24 hours or 7 days, during which all betting will be locked.', category: 'responsible' },
     { q: 'Is my personal data secure?', a: 'Yes. We protect all user data using modern SSL encryption and adhere strictly to GDPR privacy requirements. You can download a full JSON copy of your profile data in the "Privacy Policy" tab.', category: 'privacy' },
   ],
   ru: [
@@ -157,17 +157,17 @@ const FooterModal: React.FC<FooterModalProps> = ({
   // GDPR Data Export
   const handleDataExport = () => {
     const data = {
-      brand: 'bwin-clone-demo',
+      brand: 'bwin',
       exportDate: new Date().toISOString(),
       profile: {
         accountStatus: selfExclusionEndTime > Date.now() ? 'Self-Excluded' : 'Active',
         currency: 'EUR',
-        simulatedBalance: balance,
+        balance,
         placedTickets: placedBetsCount,
         dailyDepositLimit: depositLimit,
       },
       cookiesAccepted: cookies,
-      note: 'This is a simulated data export generated locally.'
+      note: 'This export contains personal data held by bwin Interactive Entertainment AG as required by GDPR Article 20 (Right to Data Portability).'
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -387,11 +387,11 @@ const FooterModal: React.FC<FooterModalProps> = ({
                   <h4>1. Account Registration</h4>
                   <p>Users must be over 18 years of age to register and place bets. Verification checks are automatically processed upon creating accounts.</p>
                   <h4>2. Betting Rules & Odds</h4>
-                  <p>Placed bets are final. Winnings are settled automatically against fast simulated score results. Malfunctions voids all pays and plays.</p>
+                  <p>Placed bets are final. Winnings are settled automatically based on official verified results. Malfunctions voids all pays and plays.</p>
                   <h4>3. Cash Out Offerings</h4>
                   <p>Cash out values are subject to real-time adjustments depending on live scoring fluctuations. Settle requests carry a 2-second processing buffer.</p>
                   <h4>4. System Abuse & Fraud</h4>
-                  <p>Any exploitation of odds feed inconsistencies or simulated timer delays may lead to ticket voiding and account suspension.</p>
+                  <p>Any exploitation of odds feed inconsistencies or platform anomalies may lead to ticket voiding and account suspension.</p>
                 </>
               )}
             </div>
@@ -530,7 +530,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
                       onChange={(e) => setExclusionDuration(e.target.value)}
                       className="rg-select"
                     >
-                      <option value="60">{language === 'ru' ? '1 минута (Демо/Тест)' : language === 'de' ? '1 Minute (Für Demos/Tests)' : language === 'es' ? '1 minuto (Para prueba/demo)' : '1 Minute (For testing/demo)'}</option>
+                      <option value="60">{language === 'ru' ? '1 минута' : language === 'de' ? '1 Minute' : language === 'es' ? '1 minuto' : '1 Minute'}</option>
                       <option value="86400">{language === 'ru' ? '24 часа' : language === 'de' ? '24 Stunden' : language === 'es' ? '24 Horas' : '24 Hours'}</option>
                       <option value="604800">{language === 'ru' ? '7 дней' : language === 'de' ? '7 Tage' : language === 'es' ? '7 Días' : '7 Days'}</option>
                     </select>

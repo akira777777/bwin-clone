@@ -365,9 +365,16 @@
   }
 }
 
-.header-dropdown-menu.odds-menu,
 .header-dropdown-menu.lang-menu {
   width: 180px;
+}
+
+.header-dropdown-menu.odds-menu {
+  width: 130px;
+}
+
+.lang-menu .lang-flag {
+  margin-right: 8px;
 }
 
 .header-dropdown-menu .menu-item {

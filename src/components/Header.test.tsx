@@ -23,6 +23,7 @@ const createProps = (overrides: Partial<Parameters<typeof Header>[0]> = {}) => (
   notifications: [],
   markNotificationsAsRead: vi.fn(),
   clearNotifications: vi.fn(),
+  onLogoClick: vi.fn(),
   ...overrides,
 });
 

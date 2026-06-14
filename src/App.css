@@ -41,3 +41,17 @@
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+.self-exclusion-alert-banner {
+  background-color: #dc3545;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}

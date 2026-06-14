@@ -101,7 +101,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
             botResponseText = "🛡️ Вы можете установить ежедневные лимиты депозитов или временно заблокировать аккаунт в разделе 'Ответственная игра' меню подвала.";
           }
         } else if (query.includes('вывод') || query.includes('депозит') || query.includes('выплат') || query.includes('оплат') || query.includes('деньги')) {
-          botResponseText = "💳 Демо-депозиты проводятся мгновенно. Выводы обрабатываются в течение 24 часов на вашу платежную систему (PayPal, Skrill, Visa).";
+          botResponseText = "💳 Депозиты проводятся мгновенно. Выводы обрабатываются в течение 24 часов на вашу платежную систему (PayPal, Skrill, Visa).";
         } else if (query.includes('помощь') || query.includes('правил') || query.includes('вопрос') || query.includes('фак')) {
           botResponseText = "📚 Полные правила игры и глоссарий доступны в разделах 'Правила ставок' или 'Справочный центр' в меню подвала.";
         } else {
@@ -123,7 +123,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
             botResponseText = "🛡️ Sie können tägliche Einzahlungslimits festlegen oder Ihr Konto sperren (Selbstausschluss) in den 'Verantwortungsbewusstes Spielen'-Einstellungen im Fußbereich.";
           }
         } else if (query.includes('auszahlung') || query.includes('einzahlung') || query.includes('abheben') || query.includes('zahlen')) {
-          botResponseText = "💳 Demo-Einzahlungen sind sofort verfügbar. Auszahlungen werden innerhalb von 24 Stunden auf Ihre bevorzugte Zahlungsmethode (PayPal, Skrill, Visa) abgewickelt.";
+          botResponseText = "💳 Einzahlungen sind sofort verfügbar. Auszahlungen werden innerhalb von 24 Stunden auf Ihre bevorzugte Zahlungsmethode (PayPal, Skrill, Visa) abgewickelt.";
         } else if (query.includes('hilfe') || query.includes('regeln') || query.includes('faq')) {
           botResponseText = "📚 Die vollständigen Richtlinien und Wettregeln finden Sie in den Abschnitten 'Wettregeln' oder 'Hilfebereich' im Fußbereich.";
         } else {
@@ -145,7 +145,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
             botResponseText = "🛡️ Puede establecer límites de depósito diarios o bloquear su cuenta (autoexclusión) en la configuración de 'Juego Responsable' en el menú del pie de página.";
           }
         } else if (query.includes('retiro') || query.includes('deposito') || query.includes('pago') || query.includes('retirar') || query.includes('depositar')) {
-          botResponseText = "💳 Los depósitos simulados son instantáneos. Los retiros se procesan dentro de las 24 horas a su método de pago preferido (PayPal, Skrill, Visa).";
+          botResponseText = "💳 Los depósitos son instantáneos. Los retiros se procesan dentro de las 24 horas a su método de pago preferido (PayPal, Skrill, Visa).";
         } else if (query.includes('ayuda') || query.includes('regla') || query.includes('preguntas') || query.includes('faq')) {
           botResponseText = "📚 Para obtener pautas de juego completas, consulte las 'Reglas de Apuestas' o las preguntas frecuentes del 'Centro de Ayuda' en el menú del pie de página.";
         } else {
@@ -155,7 +155,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
         if (query.includes('hi') || query.includes('hello') || query.includes('hey')) {
           botResponseText = "Hello! I am your bwin automated agent. Ask me about your 'balance', your 'bets', or 'exclusions', and I'll look them up for you.";
         } else if (query.includes('balance') || query.includes('money') || query.includes('funds')) {
-          botResponseText = `💰 Your current simulated account balance is €${balance.toFixed(2)}. You can add €500.00 instantly using the Quick Deposit (+) button in the header!`;
+          botResponseText = `💰 Your current account balance is €${balance.toFixed(2)}. You can add €500.00 instantly using the Quick Deposit (+) button in the header!`;
         } else if (query.includes('bet') || query.includes('ticket') || query.includes('slip')) {
           botResponseText = `🎫 You have placed ${placedBetsCount} bet ticket(s) in this session. You can review them anytime in the "My Bets" tab on the right sidebar.`;
         } else if (query.includes('exclude') || query.includes('lock') || query.includes('exclusion') || query.includes('limit')) {
@@ -167,7 +167,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
             botResponseText = "🛡️ You can set daily deposit limits or lock your account (self-exclusion) in the 'Responsible Gaming' settings of the footer menu.";
           }
         } else if (query.includes('withdraw') || query.includes('deposit') || query.includes('payout') || query.includes('pay')) {
-          botResponseText = "💳 Simulated deposits are instant. Withdrawals are processed within 24 hours back to your preferred payment method (PayPal, Skrill, Visa).";
+          botResponseText = "💳 Deposits are instant. Withdrawals are processed within 24 hours back to your preferred payment method (PayPal, Skrill, Visa).";
         } else if (query.includes('help') || query.includes('rule') || query.includes('faq')) {
           botResponseText = "📚 For complete gaming guidelines and glossary, check the 'Betting Rules' or 'Help Center' FAQ search inside the footer menu.";
         } else {

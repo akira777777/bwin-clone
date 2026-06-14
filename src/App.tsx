@@ -130,6 +130,20 @@ function App() {
     localStorage.setItem('bwin_notifications', JSON.stringify(notifications));
   }, [notifications]);
 
+  // Trigger WelcomePopup on mount if not logged in and welcome has not been shown yet
+  useEffect(() => {
+    if (!isLoggedIn) {
+      const welcomeSeen = localStorage.getItem('bwin_welcome_seen');
+      if (!welcomeSeen) {
+        const timer = setTimeout(() => {
+          setIsWelcomePopupOpen(true);
+          localStorage.setItem('bwin_welcome_seen', 'true');
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isLoggedIn]);
+
   const markNotificationsAsRead = useCallback(() => {
     setNotifications(prev => prev.map(n => n.read ? n : { ...n, read: true }));
   }, []);
@@ -787,19 +801,7 @@ function App() {
       <LiveTicker matches={matches} onSelectMatch={setSelectedMatchId} />
 
       {isSelfExcluded && (
-        <div className="self-exclusion-alert-banner" role="alert" style={{
-          backgroundColor: '#dc3545',
-          color: '#fff',
-          textAlign: 'center',
-          padding: '10px',
-          fontSize: '0.85rem',
-          fontWeight: 'bold',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '8px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.2)'
-        }}>
+        <div className="self-exclusion-alert-banner" role="alert">
           🔒 Account self-excluded. Betting is locked.
         </div>
       )}

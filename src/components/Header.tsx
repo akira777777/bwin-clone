@@ -41,6 +41,8 @@ const Header: React.FC<HeaderProps> = ({
   onLogout,
   balance = 1000,
   onDeposit = () => {},
+  oddsFormat,
+  setOddsFormat,
   language,
   setLanguage,
   notifications,
@@ -56,12 +58,14 @@ const Header: React.FC<HeaderProps> = ({
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [isOddsFormatOpen, setIsOddsFormatOpen] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   // Refs for clicking outside to close
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
+  const oddsFormatRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,6 +79,9 @@ const Header: React.FC<HeaderProps> = ({
       }
       if (languageRef.current && !languageRef.current.contains(target)) {
         setIsLanguageOpen(false);
+      }
+      if (oddsFormatRef.current && !oddsFormatRef.current.contains(target)) {
+        setIsOddsFormatOpen(false);
       }
       if (searchRef.current && !searchRef.current.contains(target)) {
         setIsSearchExpanded(false);
@@ -109,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({
           <button className="mobile-toggle-btn" onClick={toggleMobileMenu}>
             <Menu size={24} />
           </button>
-          <div className="logo" onClick={onLogoClick} style={{ cursor: 'pointer' }}>
+          <div className="logo" onClick={onLogoClick}>
             <span style={{ color: 'var(--bwin-white)', fontWeight: 'bold', fontSize: '24px' }}>
               bwin<span style={{ color: 'var(--bwin-yellow)' }}>.</span>
             </span>
@@ -132,8 +139,29 @@ const Header: React.FC<HeaderProps> = ({
                     className={`menu-item ${language === l.code ? 'active' : ''}`}
                     onClick={() => { setLanguage(l.code); setIsLanguageOpen(false); }}
                   >
-                    <span className="lang-flag" style={{ marginRight: '8px' }}>{l.flag}</span>
+                    <span className="lang-flag">{l.flag}</span>
                     <span>{l.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Odds Format Dropdown */}
+          <div className="header-dropdown-container" ref={oddsFormatRef}>
+            <button className="header-dropdown-trigger odds-trigger" onClick={() => setIsOddsFormatOpen(!isOddsFormatOpen)}>
+              <span className="odds-code-text">{oddsFormat.toUpperCase()}</span>
+              <ChevronDown size={12} className="chevron-icon" />
+            </button>
+            {isOddsFormatOpen && (
+              <div className="header-dropdown-menu odds-menu animate-fade-in">
+                {(['decimal', 'fractional', 'american'] as OddsFormat[]).map(format => (
+                  <div 
+                    key={format}
+                    className={`menu-item ${oddsFormat === format ? 'active' : ''}`}
+                    onClick={() => { setOddsFormat(format); setIsOddsFormatOpen(false); }}
+                  >
+                    <span>{format.charAt(0).toUpperCase() + format.slice(1)}</span>
                   </div>
                 ))}
               </div>

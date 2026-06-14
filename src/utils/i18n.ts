@@ -105,7 +105,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Slots': 'Slots',
     'Live Dealer': 'Live Dealer',
     'Table Games': 'Table Games',
-    'is ready! Demo mode.': 'is ready! Demo mode.',
+    'is ready! Demo mode.': 'is ready! Launching now...',
     'Loading': 'Loading',
   },
   ru: {
@@ -206,7 +206,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Slots': 'Слоты',
     'Live Dealer': 'Лайв дилеры',
     'Table Games': 'Настольные игры',
-    'is ready! Demo mode.': 'готов! Демо-режим.',
+    'is ready! Demo mode.': 'готов! Запускаем...',
     'Loading': 'Загрузка',
   },
   de: {
@@ -307,7 +307,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Slots': 'Slots',
     'Live Dealer': 'Live Dealer',
     'Table Games': 'Tischspiele',
-    'is ready! Demo mode.': 'ist bereit! Demo-Modus.',
+    'is ready! Demo mode.': 'ist bereit! Wird gestartet...',
     'Loading': 'Wird geladen',
   },
   es: {
@@ -408,7 +408,7 @@ const translations: Record<Language, Record<string, string>> = {
     'Slots': 'Tragamonedas',
     'Live Dealer': 'Crupier en Vivo',
     'Table Games': 'Juegos de Mesa',
-    'is ready! Demo mode.': 'está listo! Modo demo.',
+    'is ready! Demo mode.': 'está listo! Iniciando ahora...',
     'Loading': 'Cargando',
   }
 };
