@@ -6,8 +6,9 @@
 }
 
 .promo-banner {
-  background: linear-gradient(135deg, var(--bwin-darker) 0%, #3a3a3a 100%);
-  border-radius: 4px;
+  background: linear-gradient(135deg, var(--bwin-darker) 0%, rgba(10, 10, 18, 0.95) 100%);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 8px;
   min-height: 200px;
   height: auto;
   position: relative;
@@ -15,6 +16,7 @@
   display: flex;
   align-items: center;
   padding: 24px 40px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
 }
 
 .promo-content {
@@ -26,6 +28,7 @@
   font-size: 28px;
   margin-bottom: 10px;
   line-height: 1.2;
+  text-shadow: 0 0 10px var(--bwin-yellow);
 }
 
 .promo-content p {

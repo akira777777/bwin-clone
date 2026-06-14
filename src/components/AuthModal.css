@@ -19,16 +19,17 @@
 }
 
 .modal-content {
-  background-color: var(--bwin-darker);
-  border: 1px solid var(--bwin-border);
-  border-radius: 8px;
+  background: rgba(18, 18, 28, 0.92);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 10px;
   width: 100%;
   max-width: 420px;
   padding: 0;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.25), 0 15px 40px rgba(0, 0, 0, 0.7);
   animation: fadeInScale 0.3s ease-out forwards;
   overflow: hidden;
+  backdrop-filter: blur(12px);
 }
 
 .modal-close {
@@ -78,10 +79,12 @@
 .auth-tab.active {
   color: var(--bwin-white);
   background: var(--bwin-darker);
+  text-shadow: 0 0 6px var(--bwin-yellow);
 }
 
 .auth-tab.active::after {
   background: var(--bwin-yellow);
+  box-shadow: 0 0 8px var(--bwin-yellow);
 }
 
 .auth-tab:hover:not(.active) {
@@ -251,17 +254,19 @@
   background-color: var(--bwin-yellow);
   color: var(--bwin-black);
   padding: 14px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: bold;
   font-size: 16px;
   margin-top: 5px;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--bwin-yellow);
+  transition: all 0.2s ease;
+  box-shadow: 0 0 15px rgba(240, 255, 0, 0.5);
 }
 
 .btn-submit:hover:not(:disabled) {
   background-color: var(--bwin-yellow-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+  box-shadow: 0 0 25px rgba(240, 255, 0, 0.8);
 }
 
 .btn-submit:active:not(:disabled) {
@@ -272,8 +277,9 @@
 .btn-submit.submitting {
   background-color: var(--bwin-gray);
   color: var(--bwin-gray-text);
+  border-color: var(--bwin-gray-light);
+  box-shadow: none;
   cursor: wait;
-  transform: none;
 }
 
 /* Auth Footer */

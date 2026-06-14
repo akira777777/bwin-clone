@@ -30,8 +30,8 @@
 }
 
 .search-box:focus-within {
-  border-color: var(--bwin-yellow);
-  box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.15);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.3), 0 0 12px rgba(0, 240, 255, 0.15);
 }
 
 .search-icon {
@@ -67,7 +67,8 @@
 }
 
 .title-icon {
-  color: var(--bwin-yellow);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 4px var(--neon-cyan);
 }
 
 /* Sidebar List */
@@ -93,13 +94,15 @@
 }
 
 .sidebar-item:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(0, 240, 255, 0.06);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
 }
 
 .sidebar-item.active {
-  background-color: rgba(255, 204, 0, 0.1);
+  background-color: rgba(240, 255, 0, 0.08);
   border-left: 3px solid var(--bwin-yellow);
   padding-left: 7px;
+  box-shadow: 0 0 12px rgba(240, 255, 0, 0.3);
 }
 
 .sidebar-item.active .league-name,
@@ -173,8 +176,9 @@
 .live-dot {
   width: 6px;
   height: 6px;
-  background-color: var(--bwin-red);
+  background-color: var(--neon-red);
   border-radius: 50%;
+  box-shadow: 0 0 6px var(--neon-red), 0 0 12px var(--neon-red);
   animation: livePulse 1.5s ease-in-out infinite;
 }
 

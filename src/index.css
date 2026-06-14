@@ -1,26 +1,36 @@
 :root {
-  --bwin-black: #000000;
-  --bwin-dark: #121212;
-  --bwin-darker: #1a1a1a;
-  --bwin-darkest: #0a0a0a;
-  --bwin-yellow: #ffcc00;
-  --bwin-yellow-hover: #e6b800;
-  --bwin-gray: #333333;
-  --bwin-gray-light: #555555;
-  --bwin-gray-text: #aaaaaa;
-  --bwin-white: #ffffff;
-  --bwin-text: #ffffff;
-  --bwin-bg: #121212;
-  --bwin-bg-secondary: #1a1a1a;
-  --bwin-header-bg: #000000;
-  --bwin-border: #333333;
-  --bwin-border-light: #444444;
-  --bwin-odds-bg: #333333;
-  --bwin-odds-hover: #444444;
-  --bwin-odds-text: #ffffff;
-  --bwin-odds-text-highlight: #ffcc00;
-  --bwin-green: #33cc33;
-  --bwin-red: #ff3333;
+  /* Neon Dark Theme for Modern Bwin Clone */
+  --bwin-black: #050508;
+  --bwin-dark: #0a0a12;
+  --bwin-darker: #12121c;
+  --bwin-darkest: #020204;
+  --bwin-yellow: #f0ff00;
+  --bwin-yellow-hover: #ccff00;
+  --bwin-gray: #1f1f2e;
+  --bwin-gray-light: #3a3a4f;
+  --bwin-gray-text: #8a8aa0;
+  --bwin-white: #f0f0ff;
+  --bwin-text: #e8e8ff;
+  --bwin-bg: #050508;
+  --bwin-bg-secondary: #0f0f18;
+  --bwin-header-bg: #000003;
+  --bwin-border: #1f1f3a;
+  --bwin-border-light: #2a2a4a;
+  --bwin-odds-bg: #161625;
+  --bwin-odds-hover: #1f1f35;
+  --bwin-odds-text: #f0f0ff;
+  --bwin-odds-text-highlight: #f0ff00;
+
+  /* Neon Accents - Cyberpunk Glow Palette */
+  --neon-cyan: #00f0ff;
+  --neon-magenta: #ff00cc;
+  --neon-purple: #c000ff;
+  --neon-green: #00ff9d;
+  --neon-red: #ff3366;
+
+  /* Keep legacy for compatibility */
+  --bwin-green: #00ff9d;
+  --bwin-red: #ff3366;
 }
 
 * {
@@ -30,10 +40,54 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans', 'Roboto', sans-serif;
+  font-family: 'Open Sans', 'Roboto', 'Segoe UI', sans-serif;
   background-color: var(--bwin-bg);
-  color: var(--bwin-white);
-  overflow-x: hidden; /* Prevent horizontal scroll, allow vertical */
+  color: var(--bwin-text);
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 25% 30%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 75% 70%, rgba(255, 0, 204, 0.03) 0%, transparent 50%);
+}
+
+/* Neon Glow Utilities */
+.neon-cyan {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan);
+}
+
+.neon-magenta {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta);
+}
+
+.neon-yellow {
+  color: var(--bwin-yellow);
+  text-shadow: 0 0 6px var(--bwin-yellow), 0 0 12px var(--bwin-yellow);
+}
+
+.neon-button {
+  position: relative;
+  transition: all 0.2s ease;
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.neon-button:hover {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.7), 0 0 25px rgba(0, 240, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.neon-card {
+  background: rgba(15, 15, 24, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.neon-card:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
 }
 
 .visually-hidden {
@@ -92,6 +146,39 @@ ul {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--bwin-gray);
+}
+
+/* Neon Odds Buttons */
+.match-odds button,
+.odds-btn,
+.odds-button {
+  background-color: var(--bwin-odds-bg);
+  border: 1px solid var(--neon-cyan);
+  color: var(--bwin-odds-text);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.15s ease;
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
+}
+
+.match-odds button:hover,
+.odds-btn:hover,
+.odds-button:hover {
+  background-color: var(--bwin-odds-hover);
+  border-color: var(--bwin-yellow);
+  color: var(--bwin-yellow);
+  box-shadow: 0 0 12px rgba(240, 255, 0, 0.4);
+  transform: scale(1.02);
+}
+
+.match-odds button.selected,
+.odds-btn.selected {
+  background-color: rgba(240, 255, 0, 0.15);
+  border-color: var(--bwin-yellow);
+  color: var(--bwin-yellow);
+  box-shadow: 0 0 14px rgba(240, 255, 0, 0.6);
 }
 
 /* Global Animations */

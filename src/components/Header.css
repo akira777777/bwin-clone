@@ -9,7 +9,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 40px;
-  border-bottom: 1px solid var(--bwin-dark);
+  border-bottom: 1px solid var(--bwin-border);
+  background: linear-gradient(180deg, var(--bwin-header-bg) 0%, var(--bwin-dark) 100%);
 }
 
 .header-left {
@@ -29,6 +30,14 @@
 
 .logo {
   cursor: pointer;
+}
+
+.logo span {
+  transition: text-shadow 0.3s ease;
+}
+
+.logo:hover span {
+  text-shadow: 0 0 8px var(--bwin-yellow), 0 0 16px var(--bwin-yellow), 0 0 24px var(--neon-cyan);
 }
 
 .header-right {
@@ -62,36 +71,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 8px var(--bwin-yellow);
 }
 
 .btn-login {
   background-color: transparent;
-  color: var(--bwin-white);
-  border: 1px solid var(--bwin-white);
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
   padding: 8px 20px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
 }
 
 .btn-login:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+  color: #fff;
 }
 
 .btn-register {
   background-color: var(--bwin-yellow);
   color: var(--bwin-black);
-  border: none;
+  border: 1px solid var(--bwin-yellow);
   padding: 8px 20px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(240, 255, 0, 0.5);
 }
 
 .btn-register:hover {
   background-color: var(--bwin-yellow-hover);
+  box-shadow: 0 0 20px rgba(240, 255, 0, 0.8);
+  transform: translateY(-1px);
 }
 
 .header-nav {
@@ -116,20 +132,24 @@
 }
 
 .header-nav li {
-  color: var(--bwin-white);
+  color: var(--bwin-text);
   padding: 15px 20px;
   font-weight: 500;
   cursor: pointer;
   border-bottom: 3px solid transparent;
   white-space: nowrap;
+  transition: all 0.2s ease;
 }
 
 .header-nav li:hover {
-  color: var(--bwin-yellow);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 6px var(--neon-cyan);
 }
 
 .header-nav li.active {
   border-bottom-color: var(--bwin-yellow);
+  color: var(--bwin-yellow);
+  text-shadow: 0 0 8px var(--bwin-yellow);
 }
 
 .nav-search {
