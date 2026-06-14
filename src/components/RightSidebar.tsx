@@ -109,6 +109,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   
   const [showSuccess, setShowSuccess] = useState(false);
   const [cashingOutId, setCashingOutId] = useState<string | null>(null);
+  const [shouldShake, setShouldShake] = useState(false);
 
   // 1. Detect odds fluctuations in real time
   const oddsStatus = useMemo(() => {
@@ -280,16 +281,15 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
     if (betMode === 'multi') {
       finalStake = parseFloat(multiStake) || 0;
       finalReturn = parseFloat(multiPotentialReturn) || 0;
-      if (finalStake <= 0) return;
     } else if (betMode === 'single') {
       finalStake = singleTotalStake;
       finalReturn = parseFloat(singlePotentialReturn) || 0;
-      if (finalStake <= 0) return;
     } else if (betMode === 'system') {
       finalStake = parseFloat(systemTotalStake) || 0;
       finalReturn = parseFloat(systemMaxReturn) || 0;
-      if (finalStake <= 0) return;
     }
+
+    if (finalStake <= 0) return;
 
     setShowSuccess(true);
 
@@ -310,9 +310,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
     <aside className="right-sidebar">
       {showSuccess && (
         <div className="bet-success-overlay">
-          <CheckCircle2 size={48} color="var(--bwin-green)" className="success-icon" />
-          <h3>{t('Bet Placed!', language)}</h3>
-          <p>{t('Ticket registered. Good luck!', language)}</p>
+          <div className="success-content">
+            <CheckCircle2 size={48} color="var(--bwin-green)" className="success-icon" />
+            <h3>{t('Bet Placed!', language)}</h3>
+            <p>{t('Ticket registered. Good luck!', language)}</p>
+          </div>
+          <div className="success-progress-bar">
+            <div className="success-progress-fill" />
+          </div>
         </div>
       )}
 
@@ -458,6 +463,18 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                         min="0"
                       />
                     </div>
+                    <div className="quick-stake-chips">
+                      {[5, 10, 25, 50, 100].map(val => (
+                        <button
+                          key={val}
+                          type="button"
+                          className="quick-stake-chip"
+                          onClick={() => setMultiStake(val.toString())}
+                        >
+                          €{val}
+                        </button>
+                      ))}
+                    </div>
                     <div className="summary-row">
                       <span className="summary-label">{t('Total Odds', language)}:</span>
                       <span className="summary-value">{formatOdds(totalMultiOdds, oddsFormat)}</span>
@@ -472,6 +489,27 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                 {/* Single Bets Footer */}
                 {betMode === 'single' && (
                   <div className="footer-calculations">
+                    <div className="global-single-stake-chips">
+                      <span className="chips-label">{language === 'ru' ? 'Для всех:' : 'All stakes:'}</span>
+                      <div className="quick-stake-chips">
+                        {[5, 10, 25, 50, 100].map(val => (
+                          <button
+                            key={val}
+                            type="button"
+                            className="quick-stake-chip"
+                            onClick={() => {
+                              const newStakes: Record<string, string> = {};
+                              betSlip.forEach(bet => {
+                                newStakes[bet.id] = val.toString();
+                              });
+                              setSingleStakes(newStakes);
+                            }}
+                          >
+                            €{val}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <div className="summary-row">
                       <span className="summary-label">{t('Total Stake', language)}:</span>
                       <span className="summary-value">€{singleTotalStake.toFixed(2)}</span>
@@ -509,6 +547,18 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                         placeholder="0.00"
                         min="0"
                       />
+                    </div>
+                    <div className="quick-stake-chips">
+                      {[5, 10, 25, 50, 100].map(val => (
+                        <button
+                          key={val}
+                          type="button"
+                          className="quick-stake-chip"
+                          onClick={() => setSystemStake(val.toString())}
+                        >
+                          €{val}
+                        </button>
+                      ))}
                     </div>
                     <div className="summary-row">
                       <span className="summary-label">{language === 'ru' ? 'Всего ставок' : language === 'de' ? 'Wetten Gesamt' : language === 'es' ? 'Apuestas Totales' : 'Total Bets'}:</span>
@@ -550,21 +600,35 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               </div>
             )}
             
-            <button 
-              className="btn-place-bet" 
-              disabled={
-                betSlip.length === 0 || 
-                hasOddsChanged ||
-                isBalanceInsufficient ||
-                isSelfExcluded ||
-                (betMode === 'multi' && (parseFloat(multiStake) || 0) <= 0) ||
-                (betMode === 'single' && singleTotalStake <= 0) ||
-                (betMode === 'system' && (parseFloat(systemStake) || 0) <= 0)
-              }
-              onClick={handlePlaceBetClick}
+            <div 
+              className={`place-bet-btn-wrapper ${shouldShake ? 'shake-animation' : ''}`}
+              onClick={() => {
+                const hasNoStake = (betMode === 'multi' && (parseFloat(multiStake) || 0) <= 0) ||
+                                   (betMode === 'single' && singleTotalStake <= 0) ||
+                                   (betMode === 'system' && (parseFloat(systemStake) || 0) <= 0);
+                if (hasNoStake && betSlip.length > 0 && !hasOddsChanged && !isBalanceInsufficient && !isSelfExcluded) {
+                  setShouldShake(true);
+                  setTimeout(() => setShouldShake(false), 500);
+                }
+              }}
+              style={{ width: '100%' }}
             >
-              {hasOddsChanged ? t('Accept Odds to Bet', language) : isSelfExcluded ? t('Self-Excluded', language) : isBalanceInsufficient ? t('Insufficient Balance', language) : t('Place Bet', language)}
-            </button>
+              <button 
+                className="btn-place-bet" 
+                disabled={
+                  betSlip.length === 0 || 
+                  hasOddsChanged ||
+                  isBalanceInsufficient ||
+                  isSelfExcluded ||
+                  (betMode === 'multi' && (parseFloat(multiStake) || 0) <= 0) ||
+                  (betMode === 'single' && singleTotalStake <= 0) ||
+                  (betMode === 'system' && (parseFloat(systemStake) || 0) <= 0)
+                }
+                onClick={handlePlaceBetClick}
+              >
+                {hasOddsChanged ? t('Accept Odds to Bet', language) : isSelfExcluded ? t('Self-Excluded', language) : isBalanceInsufficient ? t('Insufficient Balance', language) : t('Place Bet', language)}
+              </button>
+            </div>
           </div>
         </>
       ) : (
@@ -578,7 +642,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
               {placedBets.map(pb => {
                 const cashoutVal = getCashOutOffer(pb);
                 return (
-                  <div key={pb.id} className="placed-bet-card">
+                  <div key={pb.id} className={`placed-bet-card pb-card-${pb.status.toLowerCase()}`}>
                     <div className="pb-header">
                       <div className="pb-type-date">
                         <span className="pb-type-tag">{pb.type === 'Single' ? t('Single', language) : pb.type === 'Multi' ? t('Multi', language) : t('System', language)}</span>

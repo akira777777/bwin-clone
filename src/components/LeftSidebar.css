@@ -229,3 +229,36 @@
     max-height: none;
   }
 }
+
+/* Favorite Matches Styling */
+.favorite-match-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--bwin-white);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  text-align: left;
+}
+
+.favorite-match-teams .team-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-score-badge {
+  background-color: var(--bwin-yellow);
+  color: var(--bwin-black);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  box-shadow: 0 0 6px var(--bwin-yellow);
+  white-space: nowrap;
+}
+

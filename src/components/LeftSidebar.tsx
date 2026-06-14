@@ -14,6 +14,8 @@ interface LeftSidebarProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   language?: string;
+  favorites?: string[];
+  onSelectMatch?: (id: string | null) => void;
 }
 
 interface LeagueInfo {
@@ -64,10 +66,16 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   matches,
   searchQuery = '',
   setSearchQuery = () => {},
-  language = 'en'
+  language = 'en',
+  favorites = [],
+  onSelectMatch
 }) => {
   const sportsList: Sport[] = ['Football', 'Tennis', 'Basketball', 'Ice Hockey'];
   const extraSports: Sport[] = ['Boxing', 'Cricket', 'Darts', 'Formula 1', 'MMA'];
+
+  const favoriteMatches = useMemo(() => {
+    return matches.filter(m => favorites.includes(m.id));
+  }, [matches, favorites]);
 
   // Count matches per league and live status
   const leagueStats = useMemo(() => {
@@ -152,6 +160,37 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
           />
         </div>
       </div>
+
+      {/* Favorites */}
+      {favoriteMatches.length > 0 && (
+        <div className="sidebar-section">
+          <h3 className="section-title">
+            <Star size={12} className="title-icon" fill="var(--bwin-yellow)" style={{ color: 'var(--bwin-yellow)' }} />
+            {language === 'ru' ? 'Избранное' : language === 'de' ? 'Favoriten' : language === 'es' ? 'Favoritos' : 'Favorites'}
+          </h3>
+          <ul className="sidebar-list">
+            {favoriteMatches.map(match => (
+              <li 
+                key={match.id}
+                className="sidebar-item favorite-item"
+                onClick={() => onSelectMatch?.(match.id)}
+              >
+                <span className="sport-emoji">{SPORT_ICONS[match.sport] || '🏆'}</span>
+                <div className="favorite-match-teams">
+                  <span className="team-text">{match.team1}</span>
+                  <span className="team-text">{match.team2}</span>
+                </div>
+                <div className="item-meta">
+                  {match.isLive && match.score && (
+                    <span className="live-score-badge">{match.score}</span>
+                  )}
+                  <ChevronRight size={14} className="chevron" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Highlights */}
       <div className="sidebar-section">

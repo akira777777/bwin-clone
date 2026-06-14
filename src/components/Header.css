@@ -152,9 +152,61 @@
   text-shadow: 0 0 8px var(--bwin-yellow);
 }
 
-.nav-search {
+/* Expandable Search Bar */
+.nav-search-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: transparent;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 2px;
+  width: 36px;
+  height: 32px;
+  overflow: hidden;
+  border: 1px solid transparent;
+}
+
+.nav-search-container.expanded {
+  width: 200px;
+  background-color: var(--bwin-dark);
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+  padding-left: 6px;
+}
+
+.nav-search-btn {
+  background: none;
+  border: none;
   cursor: pointer;
-  padding: 10px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bwin-gray-text);
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.nav-search-btn:hover {
+  color: var(--neon-cyan);
+}
+
+.nav-search-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 12px;
+  width: 0;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.nav-search-container.expanded .nav-search-input {
+  width: 140px;
+  padding: 0 4px;
 }
 
 /* User Balance Display */
@@ -185,29 +237,39 @@
   letter-spacing: 0.5px;
 }
 
-.balance-deposit-btn {
-  background-color: var(--bwin-yellow);
+.balance-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-deposit-btn {
+  background-color: var(--neon-green);
   color: var(--bwin-black);
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  border: 1px solid var(--neon-green);
+  padding: 0 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 157, 0.4);
+  outline: none;
 }
 
-.balance-deposit-btn:hover {
-  background-color: var(--bwin-yellow-hover);
-  transform: scale(1.1);
+.header-deposit-btn:hover {
+  background-color: #33ffad;
+  border-color: #33ffad;
+  box-shadow: 0 0 18px rgba(0, 255, 157, 0.7);
+  transform: translateY(-1px);
 }
 
-.balance-deposit-btn:active {
-  transform: scale(0.9);
+.header-deposit-btn:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {
@@ -224,16 +286,16 @@
   }
   
   .balance-pill {
-    padding: 4px 6px 4px 10px;
-    font-size: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
     height: 28px;
     gap: 5px;
   }
   
-  .balance-deposit-btn {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
+  .header-deposit-btn {
+    padding: 0 10px;
+    font-size: 11px;
+    height: 28px;
   }
 }
 

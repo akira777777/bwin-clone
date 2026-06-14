@@ -25,6 +25,8 @@ interface HeaderProps {
   markNotificationsAsRead: () => void;
   clearNotifications: () => void;
   onLogoClick: () => void;
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -44,7 +46,9 @@ const Header: React.FC<HeaderProps> = ({
   notifications,
   markNotificationsAsRead,
   clearNotifications,
-  onLogoClick
+  onLogoClick,
+  searchQuery = '',
+  setSearchQuery = () => {}
 }) => {
   const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
 
@@ -52,11 +56,13 @@ const Header: React.FC<HeaderProps> = ({
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   // Refs for clicking outside to close
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -69,6 +75,9 @@ const Header: React.FC<HeaderProps> = ({
       }
       if (languageRef.current && !languageRef.current.contains(target)) {
         setIsLanguageOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(target)) {
+        setIsSearchExpanded(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -174,10 +183,14 @@ const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* User Balance Pill */}
-          <div className="balance-pill" key={balance}>
-            <span className="balance-amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
-            <button className="balance-deposit-btn" onClick={() => onDeposit(500)} title="Quick Deposit €500">+</button>
+          {/* User Balance Pill & Deposit Button */}
+          <div className="balance-container">
+            <div className="balance-pill" key={balance}>
+              <span className="balance-amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+            </div>
+            <button className="header-deposit-btn" onClick={() => onDeposit(500)} title={language === 'ru' ? 'Быстрый депозит €500' : 'Quick Deposit €500'}>
+              {language === 'ru' ? 'Депозит' : language === 'de' ? 'Einzahlung' : language === 'es' ? 'Depósito' : 'Deposit'}
+            </button>
           </div>
 
           {/* Auth Section / Profile Dropdown */}
@@ -267,8 +280,17 @@ const Header: React.FC<HeaderProps> = ({
             </li>
           ))}
         </ul>
-        <div className="nav-search">
-          <Search size={18} color="var(--bwin-gray-text)" />
+        <div className={`nav-search-container ${isSearchExpanded ? 'expanded' : ''}`} ref={searchRef}>
+          <button className="nav-search-btn" onClick={() => setIsSearchExpanded(prev => !prev)} aria-label="Toggle Search">
+            <Search size={18} color="var(--bwin-gray-text)" />
+          </button>
+          <input 
+            type="text" 
+            placeholder={t('Search events...', language)} 
+            className="nav-search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
       </nav>
     </header>

@@ -780,6 +780,8 @@ function App() {
         markNotificationsAsRead={markNotificationsAsRead}
         clearNotifications={clearNotifications}
         onLogoClick={handleLogoClick}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
 
       <LiveTicker matches={matches} onSelectMatch={setSelectedMatchId} />
@@ -814,7 +816,7 @@ function App() {
             setSearchQuery={setSearchQuery}
             language={language}
             favorites={favorites}
-            toggleFavorite={toggleFavorite}
+            onSelectMatch={setSelectedMatchId}
           />
         </div>
         
