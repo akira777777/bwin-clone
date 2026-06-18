@@ -19,7 +19,7 @@ const CASINO_GAMES: Game[] = [
   { id: '3', title: 'Crazy Time', provider: 'Evolution', color: 'linear-gradient(135deg, #f12711, #f5af19)', icon: <Play size={40} />, category: 'Live Dealer', image: '/casino/crazy_time.png' },
   { id: '4', title: 'Starburst', provider: 'NetEnt', color: 'linear-gradient(135deg, #8E2DE2, #4A00E0)', icon: <Diamond size={40} />, category: 'Slots', image: '/casino/starburst.png' },
   { id: '5', title: 'Sweet Bonanza', provider: 'Pragmatic Play', color: 'linear-gradient(135deg, #ff00cc, #333399)', icon: <Sparkles size={40} />, category: 'Slots', image: '/casino/sweet_bonanza.png' },
-  { id: '6', title: 'Bwin Blackjack', provider: 'Bwin Exclusive', color: 'linear-gradient(135deg, #000000, #434343)', icon: <Coins size={40} />, category: 'Table Games', image: '/casino/blackjack.png' },
+  { id: '6', title: 'BETZ Blackjack', provider: 'BETZ Exclusive', color: 'linear-gradient(135deg, #000000, #434343)', icon: <Coins size={40} />, category: 'Table Games', image: '/casino/blackjack.png' },
   { id: '7', title: 'Mega Moolah', provider: 'Microgaming', color: 'linear-gradient(135deg, #11998e, #38ef7d)', icon: <Diamond size={40} />, category: 'Slots', image: '/casino/mega_moolah.png' },
   { id: '8', title: 'European Roulette', provider: 'Playtech', color: 'linear-gradient(135deg, #2c3e50, #3498db)', icon: <Play size={40} />, category: 'Table Games', image: '/casino/european_roulette.png' },
 ];

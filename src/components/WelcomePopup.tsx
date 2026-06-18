@@ -23,7 +23,7 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ isOpen, onClose, openRegist
         return {
           badge: 'Эксклюзивное предложение',
           title: 'Страховка первой ставки до $50',
-          desc: 'Добро пожаловать в новый bwin! Зарегистрируйтесь сейчас и получите 100% страховку на вашу первую ставку. Если она проиграет, мы вернем ставку в виде фрибета.',
+          desc: 'Добро пожаловать в новый BETZ! Зарегистрируйтесь сейчас и получите 100% страховку на вашу первую ставку. Если она проиграет, мы вернем ставку в виде фрибета.',
           btn: 'Получить бонус и начать',
           terms: '*Применяются правила и условия. Только для новых игроков.',
         };
@@ -31,7 +31,7 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ isOpen, onClose, openRegist
         return {
           badge: 'Exklusives Angebot',
           title: 'Erste Wette versichert bis $50',
-          desc: 'Willkommen beim neuen bwin! Registrieren Sie sich jetzt und sichern Sie sich eine 100%ige Absicherung auf Ihre erste Wette. Wenn sie verliert, erstatten wir Ihnen Ihren Einsatz als Freiwette.',
+          desc: 'Willkommen beim neuen BETZ! Registrieren Sie sich jetzt und sichern Sie sich eine 100%ige Absicherung auf Ihre erste Wette. Wenn sie verliert, erstatten wir Ihnen Ihren Einsatz als Freiwette.',
           btn: 'Bonus sichern & starten',
           terms: '*Es gelten die AGB. Nur für neue Spieler.',
         };
@@ -39,7 +39,7 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ isOpen, onClose, openRegist
         return {
           badge: 'Oferta Exclusiva',
           title: 'Seguro de primera apuesta hasta $50',
-          desc: '¡Bienvenido al nuevo bwin! Regístrese ahora y obtenga un seguro del 100% en su primera apuesta. Si pierde, le reembolsaremos su importe como una apuesta gratuita.',
+          desc: '¡Bienvenido al nuevo BETZ! Regístrese ahora y obtenga un seguro del 100% en su primera apuesta. Si pierde, le reembolsaremos su importe como una apuesta gratuita.',
           btn: 'Reclamar bono y comenzar',
           terms: '*Se aplican términos y condiciones. Solo nuevos jugadores.',
         };
@@ -47,7 +47,7 @@ const WelcomePopup: React.FC<WelcomePopupProps> = ({ isOpen, onClose, openRegist
         return {
           badge: 'Exclusive Offer',
           title: 'First Bet Insurance up to $50',
-          desc: 'Welcome to the new bwin! Register now and get 100% insurance on your first bet. If it loses, we will refund your stake as a Free Bet.',
+          desc: 'Welcome to the new BETZ! Register now and get 100% insurance on your first bet. If it loses, we will refund your stake as a Free Bet.',
           btn: 'Claim Bonus & Start',
           terms: '*Terms and conditions apply. New players only.',
         };

@@ -45,7 +45,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
         'Passwords do not match': 'Пароли не совпадают',
         'Password must be at least 6 characters': 'Пароль должен быть не менее 6 символов',
         'Successfully logged in! Welcome back.': 'Вход выполнен успешно! С возвращением.',
-        'Account created! Welcome to bwin.': 'Аккаунт создан! Добро пожаловать на bwin.',
+        'Account created! Welcome to BETZ.': 'Аккаунт создан! Добро пожаловать на BETZ.',
         'Authentication failed. Please try again.': 'Ошибка аутентификации. Пожалуйста, попробуйте еще раз.',
         'Please enter your email first': 'Пожалуйста, введите сначала ваш email',
         'Password reset link sent to ': 'Ссылка для сброса пароля отправлена на ',
@@ -69,7 +69,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
         'Passwords do not match': 'Passwörter stimmen nicht überein',
         'Password must be at least 6 characters': 'Das Passwort muss mindestens 6 Zeichen lang sein',
         'Successfully logged in! Welcome back.': 'Erfolgreich eingeloggt! Willkommen zurück.',
-        'Account created! Welcome to bwin.': 'Konto erstellt! Willkommen bei bwin.',
+        'Account created! Welcome to BETZ.': 'Konto erstellt! Willkommen bei BETZ.',
         'Authentication failed. Please try again.': 'Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
         'Please enter your email first': 'Bitte geben Sie zuerst Ihre E-Mail-Adresse ein',
         'Password reset link sent to ': 'Link zum Zurücksetzen des Passworts gesendet an ',
@@ -93,7 +93,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
         'Passwords do not match': 'Las contraseñas no coinciden',
         'Password must be at least 6 characters': 'La contraseña debe tener al menos 6 caracteres',
         'Successfully logged in! Welcome back.': '¡Inicio de sesión correcto! Bienvenido de nuevo.',
-        'Account created! Welcome to bwin.': '¡Cuenta creada! Bienvenido a bwin.',
+        'Account created! Welcome to BETZ.': '¡Cuenta creada! Bienvenido a BETZ.',
         'Authentication failed. Please try again.': 'Error de autenticación. Por favor, inténtelo de nuevo.',
         'Please enter your email first': 'Por favor, introduzca su correo primero',
         'Password reset link sent to ': 'Enlace de restablecimiento enviado a ',
@@ -156,7 +156,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
         setSuccessMessage(
           activeTab === 'login' 
             ? getAuthText('Successfully logged in! Welcome back.')
-            : getAuthText('Account created! Welcome to bwin.')
+            : getAuthText('Account created! Welcome to BETZ.')
         );
 
         setTimeout(() => {
@@ -170,7 +170,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
           setIsSubmitting(false);
           const message = activeTab === 'login' 
             ? getAuthText('Successfully logged in! Welcome back.')
-            : getAuthText('Account created! Welcome to bwin.');
+            : getAuthText('Account created! Welcome to BETZ.');
           setSuccessMessage(message);
           
           setTimeout(() => {

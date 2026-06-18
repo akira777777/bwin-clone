@@ -95,21 +95,22 @@ function App() {
   const userEmail = user?.email ?? null;
 
   // New features state
+  // New features state
   const [oddsFormat, setOddsFormat] = useState<OddsFormat>(() => {
-    return (localStorage.getItem('bwin_odds_format') as OddsFormat) || 'decimal';
+    return ((localStorage.getItem('betz_odds_format') || localStorage.getItem('bwin_odds_format')) as OddsFormat) || 'decimal';
   });
   const [language, setLanguage] = useState<string>(() => {
-    return localStorage.getItem('bwin_language') || 'en';
+    return localStorage.getItem('betz_language') || localStorage.getItem('bwin_language') || 'en';
   });
   const [notifications, setNotifications] = useState<AppNotification[]>(() => {
-    const stored = localStorage.getItem('bwin_notifications');
+    const stored = localStorage.getItem('betz_notifications') || localStorage.getItem('bwin_notifications');
     if (stored) {
       try { return JSON.parse(stored); } catch { /* invalid JSON */ }
     }
     return [
       {
         id: 'welcome',
-        message: '👋 Welcome to bwin! Get your first bet insured up to $50.',
+        message: '👋 Welcome to BETZ! Get your first bet insured up to $50.',
         time: new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
         read: false,
         type: 'system'
@@ -119,25 +120,25 @@ function App() {
 
   // Sync to localStorage
   useEffect(() => {
-    localStorage.setItem('bwin_odds_format', oddsFormat);
+    localStorage.setItem('betz_odds_format', oddsFormat);
   }, [oddsFormat]);
 
   useEffect(() => {
-    localStorage.setItem('bwin_language', language);
+    localStorage.setItem('betz_language', language);
   }, [language]);
 
   useEffect(() => {
-    localStorage.setItem('bwin_notifications', JSON.stringify(notifications));
+    localStorage.setItem('betz_notifications', JSON.stringify(notifications));
   }, [notifications]);
 
   // Trigger WelcomePopup on mount if not logged in and welcome has not been shown yet
   useEffect(() => {
     if (!isLoggedIn) {
-      const welcomeSeen = localStorage.getItem('bwin_welcome_seen');
+      const welcomeSeen = localStorage.getItem('betz_welcome_seen') || localStorage.getItem('bwin_welcome_seen');
       if (!welcomeSeen) {
         const timer = setTimeout(() => {
           setIsWelcomePopupOpen(true);
-          localStorage.setItem('bwin_welcome_seen', 'true');
+          localStorage.setItem('betz_welcome_seen', 'true');
         }, 1500);
         return () => clearTimeout(timer);
       }
@@ -159,7 +160,7 @@ function App() {
 
   // Favorites system
   const [favorites, setFavorites] = useState<string[]>(() => {
-    const stored = localStorage.getItem('bwin_favorites');
+    const stored = localStorage.getItem('betz_favorites') || localStorage.getItem('bwin_favorites');
     if (stored) {
       try { return JSON.parse(stored); } catch { /* invalid */ }
     }
@@ -167,7 +168,7 @@ function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem('bwin_favorites', JSON.stringify(favorites));
+    localStorage.setItem('betz_favorites', JSON.stringify(favorites));
   }, [favorites]);
 
   const toggleFavorite = useCallback((id: string) => {
@@ -210,8 +211,9 @@ function App() {
 
   // Load balance from localStorage based on guest or user
   useEffect(() => {
-    const key = user ? `bwin_balance_${user.id}` : 'bwin_balance_guest';
-    const stored = localStorage.getItem(key);
+    const key = user ? `betz_balance_${user.id}` : 'betz_balance_guest';
+    const legacyKey = user ? `bwin_balance_${user.id}` : 'bwin_balance_guest';
+    const stored = localStorage.getItem(key) || localStorage.getItem(legacyKey);
     if (stored !== null) {
       const val = parseFloat(stored);
       if (!isNaN(val)) {
@@ -225,7 +227,7 @@ function App() {
 
   const updateBalance = useCallback((newBalance: number) => {
     setBalance(newBalance);
-    const key = user ? `bwin_balance_${user.id}` : 'bwin_balance_guest';
+    const key = user ? `betz_balance_${user.id}` : 'betz_balance_guest';
     localStorage.setItem(key, newBalance.toFixed(2));
   }, [user]);
 

@@ -35,9 +35,9 @@ describe('App (focused RTL slice for global state, simulations, bet flow)', () =
   it('renders the main layout with Header, sidebars, MainContent, Footer', async () => {
     render(<App />);
 
-    // Header elements - use getAllBy because "bwin" appears in logo + footer
-    const bwinMentions = screen.getAllByText(/bwin/i);
-    expect(bwinMentions.length).toBeGreaterThan(0);
+    // Header elements - use getAllBy because "BETZ" appears in logo + footer
+    const betzMentions = screen.getAllByText(/BETZ/i);
+    expect(betzMentions.length).toBeGreaterThan(0);
     expect(screen.getByText('Log In')).toBeInTheDocument();
     expect(screen.getByText('Register')).toBeInTheDocument();
 

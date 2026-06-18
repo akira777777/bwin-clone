@@ -199,7 +199,7 @@ function QRCodeSVG({ address, icon, color }: QRProps) {
 
   for (let r = 0; r < GRID; r++) {
     for (let c = 0; c < GRID; c++) {
-      let dark = false;
+      let dark: boolean;
       if (isFinderPattern(r, c)) {
         dark = true;
       } else if (isTimingPattern(r, c)) {
@@ -289,13 +289,7 @@ export default function CryptoDeposit({ onDeposit, onClose }: CryptoDepositProps
     return () => clearInterval(id);
   }, []);
 
-  // Reset state when switching crypto
-  useEffect(() => {
-    setAmount('');
-    setStage('input');
-    setTxHash('');
-    setTxStatus(null);
-  }, [activeCrypto]);
+
 
   // Blockchain verification polling
   useEffect(() => {
@@ -393,7 +387,13 @@ export default function CryptoDeposit({ onDeposit, onClose }: CryptoDepositProps
               key={c.id}
               className={`crypto-tab${activeCrypto === c.id ? ' active' : ''}`}
               style={activeCrypto === c.id ? { borderColor: c.color, color: c.color } : {}}
-              onClick={() => setActiveCrypto(c.id)}
+              onClick={() => {
+                setActiveCrypto(c.id);
+                setAmount('');
+                setStage('input');
+                setTxHash('');
+                setTxStatus(null);
+              }}
             >
               <span className="crypto-tab-icon">{c.icon}</span>
               {c.id}

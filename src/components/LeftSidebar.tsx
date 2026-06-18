@@ -159,7 +159,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
     if (COMPETITION_BADGES[name]) return COMPETITION_BADGES[name];
     // Generate a 3-letter code from name
     const words = name.split(' ');
-    let code = '';
+    let code: string;
     if (words.length >= 3) {
       code = (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
     } else if (words.length === 2) {

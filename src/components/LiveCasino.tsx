@@ -18,7 +18,7 @@ interface LiveTable {
 const LIVE_TABLES: LiveTable[] = [
   { id: 'lt1', name: 'Lightning Roulette', category: 'Roulette', dealer: 'Sofia', players: 847, limits: '€1 – €500', color: 'linear-gradient(135deg, #f7971e, #ffd200)', videoUrl: '/videos/roulette.mp4', youtubeId: '83PKonTnHoA', startAt: 45 },
   { id: 'lt2', name: 'Immersive Roulette', category: 'Roulette', dealer: 'Maria', players: 312, limits: '€1 – €1,000', color: 'linear-gradient(135deg, #1f4037, #99f2c8)', videoUrl: '/videos/roulette.mp4', youtubeId: 'ZZMaLSrsgf4', startAt: 90 },
-  { id: 'lt3', name: 'Bwin Blackjack VIP', category: 'Blackjack', dealer: 'James', players: 7, limits: '€50 – €5,000', color: 'linear-gradient(135deg, #232526, #414345)', videoUrl: '/videos/blackjack.mp4', youtubeId: 'dfE-7NV4Vh8', startAt: 60 },
+  { id: 'lt3', name: 'BETZ Blackjack VIP', category: 'Blackjack', dealer: 'James', players: 7, limits: '€50 – €5,000', color: 'linear-gradient(135deg, #232526, #414345)', videoUrl: '/videos/blackjack.mp4', youtubeId: 'dfE-7NV4Vh8', startAt: 60 },
   { id: 'lt4', name: 'Infinite Blackjack', category: 'Blackjack', dealer: 'Anna', players: 999, limits: '€1 – €200', color: 'linear-gradient(135deg, #1c1c1c, #303030)', videoUrl: '/videos/blackjack.mp4', youtubeId: 'AZ2sb5B_JmA', startAt: 120 },
   { id: 'lt5', name: 'Speed Baccarat A', category: 'Baccarat', dealer: 'Chen', players: 128, limits: '€5 – €2,000', color: 'linear-gradient(135deg, #3a1c71, #d76d77)', videoUrl: '', youtubeId: '', startAt: 0 },
   { id: 'lt6', name: 'Mega Ball', category: 'Game Shows', dealer: 'Host', players: 12400, limits: '€0.10 – €250', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', videoUrl: '', youtubeId: '', startAt: 0 },

@@ -35,13 +35,13 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
     const getWelcomeMessage = () => {
       switch (language) {
         case 'ru':
-          return "👋 Привет! Добро пожаловать в службу поддержки bwin. Я ваш автоматический помощник. Чем могу помочь? (Попробуйте ввести: 'баланс', 'ставки', 'блокировка' или 'вывод')";
+          return "👋 Привет! Добро пожаловать в службу поддержки BETZ. Я ваш автоматический помощник. Чем могу помочь? (Попробуйте ввести: 'баланс', 'ставки', 'блокировка' или 'вывод')";
         case 'de':
-          return "👋 Hallo! Willkommen beim bwin Live-Support. Ich bin Ihr automatisierter Assistent. Wie kann ich Ihnen heute helfen? (Geben Sie ein: 'Guthaben', 'Wetten', 'Ausschluss' oder 'Auszahlung')";
+          return "👋 Hallo! Willkommen beim BETZ Live-Support. Ich bin Ihr automatisierter Assistent. Wie kann ich Ihnen heute helfen? (Geben Sie ein: 'Guthaben', 'Wetten', 'Ausschluss' oder 'Auszahlung')";
         case 'es':
-          return "👋 ¡Hola! Bienvenido al soporte en vivo de bwin. Soy su asistente automatizado. ¿Cómo puedo ayudarle hoy? (Escriba: 'saldo', 'apuestas', 'exclusión' o 'retiro')";
+          return "👋 ¡Hola! Bienvenido al soporte en vivo de BETZ. Soy su asistente automatizado. ¿Cómo puedo ayudarle hoy? (Escriba: 'saldo', 'apuestas', 'exclusión' o 'retiro')";
         default:
-          return "👋 Hello! Welcome to bwin Live Support. I'm your automated assistant. How can I help you today? (Try typing: 'balance', 'bets', 'exclusion', or 'withdraw')";
+          return "👋 Hello! Welcome to BETZ Live Support. I'm your automated assistant. How can I help you today? (Try typing: 'balance', 'bets', 'exclusion', or 'withdraw')";
       }
     };
     
@@ -87,7 +87,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
 
       if (language === 'ru') {
         if (query.includes('привет') || query.includes('здравствуй') || query.includes('ку') || query.includes('хей')) {
-          botResponseText = "Здравствуйте! Я автоматический агент bwin. Спросите меня о вашем 'балансе', ваших 'ставках' или 'блокировке', и я проверю информацию.";
+          botResponseText = "Здравствуйте! Я автоматический агент BETZ. Спросите меня о вашем 'балансе', ваших 'ставках' или 'блокировке', и я проверю информацию.";
         } else if (query.includes('баланс') || query.includes('деньги') || query.includes('средства') || query.includes('счет')) {
           botResponseText = `💰 Ваш текущий баланс на счете составляет €${balance.toFixed(2)}. Вы можете моментально внести €500.00 с помощью кнопки быстрого депозита (+) в шапке сайта!`;
         } else if (query.includes('ставк') || query.includes('билет') || query.includes('купон') || query.includes('экспресс') || query.includes('ординар')) {
@@ -109,7 +109,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
         }
       } else if (language === 'de') {
         if (query.includes('hallo') || query.includes('hi') || query.includes('hey') || query.includes('guten tag')) {
-          botResponseText = "Hallo! Ich bin Ihr automatisierter bwin-Assistent. Fragen Sie mich nach Ihrem 'Guthaben', Ihren 'Wetten' oder Ihrem 'Ausschluss', und ich werde nachsehen.";
+          botResponseText = "Hallo! Ich bin Ihr automatisierter BETZ-Assistent. Fragen Sie mich nach Ihrem 'Guthaben', Ihren 'Wetten' oder Ihrem 'Ausschluss', und ich werde nachsehen.";
         } else if (query.includes('guthaben') || query.includes('geld') || query.includes('kontostand')) {
           botResponseText = `💰 Ihr aktuelles Guthaben beträgt €${balance.toFixed(2)}. Sie können sofort €500.00 über die Schnelleinzahlung (+) im Header hinzufügen!`;
         } else if (query.includes('wette') || query.includes('schein') || query.includes('wettschein')) {
@@ -131,7 +131,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
         }
       } else if (language === 'es') {
         if (query.includes('hola') || query.includes('buenos dias') || query.includes('hey') || query.includes('buenas')) {
-          botResponseText = "¡Hola! Soy su agente automatizado de bwin. Pregúnteme sobre su 'saldo', sus 'apuestas' o su 'exclusión' y buscaré la información.";
+          botResponseText = "¡Hola! Soy su agente automatizado de BETZ. Pregúnteme sobre su 'saldo', sus 'apuestas' o su 'exclusión' y buscaré la información.";
         } else if (query.includes('saldo') || query.includes('dinero') || query.includes('fondos') || query.includes('cuenta')) {
           botResponseText = `💰 Su saldo de cuenta actual es €${balance.toFixed(2)}. ¡Puede agregar €500.00 al instante usando el botón de depósito rápido (+) en el encabezado!`;
         } else if (query.includes('apuesta') || query.includes('boleto') || query.includes('cupon') || query.includes('ticket')) {
@@ -153,7 +153,7 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
         }
       } else {
         if (query.includes('hi') || query.includes('hello') || query.includes('hey')) {
-          botResponseText = "Hello! I am your bwin automated agent. Ask me about your 'balance', your 'bets', or 'exclusions', and I'll look them up for you.";
+          botResponseText = "Hello! I am your BETZ automated agent. Ask me about your 'balance', your 'bets', or 'exclusions', and I'll look them up for you.";
         } else if (query.includes('balance') || query.includes('money') || query.includes('funds')) {
           botResponseText = `💰 Your current account balance is €${balance.toFixed(2)}. You can add €500.00 instantly using the Quick Deposit (+) button in the header!`;
         } else if (query.includes('bet') || query.includes('ticket') || query.includes('slip')) {
@@ -189,10 +189,10 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
 
   const getHeaderText = () => {
     switch (language) {
-      case 'ru': return { title: 'Помощник bwin', status: 'Всегда онлайн' };
-      case 'de': return { title: 'bwin Assistent', status: 'Immer online' };
-      case 'es': return { title: 'Asistente bwin', status: 'Siempre en línea' };
-      default: return { title: 'bwin Assistant', status: 'Always Online' };
+      case 'ru': return { title: 'Помощник BETZ', status: 'Всегда онлайн' };
+      case 'de': return { title: 'BETZ Assistent', status: 'Immer online' };
+      case 'es': return { title: 'Asistente BETZ', status: 'Siempre en línea' };
+      default: return { title: 'BETZ Assistant', status: 'Always Online' };
     }
   };
 

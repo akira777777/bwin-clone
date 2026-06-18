@@ -83,10 +83,20 @@ const FooterModal: React.FC<FooterModalProps> = ({
   const [contactMessage, setContactMessage] = useState('');
   
   // Cookie Preferences
-  const [cookies, setCookies] = useState({
-    essential: true,
-    analytical: true,
-    marketing: false,
+  const [cookies, setCookies] = useState<{
+    essential: boolean;
+    analytical: boolean;
+    marketing: boolean;
+  }>(() => {
+    const stored = localStorage.getItem('betz_cookie_prefs') || localStorage.getItem('bwin_cookie_prefs');
+    if (stored) {
+      try { return JSON.parse(stored); } catch { /* invalid */ }
+    }
+    return {
+      essential: true,
+      analytical: true,
+      marketing: false,
+    };
   });
 
   // Responsible Gaming Slider & Timeout States
@@ -157,7 +167,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
   // GDPR Data Export
   const handleDataExport = () => {
     const data = {
-      brand: 'bwin',
+      brand: 'BETZ',
       exportDate: new Date().toISOString(),
       profile: {
         accountStatus: selfExclusionEndTime > Date.now() ? 'Self-Excluded' : 'Active',
@@ -167,13 +177,13 @@ const FooterModal: React.FC<FooterModalProps> = ({
         dailyDepositLimit: depositLimit,
       },
       cookiesAccepted: cookies,
-      note: 'This export contains personal data held by bwin Interactive Entertainment AG as required by GDPR Article 20 (Right to Data Portability).'
+      note: 'This export contains personal data held by BETZ Interactive Entertainment AG as required by GDPR Article 20 (Right to Data Portability).'
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `bwin_profile_data_export.json`;
+    link.download = `betz_profile_data_export.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -191,7 +201,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
 
   // Cookie Save
   const handleSaveCookies = () => {
-    localStorage.setItem('bwin_cookie_prefs', JSON.stringify(cookies));
+    localStorage.setItem('betz_cookie_prefs', JSON.stringify(cookies));
     const successMsg = language === 'ru'
       ? '🍪 Настройки файлов cookie сохранены!'
       : language === 'de'
@@ -289,7 +299,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
               {language === 'ru' ? (
                 <>
                   <p className="fm-highlight-text">
-                    bwin — это ведущий мировой бренд ставок на спорт, известный своими инновациями в режиме лайв, премиальным темным дизайном и безопасной игровой средой.
+                    BETZ — это ведущий мировой бренд ставок на спорт, известный своими инновациями в режиме лайв, премиальным темным дизайном и безопасной игровой средой.
                   </p>
                   <div className="fm-stats-grid">
                     <div className="fm-stat-card"><span className="stat-num">1997</span><span className="stat-label">Основан</span></div>
@@ -303,7 +313,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
               ) : language === 'de' ? (
                 <>
                   <p className="fm-highlight-text">
-                    bwin ist eine führende globale Sportwettenmarke, bekannt für Live-Wetten-Innovationen, erstklassige dunkle Ästhetik und sichere Spielumgebungen.
+                    BETZ ist eine führende globale Sportwettenmarke, bekannt für Live-Wetten-Innovationen, erstklassige dunkle Ästhetik und sichere Spielumgebungen.
                   </p>
                   <div className="fm-stats-grid">
                     <div className="fm-stat-card"><span className="stat-num">1997</span><span className="stat-label">Gegründet</span></div>
@@ -317,7 +327,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
               ) : language === 'es' ? (
                 <>
                   <p className="fm-highlight-text">
-                    bwin es una marca líder mundial de apuestas deportivas, famosa por su innovación en apuestas en vivo, estética oscura premium y entornos de juego seguros.
+                    BETZ es una marca líder mundial de apuestas deportivas, famosa por su innovación en apuestas en vivo, estética oscura premium y entornos de juego seguros.
                   </p>
                   <div className="fm-stats-grid">
                     <div className="fm-stat-card"><span className="stat-num">1997</span><span className="stat-label">Fundado</span></div>
@@ -331,7 +341,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
               ) : (
                 <>
                   <p className="fm-highlight-text">
-                    bwin is a premier global sports betting brand, renowned for live betting innovation, premium dark aesthetic, and safe gaming environments.
+                    BETZ is a premier global sports betting brand, renowned for live betting innovation, premium dark aesthetic, and safe gaming environments.
                   </p>
                   <div className="fm-stats-grid">
                     <div className="fm-stat-card"><span className="stat-num">1997</span><span className="stat-label">Founded</span></div>
@@ -487,12 +497,12 @@ const FooterModal: React.FC<FooterModalProps> = ({
             <div className="fm-content-pane fade-in scrollable-y">
               <p className="responsible-intro">
                 {language === 'ru'
-                  ? 'bwin стремится обеспечить безопасную и ответственную игровую среду. Установите лимиты на депозиты или временно заблокируйте свой аккаунт.'
+                  ? 'BETZ стремится обеспечить безопасную и ответственную игровую среду. Установите лимиты на депозиты или временно заблокируйте свой аккаунт.'
                   : language === 'de'
-                  ? 'bwin setzt sich für eine sichere und verantwortungsvolle Spielumgebung ein. Richten Sie Einzahlungslimits ein oder sperren Sie Ihre Kontoaktivität.'
+                  ? 'BETZ setzt sich für eine sichere und verantwortungsvolle Spielumgebung ein. Richten Sie Einzahlungslimits ein oder sperren Sie Ihre Kontoaktivität.'
                   : language === 'es'
-                  ? 'bwin se compromete a proporcionar un entorno de juego seguro y responsable. Establezca límites de depósito o autoexclúyase.'
-                  : 'bwin is committed to providing a secure and responsible gaming environment. Set deposit limits or self-exclude to lock account activity.'}
+                  ? 'BETZ se compromete a proporcionar un entorno de juego seguro y responsable. Establezca límites de depósito o autoexclúyase.'
+                  : 'BETZ is committed to providing a secure and responsible gaming environment. Set deposit limits or self-exclude to lock account activity.'}
               </p>
 
               <div className="responsible-section">
@@ -587,7 +597,7 @@ const FooterModal: React.FC<FooterModalProps> = ({
                   ? 'Benötigen Sie Hilfe? Reichen Sie unten ein Ticket ein oder starten Sie einen Live-Chat, um sofort mit unserem Bot zu sprechen.'
                   : language === 'es'
                   ? '¿Necesita ayuda? Envíe un boleto a continuación o inicie una sesión de chat en vivo con nuestro bot de soporte.'
-                  : 'Need support? Submit a ticket below, or open a live chat session to talk to our automated bwin support bot immediately.'}
+                  : 'Need support? Submit a ticket below, or open a live chat session to talk to our automated BETZ support bot immediately.'}
               </p>
               
               <div className="contact-methods-wrapper">

@@ -265,7 +265,7 @@ const MainContent: React.FC<MainContentProps> = ({
 
   return (
     <main className="main-content" style={{ position: 'relative' }}>
-      <h1 className="visually-hidden">Bwin Clone Sports Betting - Live Odds</h1>
+      <h1 className="visually-hidden">BETZ Sportsbook - Live Odds</h1>
       
       {toast && (
         <div className="toast-notification" role="alert">

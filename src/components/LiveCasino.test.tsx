@@ -28,13 +28,13 @@ describe('LiveCasino Component Tests', () => {
 
     // Initially all tables are visible
     expect(screen.getByText('Lightning Roulette')).toBeInTheDocument();
-    expect(screen.getByText('Bwin Blackjack VIP')).toBeInTheDocument();
+    expect(screen.getByText('BETZ Blackjack VIP')).toBeInTheDocument();
 
     // Click Blackjack filter
     await user.click(screen.getByRole('button', { name: 'Blackjack' }));
 
     // Blackjack is visible, Roulette is hidden
-    expect(screen.getByText('Bwin Blackjack VIP')).toBeInTheDocument();
+    expect(screen.getByText('BETZ Blackjack VIP')).toBeInTheDocument();
     expect(screen.queryByText('Lightning Roulette')).not.toBeInTheDocument();
   });
 
