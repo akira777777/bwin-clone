@@ -15,6 +15,27 @@ interface MatchRowProps {
   onToggleFavorite?: (id: string) => void;
 }
 
+const getTeamAbbreviation = (name: string): string => {
+  const words = name.split(' ');
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+  return name.substring(0, 3).toUpperCase();
+};
+
+const getTeamColor = (name: string): string => {
+  const colors = [
+    '#2563EB', '#16A34A', '#DC2626', '#D97706', '#7C3AED', 
+    '#0891B2', '#059669', '#EA580C', '#4F46E5', '#DB2777'
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
+};
+
 const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMatch, oddsFormat, isFavorite = false, onToggleFavorite }) => {
   const isBetSelected = (selection: string) => {
     return betSlip.some(b => b.id === `${match.id}-${selection}`);
@@ -44,7 +65,7 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
 
   const renderOddsButton = (selection: 'home' | 'draw' | 'away', label: string, val: number) => {
     if (val === 0) {
-      return <div className="odds-btn disabled-odds" style={{ opacity: 0.2, cursor: 'default' }}>-</div>;
+      return <div className="odds-btn disabled-odds">-</div>;
     }
 
     const isSelected = isBetSelected(selection);
@@ -67,24 +88,30 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
   };
 
   return (
-    <div className={`match-row ${match.isLive ? 'match-row-live' : ''}`} onClick={() => onSelectMatch(match.id)} style={{ cursor: 'pointer' }}>
+    <div className={`match-row ${match.isLive ? 'match-row-live' : ''}`} onClick={() => onSelectMatch(match.id)}>
       {/* Favorite Star */}
       <button 
         className={`match-favorite-btn ${isFavorite ? 'favorited' : ''}`} 
         onClick={handleFavoriteClick}
         aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
       >
-        <Star size={14} fill={isFavorite ? 'var(--bwin-yellow)' : 'none'} />
+        <Star size={14} fill={isFavorite ? 'var(--betz-accent)' : 'none'} style={{ color: isFavorite ? 'var(--betz-accent)' : 'var(--betz-text-muted)' }} />
       </button>
 
       <div className="match-info">
         <div className="match-league">{match.league}</div>
         <div className="match-teams">
           <div className="team">
+            <div className="team-badge-square" style={{ backgroundColor: getTeamColor(match.team1) }}>
+              {getTeamAbbreviation(match.team1)}
+            </div>
             <span className="team-name" title={match.team1}>{match.team1}</span>
             {match.isLive && match.score && <span className="score">{match.score.split(' - ')[0]}</span>}
           </div>
           <div className="team">
+            <div className="team-badge-square" style={{ backgroundColor: getTeamColor(match.team2) }}>
+              {getTeamAbbreviation(match.team2)}
+            </div>
             <span className="team-name" title={match.team2}>{match.team2}</span>
             {match.isLive && match.score && <span className="score">{match.score.split(' - ')[1]}</span>}
           </div>
@@ -100,11 +127,13 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
           )}
         </div>
       </div>
+      
       <div className="match-odds">
         {renderOddsButton('home', '1', match.odds.home)}
         {renderOddsButton('draw', 'X', match.odds.draw)}
         {renderOddsButton('away', '2', match.odds.away)}
       </div>
+      
       {/* Extra markets count + arrow */}
       <div className="match-more-markets" onClick={(e) => { e.stopPropagation(); onSelectMatch(match.id); }}>
         {extraMarkets > 0 && <span className="market-count-badge">+{extraMarkets}</span>}
@@ -114,7 +143,6 @@ const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMat
   );
 };
 
-// Ensure it only re-renders if match data changes or betSlip changes specifically for this match
 export default React.memo(MatchRow, (prev, next) => {
   return prev.match === next.match && prev.betSlip === next.betSlip && prev.oddsFormat === next.oddsFormat && prev.isFavorite === next.isFavorite;
 });

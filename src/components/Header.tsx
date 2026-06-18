@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign } from 'lucide-react';
-import type { Category, AppNotification } from '../App';
+import type { Category, AppNotification, Sport } from '../App';
 import type { OddsFormat } from '../utils/betting';
 import { t } from '../utils/i18n';
 import CryptoDeposit from './CryptoDeposit';
@@ -28,6 +28,8 @@ interface HeaderProps {
   onLogoClick: () => void;
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
+  activeSport?: Sport;
+  setActiveSport?: (sport: Sport) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -51,10 +53,10 @@ const Header: React.FC<HeaderProps> = ({
   clearNotifications,
   onLogoClick,
   searchQuery = '',
-  setSearchQuery = () => {}
+  setSearchQuery = () => {},
+  activeSport = 'Football',
+  setActiveSport
 }) => {
-  const categories: Category[] = ['Sports', 'Live Betting', 'Virtuals', 'Casino', 'Live Casino', 'Poker'];
-
   // Deposit modal state
   const [isCryptoDepositOpen, setIsCryptoDepositOpen] = useState(false);
 
@@ -63,14 +65,12 @@ const Header: React.FC<HeaderProps> = ({
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isOddsFormatOpen, setIsOddsFormatOpen] = useState(false);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   // Refs for clicking outside to close
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
   const oddsFormatRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -86,9 +86,6 @@ const Header: React.FC<HeaderProps> = ({
       }
       if (oddsFormatRef.current && !oddsFormatRef.current.contains(target)) {
         setIsOddsFormatOpen(false);
-      }
-      if (searchRef.current && !searchRef.current.contains(target)) {
-        setIsSearchExpanded(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -113,19 +110,77 @@ const Header: React.FC<HeaderProps> = ({
   const avatarChar = emailPrefix.charAt(0).toUpperCase();
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  // Handles clicking a sport or category in the second row Category Bar
+  const handleCategoryItemClick = (type: 'live' | 'sport' | 'category' | 'boosted', value?: string) => {
+    if (type === 'live') {
+      setActiveCategory('Live Betting');
+    } else if (type === 'sport' && value && setActiveSport) {
+      setActiveCategory('Sports');
+      setActiveSport(value as Sport);
+    } else if (type === 'category' && value) {
+      setActiveCategory(value as Category);
+    } else if (type === 'boosted') {
+      setActiveCategory('Sports');
+      if (setActiveSport) {
+        setActiveSport('Football'); // Or highlight special boosted odds
+      }
+    }
+  };
+
   return (
     <>
     <header className="header">
+      {/* Row 1: Logo, Nav Links, Search, Balance, Dropdowns, Auth */}
       <div className="header-top">
         <div className="header-left">
           <button className="mobile-toggle-btn" onClick={toggleMobileMenu}>
-            <Menu size={24} />
+            <Menu size={20} />
           </button>
+          
           <div className="logo" onClick={onLogoClick}>
-            <span style={{ color: 'var(--bwin-white)', fontWeight: 'bold', fontSize: '24px' }}>
-              bwin<span style={{ color: 'var(--bwin-yellow)' }}>.</span>
-            </span>
+            <div className="logo-icon-box">B</div>
+            <span className="logo-text">BETZ<span className="logo-dot">.</span></span>
           </div>
+
+          <nav className="top-nav">
+            <div 
+              className={`top-nav-link ${activeCategory === 'Sports' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('Sports')}
+            >
+              {t('Sports', language)}
+            </div>
+            <div 
+              className={`top-nav-link ${activeCategory === 'Live Betting' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('Live Betting')}
+            >
+              <span className="pulse-dot"></span>
+              {t('Live', language)}
+            </div>
+            <div 
+              className={`top-nav-link ${activeCategory === 'Casino' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('Casino')}
+            >
+              {t('Casino', language)}
+            </div>
+            <div 
+              className={`top-nav-link ${activeCategory === 'Poker' ? 'active' : ''}`}
+              onClick={() => setActiveCategory('Poker')}
+            >
+              {t('Promotions', language)}
+            </div>
+          </nav>
+        </div>
+
+        {/* Search Input */}
+        <div className="header-search">
+          <Search size={16} className="header-search-icon" />
+          <input 
+            type="text" 
+            placeholder={t('Search events...', language)} 
+            className="header-search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
         
         <div className="header-right">
@@ -137,7 +192,7 @@ const Header: React.FC<HeaderProps> = ({
               <ChevronDown size={12} className="chevron-icon" />
             </button>
             {isLanguageOpen && (
-              <div className="header-dropdown-menu lang-menu animate-fade-in">
+              <div className="header-dropdown-menu lang-menu">
                 {languages.map(l => (
                   <div 
                     key={l.code}
@@ -145,7 +200,7 @@ const Header: React.FC<HeaderProps> = ({
                     onClick={() => { setLanguage(l.code); setIsLanguageOpen(false); }}
                   >
                     <span className="lang-flag">{l.flag}</span>
-                    <span>{l.name}</span>
+                    <span style={{ marginLeft: '8px' }}>{l.name}</span>
                   </div>
                 ))}
               </div>
@@ -159,7 +214,7 @@ const Header: React.FC<HeaderProps> = ({
               <ChevronDown size={12} className="chevron-icon" />
             </button>
             {isOddsFormatOpen && (
-              <div className="header-dropdown-menu odds-menu animate-fade-in">
+              <div className="header-dropdown-menu odds-menu">
                 {(['decimal', 'fractional', 'american'] as OddsFormat[]).map(format => (
                   <div 
                     key={format}
@@ -175,12 +230,12 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* Notification Bell Dropdown */}
           <div className="header-dropdown-container" ref={notificationsRef}>
-            <button className="header-dropdown-trigger icon-btn bell-btn" onClick={handleNotificationClick}>
+            <button className="header-action-btn bell-btn" onClick={handleNotificationClick}>
               <Bell size={18} />
               {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
             </button>
             {isNotificationsOpen && (
-              <div className="header-dropdown-menu notifications-menu animate-fade-in">
+              <div className="header-dropdown-menu notifications-menu">
                 <div className="notifications-header">
                   <span>Notifications</span>
                   {notifications.length > 0 && (
@@ -218,17 +273,20 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* User Balance Pill & Deposit Button */}
           <div className="balance-container">
-            <div className="balance-pill" key={balance}>
-              <span className="balance-amount">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+            <div className="balance-widget" key={balance}>
+              <div className="balance-info">
+                <span className="balance-label">Balance</span>
+                <span className="balance-val">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+              </div>
+              <button className="header-deposit-btn" onClick={() => setIsCryptoDepositOpen(true)}>
+                {language === 'ru' ? 'Депозит' : language === 'de' ? 'Einzahlung' : language === 'es' ? 'Depósito' : 'Deposit'}
+              </button>
             </div>
-            <button className="header-deposit-btn" onClick={() => setIsCryptoDepositOpen(true)}>
-              {language === 'ru' ? 'Депозит' : language === 'de' ? 'Einzahlung' : language === 'es' ? 'Depósito' : 'Deposit'}
-            </button>
           </div>
 
           {/* Auth Section / Profile Dropdown */}
           {isLoggedIn ? (
-            <div className="header-dropdown-container" ref={profileRef}>
+            <div className="header-dropdown-container profile-container" ref={profileRef}>
               <button className="profile-trigger-btn" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                 <div className="profile-avatar">{avatarChar}</div>
                 <span className="profile-name">{emailPrefix}</span>
@@ -236,13 +294,13 @@ const Header: React.FC<HeaderProps> = ({
               </button>
               
               {isProfileOpen && (
-                <div className="header-dropdown-menu profile-menu animate-fade-in">
+                <div className="header-dropdown-menu profile-menu">
                   <div className="profile-menu-header">
                     <div className="profile-large-avatar">{avatarChar}</div>
                     <div className="profile-header-info">
                       <p className="profile-email" title={userEmail || undefined}>{userEmail}</p>
                       <div className="vip-badge-container">
-                        <Award size={12} style={{ color: 'var(--bwin-yellow)' }} />
+                        <Award size={12} style={{ color: 'var(--betz-accent)' }} />
                         <span className="vip-badge">Silver VIP</span>
                       </div>
                     </div>
@@ -301,30 +359,52 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
       
-      <nav className="header-nav">
-        <ul>
-          {categories.map(category => (
-            <li 
-              key={category} 
-              className={activeCategory === category ? 'active' : ''}
-              onClick={() => setActiveCategory(category)}
-            >
-              {t(category, language)}
-            </li>
-          ))}
+      {/* Row 2: Category bar */}
+      <nav className="category-bar">
+        <ul className="category-list">
+          <li 
+            className={`category-item live-category ${activeCategory === 'Live Betting' ? 'active' : ''}`}
+            onClick={() => handleCategoryItemClick('live')}
+          >
+            Live Betting <span className="category-live-badge">24</span>
+          </li>
+          <li 
+            className={`category-item ${activeCategory === 'Sports' && activeSport === 'Football' ? 'active' : ''}`}
+            onClick={() => handleCategoryItemClick('sport', 'Football')}
+          >
+            {t('Football', language)}
+          </li>
+          <li 
+            className={`category-item ${activeCategory === 'Sports' && activeSport === 'Tennis' ? 'active' : ''}`}
+            onClick={() => handleCategoryItemClick('sport', 'Tennis')}
+          >
+            {t('Tennis', language)}
+          </li>
+          <li 
+            className={`category-item ${activeCategory === 'Sports' && activeSport === 'Basketball' ? 'active' : ''}`}
+            onClick={() => handleCategoryItemClick('sport', 'Basketball')}
+          >
+            {t('Basketball', language)}
+          </li>
+          <li 
+            className={`category-item ${activeCategory === 'Sports' && activeSport === 'MMA' ? 'active' : ''}`}
+            onClick={() => handleCategoryItemClick('sport', 'MMA')}
+          >
+            Esports
+          </li>
+          <li 
+            className={`category-item ${activeCategory === 'Casino' ? 'active' : ''}`}
+            onClick={() => handleCategoryItemClick('category', 'Casino')}
+          >
+            {t('Casino', language)}
+          </li>
+          <li 
+            className={`category-item`}
+            onClick={() => handleCategoryItemClick('boosted')}
+          >
+            Boosted
+          </li>
         </ul>
-        <div className={`nav-search-container ${isSearchExpanded ? 'expanded' : ''}`} ref={searchRef}>
-          <button className="nav-search-btn" onClick={() => setIsSearchExpanded(prev => !prev)} aria-label="Toggle Search">
-            <Search size={18} color="var(--bwin-gray-text)" />
-          </button>
-          <input 
-            type="text" 
-            placeholder={t('Search events...', language)} 
-            className="nav-search-input"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
       </nav>
     </header>
     {isCryptoDepositOpen && (

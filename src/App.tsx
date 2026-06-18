@@ -796,6 +796,8 @@ function App() {
         onLogoClick={handleLogoClick}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        activeSport={activeSport}
+        setActiveSport={handleSportChange}
       />
 
       <LiveTicker matches={matches} onSelectMatch={setSelectedMatchId} />

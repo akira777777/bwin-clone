@@ -35,7 +35,7 @@ describe('RightSidebar (component tests)', () => {
     render(<RightSidebar {...props} />);
 
     expect(screen.getByText(/Your bet slip is empty/i)).toBeInTheDocument();
-    expect(screen.getByText(/Click on odds to add selections/i)).toBeInTheDocument();
+    expect(screen.getByText(/Add selections from sportsbook to place a bet/i)).toBeInTheDocument();
   });
 
   it('renders bet items when betSlip has selections', () => {

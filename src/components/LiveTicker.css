@@ -1,11 +1,11 @@
 /* ==========================================================================
-   LIVE EVENTS TICKER — Inspired by FONBET/1xBet
+   LIVE EVENTS TICKER — BETZ Sportsbook Lobby
    ========================================================================== */
 
 .live-ticker-bar {
   width: 100%;
-  background: linear-gradient(90deg, #0a0a14 0%, #0d0d1a 50%, #0a0a14 100%);
-  border-bottom: 1px solid var(--bwin-border);
+  background-color: var(--betz-surface);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
   position: relative;
   height: 44px;
@@ -19,26 +19,26 @@
   align-items: center;
   gap: 6px;
   padding: 0 14px;
+  font-family: 'Manrope', sans-serif;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--neon-red);
+  color: var(--betz-live-red);
   white-space: nowrap;
-  background: linear-gradient(90deg, #0a0a14 80%, transparent 100%);
+  background-color: var(--betz-surface);
   z-index: 2;
   height: 100%;
   flex-shrink: 0;
-  border-right: 1px solid rgba(255, 51, 102, 0.2);
+  border-right: 1px solid rgba(255, 86, 86, 0.15);
 }
 
 .live-ticker-label .live-dot-pulse {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--neon-red);
+  background-color: var(--betz-live-red);
   animation: liveDotPulse 1.2s ease-in-out infinite;
-  box-shadow: 0 0 6px var(--neon-red);
 }
 
 @keyframes liveDotPulse {
@@ -81,13 +81,13 @@
   height: 100%;
   cursor: pointer;
   white-space: nowrap;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background-color 0.2s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background-color 0.15s ease;
   flex-shrink: 0;
 }
 
 .ticker-item:hover {
-  background-color: rgba(0, 240, 255, 0.06);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .ticker-sport-icon {
@@ -99,29 +99,31 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  font-size: 11px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 11.5px;
   font-weight: 600;
-  color: var(--bwin-white);
+  color: var(--betz-text-primary);
   line-height: 1.2;
 }
 
 .ticker-score {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--bwin-yellow);
+  font-family: 'Sora', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--betz-accent);
   min-width: 36px;
   text-align: center;
-  text-shadow: 0 0 6px rgba(240, 255, 0, 0.4);
 }
 
 .ticker-time {
+  font-family: 'Manrope', sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: var(--neon-red);
-  background: rgba(255, 51, 102, 0.12);
+  color: var(--betz-live-red);
+  background: rgba(255, 86, 86, 0.08);
   padding: 2px 6px;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 51, 102, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 86, 86, 0.15);
 }
 
 .ticker-odds-mini {
@@ -130,13 +132,14 @@
 }
 
 .ticker-odds-mini span {
+  font-family: 'Sora', sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: var(--neon-cyan);
-  background: rgba(0, 240, 255, 0.08);
+  color: var(--betz-accent);
+  background: rgba(194, 249, 90, 0.06);
   padding: 2px 5px;
-  border-radius: 3px;
-  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 4px;
+  border: 1px solid rgba(194, 249, 90, 0.12);
 }
 
 /* No live events fallback */

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Search, Star, ChevronRight } from 'lucide-react';
+import { Search, Star, ChevronRight, Zap, TrendingUp, Award, Shield } from 'lucide-react';
 import type { Sport } from '../App';
 import type { MatchData } from '../data/matches';
 import { t } from '../utils/i18n';
@@ -26,14 +26,14 @@ interface LeagueInfo {
 
 const LEAGUES: LeagueInfo[] = [
   // Football
-  { name: 'Premier League', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', sport: 'Football' },
+  { name: 'Premier League', flag: '🏴\u200D󠁢󠁥󠁮󠁧󠁿', sport: 'Football' },
   { name: 'La Liga', flag: '🇪🇸', sport: 'Football' },
   { name: 'Champions League', flag: '🏆', sport: 'Football' },
   { name: 'Bundesliga', flag: '🇩🇪', sport: 'Football' },
   { name: 'Serie A', flag: '🇮🇹', sport: 'Football' },
   { name: 'Ligue 1', flag: '🇫🇷', sport: 'Football' },
   // Tennis
-  { name: 'Wimbledon', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', sport: 'Tennis' },
+  { name: 'Wimbledon', flag: '🏴\u200D󠁢󠁥󠁮󠁧󠁿', sport: 'Tennis' },
   { name: 'Roland Garros', flag: '🇫🇷', sport: 'Tennis' },
   { name: 'US Open', flag: '🇺🇸', sport: 'Tennis' },
   { name: 'ATP Finals', flag: '🎾', sport: 'Tennis' },
@@ -56,6 +56,16 @@ const SPORT_ICONS: Record<string, string> = {
   'Darts': '🎯',
   'Formula 1': '🏎️',
   'MMA': '🥋',
+};
+
+const COMPETITION_BADGES: Record<string, { code: string; color: string; bg: string }> = {
+  'Champions League': { code: 'UCL', color: '#FFFFFF', bg: '#0A2540' },
+  'Premier League': { code: 'EPL', color: '#FFFFFF', bg: '#3D195A' },
+  'La Liga': { code: 'LIG', color: '#FFFFFF', bg: '#00529F' },
+  'NBA': { code: 'NBA', color: '#FFFFFF', bg: '#1D428A' },
+  'Bundesliga': { code: 'DFB', color: '#FFFFFF', bg: '#D3010C' },
+  'Serie A': { code: 'ISA', color: '#FFFFFF', bg: '#002F6C' },
+  'Ligue 1': { code: 'L1', color: '#FFFFFF', bg: '#DAE025' },
 };
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({ 
@@ -145,16 +155,36 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
     setSearchQuery('');
   };
 
+  const getLeagueBadge = (name: string) => {
+    if (COMPETITION_BADGES[name]) return COMPETITION_BADGES[name];
+    // Generate a 3-letter code from name
+    const words = name.split(' ');
+    let code = '';
+    if (words.length >= 3) {
+      code = (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
+    } else if (words.length === 2) {
+      code = (words[0][0] + words[1][0] + words[1][1]).toUpperCase();
+    } else {
+      code = name.substring(0, 3).toUpperCase();
+    }
+    return { code, color: '#FFFFFF', bg: '#1B232B' };
+  };
+
+  const handleQuickLinkClick = (linkName: string) => {
+    // Show a simple console message or trigger filter
+    console.log(`Quick Link clicked: ${linkName}`);
+  };
+
   return (
     <aside className="left-sidebar">
-      {/* Search */}
-      <div className="sidebar-section">
-        <div className="search-box">
-          <Search size={16} className="search-icon" />
+      {/* Search Bar */}
+      <div className="sidebar-search-card">
+        <div className="sidebar-search">
+          <Search size={16} className="sidebar-search-icon" />
           <input 
             type="text" 
             placeholder={t('Search events...', language)} 
-            className="search-input" 
+            className="sidebar-search-input" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -163,26 +193,26 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
       {/* Favorites */}
       {favoriteMatches.length > 0 && (
-        <div className="sidebar-section">
-          <h3 className="section-title">
-            <Star size={12} className="title-icon" fill="var(--bwin-yellow)" style={{ color: 'var(--bwin-yellow)' }} />
+        <div className="sidebar-card">
+          <h3 className="sidebar-card-title">
+            <Star size={12} fill="var(--betz-accent)" style={{ color: 'var(--betz-accent)' }} />
             {language === 'ru' ? 'Избранное' : language === 'de' ? 'Favoriten' : language === 'es' ? 'Favoritos' : 'Favorites'}
           </h3>
           <ul className="sidebar-list">
             {favoriteMatches.map(match => (
               <li 
                 key={match.id}
-                className="sidebar-item favorite-item"
+                className="sidebar-item"
                 onClick={() => onSelectMatch?.(match.id)}
               >
-                <span className="sport-emoji">{SPORT_ICONS[match.sport] || '🏆'}</span>
-                <div className="favorite-match-teams">
-                  <span className="team-text">{match.team1}</span>
-                  <span className="team-text">{match.team2}</span>
+                <span className="sport-badge-emoji">{SPORT_ICONS[match.sport] || '🏆'}</span>
+                <div className="favorite-match-details">
+                  <span className="favorite-team">{match.team1}</span>
+                  <span className="favorite-team">{match.team2}</span>
                 </div>
                 <div className="item-meta">
                   {match.isLive && match.score && (
-                    <span className="live-score-badge">{match.score}</span>
+                    <span className="favorite-score">{match.score}</span>
                   )}
                   <ChevronRight size={14} className="chevron" />
                 </div>
@@ -192,31 +222,34 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </div>
       )}
 
-      {/* Highlights */}
-      <div className="sidebar-section">
-        <h3 className="section-title">
-          <Star size={12} className="title-icon" />
-          {t('Popular', language)}
+      {/* TOP COMPETITIONS CARD */}
+      <div className="sidebar-card">
+        <h3 className="sidebar-card-title">
+          <Star size={12} style={{ color: 'var(--betz-accent)' }} />
+          {language === 'ru' ? 'Популярные турниры' : language === 'de' ? 'Top-Wettbewerbe' : 'Top Competitions'}
         </h3>
         <ul className="sidebar-list">
           {popularLeagues.map(league => {
             const stats = leagueStats[league.name];
+            const badge = getLeagueBadge(league.name);
             return (
               <li 
                 key={league.name}
-                className={`sidebar-item highlight-item ${activeLeague === league.name ? 'active' : ''}`}
+                className={`sidebar-item ${activeLeague === league.name ? 'active' : ''}`}
                 onClick={() => handleLeagueClick(league)}
               >
-                <span className="league-flag">{league.flag}</span>
-                <span className="league-name">{league.name}</span>
+                <div className="comp-badge-square" style={{ backgroundColor: badge.bg, color: badge.color }}>
+                  {badge.code}
+                </div>
+                <span className="comp-name">{league.name}</span>
                 <div className="item-meta">
                   {stats?.live > 0 && (
-                    <span className="live-dot-badge">
-                      <span className="live-dot"></span>
+                    <span className="live-indicator">
+                      <span className="live-dot-mini"></span>
                       {stats.live}
                     </span>
                   )}
-                  {stats && <span className="match-count">{stats.total}</span>}
+                  {stats && <span className="comp-count">{stats.total}</span>}
                   <ChevronRight size={14} className="chevron" />
                 </div>
               </li>
@@ -225,28 +258,58 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </ul>
       </div>
 
-      {/* Sports A-Z */}
-      <div className="sidebar-section">
-        <h3 className="section-title">{t('Sports A-Z', language)}</h3>
+      {/* QUICK LINKS CARD */}
+      <div className="sidebar-card">
+        <h3 className="sidebar-card-title">
+          {language === 'ru' ? 'Быстрые ссылки' : language === 'de' ? 'Quick Links' : 'Quick Links'}
+        </h3>
+        <ul className="sidebar-list">
+          <li className="sidebar-item" onClick={() => handleQuickLinkClick('Bet Builder')}>
+            <div className="quick-icon-container">
+              <Zap size={16} stroke="#C2F95A" fill="rgba(194, 249, 90, 0.1)" />
+            </div>
+            <span className="quick-link-text">Bet Builder</span>
+            <ChevronRight size={14} className="chevron" />
+          </li>
+          <li className="sidebar-item" onClick={() => handleQuickLinkClick('Boosted Odds')}>
+            <div className="quick-icon-container">
+              <TrendingUp size={16} stroke="#F4B740" />
+            </div>
+            <span className="quick-link-text">Boosted Odds</span>
+            <ChevronRight size={14} className="chevron" />
+          </li>
+          <li className="sidebar-item" onClick={() => handleQuickLinkClick('Acca of the Day')}>
+            <div className="quick-icon-container">
+              <Award size={16} stroke="#7FA0FF" />
+            </div>
+            <span className="quick-link-text">Acca of the Day</span>
+            <ChevronRight size={14} className="chevron" />
+          </li>
+        </ul>
+      </div>
+
+      {/* SPORTS A-Z CARD */}
+      <div className="sidebar-card">
+        <h3 className="sidebar-card-title">{t('Sports A-Z', language)}</h3>
         <ul className="sidebar-list">
           {sportsList.map(sport => {
             const stats = sportStats[sport];
             return (
               <li 
                 key={sport}
-                className={`sidebar-item sport-item ${activeSport === sport ? 'active' : ''}`}
+                className={`sidebar-item ${activeSport === sport ? 'active' : ''}`}
                 onClick={() => handleSportClick(sport)}
               >
-                <span className="sport-emoji">{SPORT_ICONS[sport]}</span>
-                <span className="sport-name">{t(sport, language)}</span>
+                <span className="sport-badge-emoji">{SPORT_ICONS[sport]}</span>
+                <span className="comp-name">{t(sport, language)}</span>
                 <div className="item-meta">
                   {stats?.live > 0 && (
-                    <span className="live-dot-badge">
-                      <span className="live-dot"></span>
+                    <span className="live-indicator">
+                      <span className="live-dot-mini"></span>
                       {stats.live}
                     </span>
                   )}
-                  {stats && <span className="match-count">{stats.total}</span>}
+                  {stats && <span className="comp-count">{stats.total}</span>}
                 </div>
               </li>
             );
@@ -254,28 +317,30 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </ul>
       </div>
 
-      {/* Leagues for current sport */}
-      <div className="sidebar-section">
-        <h3 className="section-title">{SPORT_ICONS[activeSport]} {t(activeSport, language)} - {t('Leagues', language)}</h3>
-        <ul className="sidebar-list leagues-list">
+      {/* ACTIVE SPORT LEAGUES CARD */}
+      <div className="sidebar-card">
+        <h3 className="sidebar-card-title">
+          {SPORT_ICONS[activeSport]} {t(activeSport, language)} - {t('Leagues', language)}
+        </h3>
+        <ul className="sidebar-list">
           {currentLeagues.map(league => {
             const stats = leagueStats[league.name];
             return (
               <li 
                 key={league.name}
-                className={`sidebar-item league-item ${activeLeague === league.name ? 'active' : ''}`}
+                className={`sidebar-item ${activeLeague === league.name ? 'active' : ''}`}
                 onClick={() => handleLeagueClick(league)}
               >
                 <span className="league-flag">{league.flag}</span>
-                <span className="league-name">{league.name}</span>
+                <span className="comp-name">{league.name}</span>
                 <div className="item-meta">
                   {stats?.live > 0 && (
-                    <span className="live-dot-badge">
-                      <span className="live-dot"></span>
+                    <span className="live-indicator">
+                      <span className="live-dot-mini"></span>
                       {stats.live}
                     </span>
                   )}
-                  {stats && <span className="match-count">{stats.total}</span>}
+                  {stats && <span className="comp-count">{stats.total}</span>}
                 </div>
               </li>
             );
@@ -283,21 +348,32 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
         </ul>
       </div>
 
-      {/* Extra Sports */}
-      <div className="sidebar-section">
-        <h3 className="section-title">{t('More Sports', language)}</h3>
+      {/* MORE SPORTS CARD */}
+      <div className="sidebar-card">
+        <h3 className="sidebar-card-title">{t('More Sports', language)}</h3>
         <ul className="sidebar-list">
           {extraSports.map(sport => (
             <li 
               key={sport}
-              className={`sidebar-item sport-item ${activeSport === sport ? 'active' : ''}`}
+              className={`sidebar-item ${activeSport === sport ? 'active' : ''}`}
               onClick={() => handleSportClick(sport)}
             >
-              <span className="sport-emoji">{SPORT_ICONS[sport]}</span>
-              <span className="sport-name">{t(sport, language)}</span>
+              <span className="sport-badge-emoji">{SPORT_ICONS[sport]}</span>
+              <span className="comp-name">{t(sport, language)}</span>
             </li>
           ))}
         </ul>
+      </div>
+
+      {/* PLAY IT SAFE CARD */}
+      <div className="play-safe-card" onClick={() => handleQuickLinkClick('Responsible Gaming')}>
+        <div className="play-safe-header">
+          <Shield size={16} />
+          <span>Play it safe</span>
+        </div>
+        <p className="play-safe-desc">
+          Set deposit limits, session limits, or take a break at any time. Your safety is our priority.
+        </p>
       </div>
     </aside>
   );

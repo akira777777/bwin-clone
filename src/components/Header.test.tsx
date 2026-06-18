@@ -41,7 +41,7 @@ describe('Header (RTL component tests)', () => {
 
     // Other categories present as <li>
     expect(screen.getByText('Sports')).toBeInTheDocument();
-    expect(screen.getByText('Casino')).toBeInTheDocument();
+    expect(screen.getAllByText('Casino')[0]).toBeInTheDocument();
   });
 
   it('calls setActiveCategory when clicking a category item', async () => {
@@ -49,7 +49,7 @@ describe('Header (RTL component tests)', () => {
     const setActiveCategory = vi.fn();
     render(<Header {...createProps({ setActiveCategory })} />);
 
-    await user.click(screen.getByText('Casino'));
+    await user.click(screen.getAllByText('Casino')[0]);
     expect(setActiveCategory).toHaveBeenCalledWith('Casino');
   });
 

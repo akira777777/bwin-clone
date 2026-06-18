@@ -1,6 +1,6 @@
 import React from 'react';
+import { Lock } from 'lucide-react';
 import type { Category } from '../App';
-import { t } from '../utils/i18n';
 import './Footer.css';
 
 interface FooterProps {
@@ -9,7 +9,8 @@ interface FooterProps {
   language?: string;
 }
 
-const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab, language = 'en' }) => {
+const Footer: React.FC<FooterProps> = (props) => {
+  const { setActiveFooterTab, language = 'en' } = props;
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -20,112 +21,87 @@ const Footer: React.FC<FooterProps> = ({ setActiveCategory, setActiveFooterTab, 
     scrollToTop();
   };
 
-  const handleCategoryLinkClick = (e: React.MouseEvent, cat: Category) => {
-    e.preventDefault();
-    setActiveCategory(cat);
-    scrollToTop();
-  };
-
   // Local translations for Footer specific text
   const getFooterText = (key: string): string => {
     const dicts: Record<string, Record<string, string>> = {
       ru: {
-        'About bwin': 'О bwin',
         'About Us': 'О нас',
         'Terms and Conditions': 'Правила и условия',
         'Privacy Policy': 'Политика конфиденциальности',
         'Cookie Policy': 'Политика файлов cookie',
         'Responsible Gaming': 'Ответственная игра',
-        'Help & Support': 'Помощь и поддержка',
         'Help Center': 'Справочный центр',
         'Contact Us': 'Связаться с нами',
         'Deposits & Withdrawals': 'Депозиты и выводы',
         'Betting Rules': 'Правила ставок',
-        'Sports & Betting': 'Спорт и ставки',
-        'Secure Payment': 'Безопасная оплата',
-        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Все права защищены. Только 18+. Азартные игры несут в себе риски — играйте ответственно. bwin лицензирован Регуляторным органом Гибралтара (RGL No. 022) и Игорным управлением Мальты (MGA/B2C/394/2017). BeGambleAware.org'
+        'SSL Secured': 'SSL Защищено',
+        'MGA Licensed': 'MGA Лицензировано',
+        'disclaimer': '© 2026 BETZ Sportsbook. Все права защищены. Только 18+. Азартные игры несут в себе риски — играйте ответственно. Лицензировано Malta Gaming Authority (MGA/B2C/394/2017). BeGambleAware.org'
       },
       de: {
-        'About bwin': 'Über bwin',
         'About Us': 'Über uns',
         'Terms and Conditions': 'Allgemeine Geschäftsbedingungen',
         'Privacy Policy': 'Datenschutzrichtlinie',
         'Cookie Policy': 'Cookie-Richtlinie',
         'Responsible Gaming': 'Verantwortungsbewusstes Spielen',
-        'Help & Support': 'Hilfe & Support',
         'Help Center': 'Hilfebereich',
         'Contact Us': 'Kontaktieren Sie uns',
         'Deposits & Withdrawals': 'Ein- & Auszahlungen',
         'Betting Rules': 'Wettregeln',
-        'Sports & Betting': 'Sport & Wetten',
-        'Secure Payment': 'Sichere Zahlung',
-        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Alle Rechte vorbehalten. Nur ab 18 Jahren. Glücksspiel birgt Risiken — spielen Sie verantwortungsbewusst. bwin ist von der Gibraltar Regulatory Authority (RGL No. 022) und der Malta Gaming Authority (MGA/B2C/394/2017) lizenziert. BeGambleAware.org'
+        'SSL Secured': 'SSL Verschlüsselt',
+        'MGA Licensed': 'MGA Lizenziert',
+        'disclaimer': '© 2026 BETZ Sportsbook. Alle Rechte vorbehalten. Nur ab 18 Jahren. Glücksspiel birgt Risiken — spielen Sie verantwortungsbewusst. Lizenziert durch die Malta Gaming Authority (MGA/B2C/394/2017). BeGambleAware.org'
       },
       es: {
-        'About bwin': 'Sobre bwin',
         'About Us': 'Sobre Nosotros',
         'Terms and Conditions': 'Términos y Condiciones',
         'Privacy Policy': 'Política de Privacidad',
         'Cookie Policy': 'Política de Cookies',
         'Responsible Gaming': 'Juego Responsable',
-        'Help & Support': 'Ayuda y Soporte',
         'Help Center': 'Centro de Ayuda',
         'Contact Us': 'Contacto',
         'Deposits & Withdrawals': 'Depósitos y Retiros',
         'Betting Rules': 'Reglas de Apuestas',
-        'Sports & Betting': 'Deportes y Apuestas',
-        'Secure Payment': 'Pago Seguro',
-        'disclaimer': '© 2026 bwin Interactive Entertainment AG. Todos los derechos reservados. Solo mayores de 18 años. El juego conlleva riesgos — juegue con responsabilidad. bwin está licenciada por la Autoridad Reguladora de Gibraltar (RGL No. 022) y la Autoridad de Juegos de Malta (MGA/B2C/394/2017). BeGambleAware.org'
+        'SSL Secured': 'SSL Seguro',
+        'MGA Licensed': 'MGA Licenciado',
+        'disclaimer': '© 2026 BETZ Sportsbook. Todos los derechos reservados. Solo mayores de 18 años. El juego conlleva riesgos — juegue con responsabilidad. Licenciado por la Autoridad de Juegos de Malta (MGA/B2C/394/2017). BeGambleAware.org'
       }
     };
     return dicts[language]?.[key] || key;
   };
 
+  const disclaimerText = language === 'en'
+    ? '© 2026 BETZ Sportsbook. All rights reserved. 18+ only. Gambling involves risk — please gamble responsibly. Licensed by the Malta Gaming Authority (MGA/B2C/394/2017). BeGambleAware.org'
+    : getFooterText('disclaimer');
+
   return (
     <footer className="bwin-footer">
-      <div className="footer-content">
-        <div className="footer-section">
-          <h4>{getFooterText('About bwin')}</h4>
-          <ul>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'About Us')}>{getFooterText('About Us')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Terms and Conditions')}>{getFooterText('Terms and Conditions')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Privacy Policy')}>{getFooterText('Privacy Policy')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Cookie Policy')}>{getFooterText('Cookie Policy')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Responsible Gaming')}>{getFooterText('Responsible Gaming')}</a></li>
-          </ul>
-        </div>
-        
-        <div className="footer-section">
-          <h4>{getFooterText('Help & Support')}</h4>
-          <ul>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Help Center')}>{getFooterText('Help Center')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Contact Us')}>{getFooterText('Contact Us')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Deposits & Withdrawals')}>{getFooterText('Deposits & Withdrawals')}</a></li>
-            <li><a href="#" onClick={(e) => handleFooterLinkClick(e, 'Betting Rules')}>{getFooterText('Betting Rules')}</a></li>
-          </ul>
-        </div>
-        
-        <div className="footer-section">
-          <h4>{getFooterText('Sports & Betting')}</h4>
-          <ul>
-            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Live Betting')}>{t('Live Betting', language)}</a></li>
-            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Live Casino')}>{t('Live Casino', language)}</a></li>
-            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Poker')}>{t('Poker', language)}</a></li>
-            <li><a href="#" onClick={(e) => handleCategoryLinkClick(e, 'Virtuals')}>{t('Virtuals', language)}</a></li>
-          </ul>
-        </div>
+      {/* Top Row: Links */}
+      <div className="footer-links-row">
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'About Us')}>{getFooterText('About Us')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Terms and Conditions')}>{getFooterText('Terms and Conditions')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Privacy Policy')}>{getFooterText('Privacy Policy')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Cookie Policy')}>{getFooterText('Cookie Policy')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Responsible Gaming')}>{getFooterText('Responsible Gaming')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Help Center')}>{getFooterText('Help Center')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Contact Us')}>{getFooterText('Contact Us')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Deposits & Withdrawals')}>{getFooterText('Deposits & Withdrawals')}</a>
+        <a href="#" onClick={(e) => handleFooterLinkClick(e, 'Betting Rules')}>{getFooterText('Betting Rules')}</a>
       </div>
-      
-      <div className="footer-bottom">
-        <div className="trust-badges">
-          <span className="badge age-badge">18+</span>
-          <span className="badge safe-badge">{getFooterText('Secure Payment')}</span>
+
+      {/* Bottom Row: Badges and Disclaimer */}
+      <div className="footer-bottom-row">
+        <div className="footer-left-side">
+          <div className="ssl-secured-badge">
+            <Lock size={13} />
+            <span>{getFooterText('SSL Secured')}</span>
+          </div>
+          <span className="mga-badge">{getFooterText('MGA Licensed')}</span>
+          <div className="age-badge-18">18+</div>
         </div>
-        <p className="copyright">
-          {language === 'en' 
-            ? '© 2026 bwin Interactive Entertainment AG. All rights reserved. 18+ only. Gambling involves risk — please gamble responsibly. bwin is licensed by the Gibraltar Regulatory Authority (RGL No. 022) and the Malta Gaming Authority (MGA/B2C/394/2017). BeGambleAware.org'
-            : getFooterText('disclaimer')}
-        </p>
+        <div className="footer-disclaimer-box">
+          {disclaimerText}
+        </div>
       </div>
     </footer>
   );

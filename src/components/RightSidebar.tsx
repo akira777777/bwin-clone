@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Trash2, X, CheckCircle2, AlertTriangle, TrendingUp, TrendingDown } from 'lucide-react';
+import { Trash2, X, CheckCircle2, AlertTriangle, TrendingUp, TrendingDown, ShoppingCart, Award } from 'lucide-react';
 import type { Bet, PlacedBet } from '../App';
 import type { MatchData } from '../data/matches';
 import { leagueOutrights } from '../data/leaguesData';
@@ -382,8 +382,16 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           <div className="bet-slip-content">
             {betSlip.length === 0 ? (
               <div className="empty-slip">
-                <p>{t('Empty Slip', language)}</p>
-                <p style={{ fontSize: '12px', marginTop: '10px', color: 'var(--bwin-gray-text)' }}>{t('Click to add', language)}</p>
+                <div className="empty-icon-container">
+                  <ShoppingCart size={22} />
+                </div>
+                <h4 className="empty-title">{t('Your bet slip is empty', language)}</h4>
+                <p className="empty-desc">{t('Add selections from sportsbook to place a bet.', language)}</p>
+                <div className="bet-builder-promo">
+                  <span className="promo-tag">{t('Featured', language)}</span>
+                  <h5 className="promo-title">{t('Try Bet Builder', language)}</h5>
+                  <p className="promo-desc">{t('Combine multiple markets from the same match into one custom accumulator bet.', language)}</p>
+                </div>
               </div>
             ) : (
               <div className="bet-items-container">
@@ -635,7 +643,11 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
         <div className="my-bets-content">
           {placedBets.length === 0 ? (
             <div className="empty-slip">
-              <p>{t('You have no recent bets.', language)}</p>
+              <div className="empty-icon-container">
+                <Award size={22} />
+              </div>
+              <h4 className="empty-title">{t('You have no recent bets.', language)}</h4>
+              <p className="empty-desc">Your active and settled bets will appear here.</p>
             </div>
           ) : (
             <div className="placed-bets-list">

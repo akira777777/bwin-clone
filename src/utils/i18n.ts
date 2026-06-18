@@ -108,6 +108,11 @@ const translations: Record<Language, Record<string, string>> = {
     'Table Games': 'Table Games',
     'is ready! Demo mode.': 'is ready! Launching now...',
     'Loading': 'Loading',
+    'Your bet slip is empty': 'Your bet slip is empty',
+    'Add selections from sportsbook to place a bet.': 'Add selections from sportsbook to place a bet.',
+    'Featured': 'Featured',
+    'Try Bet Builder': 'Try Bet Builder',
+    'Combine multiple markets from the same match into one custom accumulator bet.': 'Combine multiple markets from the same match into one custom accumulator bet.',
   },
   ru: {
     'Sports': 'Спорт',
@@ -210,6 +215,11 @@ const translations: Record<Language, Record<string, string>> = {
     'Table Games': 'Настольные игры',
     'is ready! Demo mode.': 'готов! Запускаем...',
     'Loading': 'Загрузка',
+    'Your bet slip is empty': 'Ваш купон пуст',
+    'Add selections from sportsbook to place a bet.': 'Добавьте исходы из линии, чтобы сделать ставку.',
+    'Featured': 'Рекомендуемое',
+    'Try Bet Builder': 'Попробуйте Конструктор ставок',
+    'Combine multiple markets from the same match into one custom accumulator bet.': 'Объединяйте несколько рынков одного матча в одну ставку.',
   },
   de: {
     'Sports': 'Sport',
@@ -312,6 +322,11 @@ const translations: Record<Language, Record<string, string>> = {
     'Table Games': 'Tischspiele',
     'is ready! Demo mode.': 'ist bereit! Wird gestartet...',
     'Loading': 'Wird geladen',
+    'Your bet slip is empty': 'Ihr Wettschein ist leer',
+    'Add selections from sportsbook to place a bet.': 'Fügen Sie Auswahlen aus dem Sportsbook hinzu, um eine Wette zu platzieren.',
+    'Featured': 'Beliebt',
+    'Try Bet Builder': 'Wett-Konfigurator testen',
+    'Combine multiple markets from the same match into one custom accumulator bet.': 'Kombinieren Sie mehrere Märkte desselben Spiels zu einer benutzerdefinierten Kombiwette.',
   },
   es: {
     'Sports': 'Deportes',
@@ -414,6 +429,11 @@ const translations: Record<Language, Record<string, string>> = {
     'Table Games': 'Juegos de Mesa',
     'is ready! Demo mode.': 'está listo! Iniciando ahora...',
     'Loading': 'Cargando',
+    'Your bet slip is empty': 'Su cupón de apuestas está vacío',
+    'Add selections from sportsbook to place a bet.': 'Añada selecciones de las apuestas deportivas para realizar una apuesta.',
+    'Featured': 'Destacado',
+    'Try Bet Builder': 'Probar Creador de Apuestas',
+    'Combine multiple markets from the same match into one custom accumulator bet.': 'Combine varios mercados del mismo partido en una sola apuesta personalizada.',
   }
 };
 

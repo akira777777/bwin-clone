@@ -199,14 +199,14 @@ const MainContent: React.FC<MainContentProps> = ({
   if (isKeyModalOpen) {
     return (
       <main className="main-content">
-        <h1 className="visually-hidden">Bwin Clone Live Betting Setup</h1>
+        <h1 className="visually-hidden">BETZ Live Betting Setup</h1>
         <div className="promo-banner" style={{ justifyContent: 'center' }}>
-          <div className="promo-content" style={{ textAlign: 'center', maxWidth: '600px', backgroundColor: 'var(--bwin-surface)', padding: '30px', borderRadius: '8px' }}>
-            <Key size={48} style={{ color: 'var(--bwin-yellow)', marginBottom: '15px' }} />
+          <div className="promo-content" style={{ textAlign: 'center', maxWidth: '600px', backgroundColor: 'var(--betz-surface)', padding: '30px', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+            <Key size={48} style={{ color: 'var(--betz-accent)', marginBottom: '15px' }} />
             <h2>Live Match Data Setup</h2>
             <p style={{ margin: '15px 0' }}>To view real, live matches instead of mock data, you need a free API key from <strong>The Odds API</strong>.</p>
-            <ol style={{ textAlign: 'left', margin: '0 auto 20px', maxWidth: '400px', color: 'var(--bwin-gray-text)' }}>
-              <li>Go to <a href="https://the-odds-api.com/" target="_blank" rel="noreferrer" style={{ color: 'var(--bwin-yellow)' }}>the-odds-api.com</a></li>
+            <ol style={{ textAlign: 'left', margin: '0 auto 20px', maxWidth: '400px', color: 'var(--betz-text-secondary)' }}>
+              <li>Go to <a href="https://the-odds-api.com/" target="_blank" rel="noreferrer" style={{ color: 'var(--betz-accent)' }}>the-odds-api.com</a></li>
               <li>Click "Get a free API key"</li>
               <li>Paste the key below</li>
             </ol>
@@ -214,10 +214,10 @@ const MainContent: React.FC<MainContentProps> = ({
               ref={apiKeyInputRef}
               type="text" 
               placeholder="Paste your API key here..." 
-              style={{ width: '100%', padding: '12px', marginBottom: '20px', backgroundColor: 'var(--bwin-bg)', border: '1px solid var(--bwin-border)', color: '#fff', borderRadius: '4px' }}
+              style={{ width: '100%', padding: '12px', marginBottom: '20px', backgroundColor: 'var(--betz-input)', border: '1px solid rgba(255, 255, 255, 0.08)', color: '#fff', borderRadius: '11px', outline: 'none' }}
             />
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-              <button className="btn-promo" style={{ backgroundColor: 'transparent', border: '1px solid var(--bwin-gray-text)' }} onClick={handleSkipApiKey}>
+              <button className="btn-promo" style={{ backgroundColor: 'transparent', border: '1px solid var(--betz-text-muted)', color: 'var(--betz-text-secondary)' }} onClick={handleSkipApiKey}>
                 Skip (Use Mock Data)
               </button>
               <button className="btn-promo risk-free-btn" onClick={handleSaveApiKey}>
@@ -518,7 +518,7 @@ const MainContent: React.FC<MainContentProps> = ({
                           <td style={{ textAlign: 'center' }}>{row.drawn}</td>
                           <td style={{ textAlign: 'center' }}>{row.lost}</td>
                           <td style={{ textAlign: 'center' }}>{row.goalsFor}:{row.goalsAgainst}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: row.position <= 4 ? 'var(--bwin-yellow)' : '#fff' }}>{row.points}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: row.position <= 4 ? 'var(--betz-accent)' : '#fff' }}>{row.points}</td>
                         </>
                       )}
                     </tr>
@@ -527,7 +527,7 @@ const MainContent: React.FC<MainContentProps> = ({
               </table>
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--bwin-gray-text)' }}>
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--betz-text-secondary)' }}>
               {language === 'ru' ? `Таблица временно недоступна для ${activeLeague}.` : language === 'de' ? `Derzeit keine Tabellendaten für ${activeLeague}.` : language === 'es' ? `No hay datos de clasificación disponibles para ${activeLeague}.` : `No standing data currently available for ${activeLeague}.`}
             </div>
           )}
@@ -592,14 +592,14 @@ const MainContent: React.FC<MainContentProps> = ({
                       <td>{row.position}</td>
                       <td style={{ fontWeight: 'bold' }}>{row.player}</td>
                       <td>{row.teamOrCountry}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--bwin-yellow)' }}>{row.statValue}</td>
+                      <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--betz-accent)' }}>{row.statValue}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--bwin-gray-text)' }}>
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--betz-text-secondary)' }}>
               {language === 'ru' ? `Статистика игроков временно недоступна для ${activeLeague}.` : language === 'de' ? `Derzeit keine Spielerstatistiken für ${activeLeague}.` : language === 'es' ? `No hay estadísticas de jugadores disponibles para ${activeLeague}.` : `No player statistics currently available for ${activeLeague}.`}
             </div>
           )}
@@ -626,28 +626,28 @@ interface PromoSlide {
 
 const promoSlides: Record<string, PromoSlide[]> = {
   en: [
-    { badge: 'New Players Only', title: 'First Bet Insurance up to €50', desc: 'Place your first bet risk-free. If it loses, we refund your stake up to €50!', cta: 'Claim Now', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
-    { badge: 'Combo Boost', title: 'Up to 40% Bonus on Accumulators', desc: 'Add 3+ selections and unlock boosted returns. More legs = bigger bonus!', cta: 'Build Your Combo', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
-    { badge: 'Weekend Special', title: 'Cashback on Live Bets', desc: 'Get 10% cashback on all live bets this weekend. No wagering requirements!', cta: 'Opt In', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
-    { badge: 'Free Bet', title: 'Refer a Friend — Get €20 Free Bet', desc: 'Invite friends to bwin and earn €20 free bet for each referral. No limit!', cta: 'Invite Now', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+    { badge: 'New Players Only', title: 'First Bet Insurance up to €50', desc: 'Place your first bet risk-free. If it loses, we refund your stake up to €50!', cta: 'Claim Now', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Combo Boost', title: 'Up to 40% Bonus on Accumulators', desc: 'Add 3+ selections and unlock boosted returns. More legs = bigger bonus!', cta: 'Build Your Combo', gradient: 'linear-gradient(135deg, #0d121a 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Weekend Special', title: 'Cashback on Live Bets', desc: 'Get 10% cashback on all live bets this weekend. No wagering requirements!', cta: 'Opt In', gradient: 'linear-gradient(135deg, #2A1010 0%, #13171C 100%)', borderColor: 'var(--betz-live-red)', badgeBg: 'var(--betz-live-red)' },
+    { badge: 'Free Bet', title: 'Refer a Friend — Get €20 Free Bet', desc: 'Invite friends to BETZ and earn €20 free bet for each referral. No limit!', cta: 'Invite Now', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
   ],
   ru: [
-    { badge: 'Новым игрокам', title: 'Страховка первой ставки до €50', desc: 'Сделайте первую ставку без риска. Если проиграете — вернём ставку до €50!', cta: 'Получить', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
-    { badge: 'Комбо-бонус', title: 'До 40% бонуса на экспрессы', desc: 'Добавьте 3+ события и получите увеличенную выплату. Больше событий = больше бонус!', cta: 'Собрать экспресс', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
-    { badge: 'Акция выходных', title: 'Кэшбэк на лайв ставки', desc: 'Получите 10% кэшбэк на все лайв ставки в эти выходные. Без условий отыгрыша!', cta: 'Принять участие', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
-    { badge: 'Фрибет', title: 'Приведи друга — получи €20', desc: 'Пригласите друзей на bwin и получите фрибет €20 за каждого. Без ограничений!', cta: 'Пригласить', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+    { badge: 'Новым игрокам', title: 'Страховка первой ставки до €50', desc: 'Сделайте первую ставку без риска. Если проиграете — вернём ставку до €50!', cta: 'Получить', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Комбо-бонус', title: 'До 40% бонуса на экспрессы', desc: 'Добавьте 3+ события и получите увеличенную выплату. Больше событий = больше бонус!', cta: 'Собрать экспресс', gradient: 'linear-gradient(135deg, #0d121a 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Акция выходных', title: 'Кэшбэк на лайв ставки', desc: 'Получите 10% кэшбэк на все лайв ставки в эти выходные. Без условий отыгрыша!', cta: 'Принять участие', gradient: 'linear-gradient(135deg, #2A1010 0%, #13171C 100%)', borderColor: 'var(--betz-live-red)', badgeBg: 'var(--betz-live-red)' },
+    { badge: 'Фрибет', title: 'Приведи друга — получи €20', desc: 'Пригласите друзей на BETZ и получите фрибет €20 за каждого. Без ограничений!', cta: 'Пригласить', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
   ],
   de: [
-    { badge: 'Nur Neukunden', title: 'Erste Wette versichert bis €50', desc: 'Platzieren Sie Ihre erste Wette risikofrei. Bei Verlust erstatten wir bis €50!', cta: 'Jetzt sichern', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
-    { badge: 'Kombi-Boost', title: 'Bis zu 40% Bonus auf Kombis', desc: '3+ Auswahlen für erhöhte Gewinne. Mehr Tipps = mehr Bonus!', cta: 'Kombi erstellen', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
-    { badge: 'Wochenend-Special', title: 'Cashback auf Live-Wetten', desc: '10% Cashback auf alle Live-Wetten dieses Wochenende!', cta: 'Teilnehmen', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
-    { badge: 'Gratiswette', title: 'Freund werben — €20 Gratiswette', desc: 'Laden Sie Freunde ein und erhalten €20 Gratiswette pro Empfehlung!', cta: 'Einladen', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+    { badge: 'Nur Neukunden', title: 'Erste Wette versichert bis €50', desc: 'Platzieren Sie Ihre erste Wette risikofrei. Bei Verlust erstatten wir bis €50!', cta: 'Jetzt sichern', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Kombi-Boost', title: 'Bis zu 40% Bonus auf Kombis', desc: '3+ Auswahlen für erhöhte Gewinne. Mehr Tipps = mehr Bonus!', cta: 'Kombi erstellen', gradient: 'linear-gradient(135deg, #0d121a 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Wochenend-Special', title: 'Cashback auf Live-Wetten', desc: '10% Cashback auf alle Live-Wetten dieses Wochenende!', cta: 'Teilnehmen', gradient: 'linear-gradient(135deg, #2A1010 0%, #13171C 100%)', borderColor: 'var(--betz-live-red)', badgeBg: 'var(--betz-live-red)' },
+    { badge: 'Gratiswette', title: 'Freund werben — €20 Gratiswette', desc: 'Laden Sie Freunde ein und erhalten €20 Gratiswette pro Empfehlung!', cta: 'Einladen', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
   ],
   es: [
-    { badge: 'Solo nuevos', title: 'Seguro de primera apuesta hasta €50', desc: 'Haz tu primera apuesta sin riesgo. Si pierdes, devolvemos hasta €50!', cta: 'Reclamar', gradient: 'linear-gradient(135deg, #1a1a2e 0%, #2a2a3e 100%)', borderColor: 'var(--bwin-yellow)', badgeBg: 'var(--bwin-yellow)' },
-    { badge: 'Combo Boost', title: 'Hasta 40% bonus en combinadas', desc: 'Añade 3+ selecciones y desbloquea mayores ganancias!', cta: 'Crear combinada', gradient: 'linear-gradient(135deg, #0a1628 0%, #1a2638 100%)', borderColor: 'var(--neon-cyan)', badgeBg: 'var(--neon-cyan)' },
-    { badge: 'Fin de semana', title: 'Cashback en apuestas en vivo', desc: '10% de cashback en todas las apuestas en vivo este fin de semana!', cta: 'Participar', gradient: 'linear-gradient(135deg, #1a0a28 0%, #2a1a38 100%)', borderColor: 'var(--neon-magenta)', badgeBg: 'var(--neon-magenta)' },
-    { badge: 'Apuesta gratis', title: 'Invita un amigo — €20 gratis', desc: 'Invita amigos a bwin y gana €20 gratis por cada referido!', cta: 'Invitar', gradient: 'linear-gradient(135deg, #0a1a0a 0%, #1a2a1a 100%)', borderColor: 'var(--neon-green)', badgeBg: 'var(--neon-green)' },
+    { badge: 'Solo nuevos', title: 'Seguro de primera apuesta hasta €50', desc: 'Haz tu primera apuesta sin riesgo. Si pierdes, devolvemos hasta €50!', cta: 'Reclamar', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Combo Boost', title: 'Hasta 40% bonus en combinadas', desc: 'Añade 3+ selecciones y desbloquea mayores ganancias!', cta: 'Crear combinada', gradient: 'linear-gradient(135deg, #0d121a 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
+    { badge: 'Fin de semana', title: 'Cashback en apuestas en vivo', desc: '10% de cashback en todas las apuestas en vivo este fin de semana!', cta: 'Participar', gradient: 'linear-gradient(135deg, #2A1010 0%, #13171C 100%)', borderColor: 'var(--betz-live-red)', badgeBg: 'var(--betz-live-red)' },
+    { badge: 'Apuesta gratis', title: 'Invita un amigo — €20 gratis', desc: 'Invita amigos a BETZ y gana €20 gratis por cada referido!', cta: 'Invitar', gradient: 'linear-gradient(135deg, #10231C 0%, #13171C 100%)', borderColor: 'var(--betz-accent)', badgeBg: 'var(--betz-accent)' },
   ],
 };
 

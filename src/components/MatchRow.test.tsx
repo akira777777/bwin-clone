@@ -83,7 +83,7 @@ describe('MatchRow (RTL component tests)', () => {
     render(<MatchRow {...createProps({ match: matchWithZero, addBet })} />);
 
     const zeroBtn = screen.getByText('-');
-    expect(zeroBtn).toHaveStyle({ opacity: '0.2' });
+    expect(zeroBtn).toHaveClass('disabled-odds');
 
     await user.click(zeroBtn);
     expect(addBet).not.toHaveBeenCalled();

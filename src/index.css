@@ -1,36 +1,85 @@
 :root {
-  /* Neon Dark Theme for Modern Bwin Clone */
-  --bwin-black: #050508;
-  --bwin-dark: #0a0a12;
-  --bwin-darker: #12121c;
-  --bwin-darkest: #020204;
-  --bwin-yellow: #f0ff00;
-  --bwin-yellow-hover: #ccff00;
-  --bwin-gray: #1f1f2e;
-  --bwin-gray-light: #3a3a4f;
-  --bwin-gray-text: #8a8aa0;
-  --bwin-white: #f0f0ff;
-  --bwin-text: #e8e8ff;
-  --bwin-bg: #050508;
-  --bwin-bg-secondary: #0f0f18;
-  --bwin-header-bg: #000003;
-  --bwin-border: #1f1f3a;
-  --bwin-border-light: #2a2a4a;
-  --bwin-odds-bg: #161625;
-  --bwin-odds-hover: #1f1f35;
-  --bwin-odds-text: #f0f0ff;
-  --bwin-odds-text-highlight: #f0ff00;
+  /* BETZ Design System — Dark Theme */
+  
+  /* Core Backgrounds */
+  --betz-bg: #0A0C0F;
+  --betz-surface: #13171C;
+  --betz-elevated: #1B232B;
+  --betz-input: #0E1216;
+  --betz-recessed: #1A2027;
 
-  /* Neon Accents - Cyberpunk Glow Palette */
-  --neon-cyan: #00f0ff;
-  --neon-magenta: #ff00cc;
-  --neon-purple: #c000ff;
-  --neon-green: #00ff9d;
-  --neon-red: #ff3366;
+  /* Primary Accent (Lime Green) */
+  --betz-accent: #C2F95A;
+  --betz-accent-hover: #d2ff74;
+  --betz-accent-14: rgba(194,249,90,0.14);
+  --betz-accent-18: rgba(194,249,90,0.18);
+  --betz-accent-10: rgba(194,249,90,0.10);
 
-  /* Keep legacy for compatibility */
-  --bwin-green: #00ff9d;
-  --bwin-red: #ff3366;
+  /* Live / Danger Red */
+  --betz-live: #FF5656;
+  --betz-live-light: #FF7A7A;
+  --betz-live-12: rgba(255,86,86,0.12);
+  --betz-live-55: rgba(255,86,86,0.55);
+
+  /* Boost / Gold */
+  --betz-gold: #F4B740;
+  --betz-gold-hover: #ffc95a;
+  --betz-gold-13: rgba(244,183,64,0.13);
+  --betz-gold-22: rgba(244,183,64,0.22);
+  --betz-gold-32: rgba(244,183,64,0.32);
+  --betz-gold-35: rgba(244,183,64,0.35);
+
+  /* Success */
+  --betz-success: #34D399;
+  --betz-success-12: rgba(52,211,153,0.12);
+  --betz-success-18: rgba(52,211,153,0.18);
+  --betz-success-30: rgba(52,211,153,0.30);
+
+  /* Text */
+  --betz-text-primary: #EAEEF3;
+  --betz-text-secondary: #C0C8D2;
+  --betz-text-tertiary: #C9D1DB;
+  --betz-text-muted: #9AA4B1;
+  --betz-text-label: #7C8694;
+  --betz-text-dim: #8B94A1;
+  --betz-text-faint: #5E6875;
+  --betz-text-separator: #4A535F;
+
+  /* Borders (white alpha) */
+  --betz-border-02: rgba(255,255,255,0.02);
+  --betz-border-04: rgba(255,255,255,0.04);
+  --betz-border-05: rgba(255,255,255,0.05);
+  --betz-border-06: rgba(255,255,255,0.06);
+  --betz-border-07: rgba(255,255,255,0.07);
+  --betz-border-08: rgba(255,255,255,0.08);
+
+  /* Scrollbar */
+  --betz-scrollbar: #262E37;
+
+  /* Legacy compat (for components not yet migrated) */
+  --bwin-yellow: #C2F95A;
+  --bwin-yellow-hover: #d2ff74;
+  --bwin-black: #0A0C0F;
+  --bwin-dark: #0A0C0F;
+  --bwin-bg: #0A0C0F;
+  --bwin-bg-secondary: #13171C;
+  --bwin-gray: #1B232B;
+  --bwin-gray-light: #262E37;
+  --bwin-gray-text: #7C8694;
+  --bwin-text: #EAEEF3;
+  --bwin-white: #EAEEF3;
+  --bwin-border: rgba(255,255,255,0.06);
+  --bwin-border-light: rgba(255,255,255,0.07);
+  --bwin-odds-bg: #1B232B;
+  --bwin-odds-hover: #222C35;
+  --bwin-odds-text: #EAEEF3;
+  --bwin-odds-text-highlight: #C2F95A;
+  --bwin-green: #34D399;
+  --bwin-red: #FF5656;
+  --bwin-header-bg: rgba(10,12,15,0.86);
+  --neon-cyan: #C2F95A;
+  --neon-red: #FF5656;
+  --neon-green: #34D399;
 }
 
 * {
@@ -40,56 +89,24 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans', 'Roboto', 'Segoe UI', sans-serif;
-  background-color: var(--bwin-bg);
-  color: var(--bwin-text);
+  font-family: 'Manrope', system-ui, sans-serif;
+  background-color: var(--betz-bg);
+  color: var(--betz-text-primary);
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 25% 30%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 75% 70%, rgba(255, 0, 204, 0.03) 0%, transparent 50%);
+  background-image:
+    radial-gradient(ellipse at 25% -5%, var(--betz-accent-10), transparent 50%);
 }
 
-/* Neon Glow Utilities */
-.neon-cyan {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan);
+/* Typography helpers */
+.font-display {
+  font-family: 'Sora', sans-serif;
 }
 
-.neon-magenta {
-  color: var(--neon-magenta);
-  text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta);
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
-.neon-yellow {
-  color: var(--bwin-yellow);
-  text-shadow: 0 0 6px var(--bwin-yellow), 0 0 12px var(--bwin-yellow);
-}
-
-.neon-button {
-  position: relative;
-  transition: all 0.2s ease;
-  border: 1px solid var(--neon-cyan);
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-}
-
-.neon-button:hover {
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.7), 0 0 25px rgba(0, 240, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-.neon-card {
-  background: rgba(15, 15, 24, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
-  backdrop-filter: blur(8px);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.neon-card:hover {
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
-}
-
+/* Utility classes */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -118,6 +135,7 @@ ul {
   list-style: none;
 }
 
+/* ===== APP LAYOUT ===== */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -125,91 +143,104 @@ ul {
 }
 
 .main-layout {
-  display: flex;
-  flex: 1;
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr) 344px;
+  gap: 18px;
+  max-width: 1440px;
+  margin: 0 auto;
   width: 100%;
-  padding-top: 15px;
-  gap: 15px;
+  padding: 20px 22px 60px;
 }
 
-/* Scrollbar styling */
+/* ===== CARDS ===== */
+.betz-card {
+  background: var(--betz-surface);
+  border: 1px solid var(--betz-border-06);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.betz-card-hover:hover {
+  background: var(--betz-border-04);
+}
+
+/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bwin-bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--bwin-gray-light);
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--bwin-gray);
+  background: var(--betz-scrollbar);
+  border-radius: 8px;
 }
 
-/* Neon Odds Buttons */
+/* ===== ODDS BUTTONS (global) ===== */
 .match-odds button,
 .odds-btn,
 .odds-button {
-  background-color: var(--bwin-odds-bg);
-  border: 1px solid var(--neon-cyan);
-  color: var(--bwin-odds-text);
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 13px;
-  transition: all 0.15s ease;
-  box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  padding: 9px 4px;
+  border-radius: 11px;
+  background: var(--betz-elevated);
+  border: 1px solid var(--betz-border-07);
+  color: var(--betz-text-primary);
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  transition: filter 0.15s ease;
 }
 
 .match-odds button:hover,
 .odds-btn:hover,
 .odds-button:hover {
-  background-color: var(--bwin-odds-hover);
-  border-color: var(--bwin-yellow);
-  color: var(--bwin-yellow);
-  box-shadow: 0 0 12px rgba(240, 255, 0, 0.4);
-  transform: scale(1.02);
+  filter: brightness(1.12);
 }
 
 .match-odds button.selected,
 .odds-btn.selected {
-  background-color: rgba(240, 255, 0, 0.15);
-  border-color: var(--bwin-yellow);
-  color: var(--bwin-yellow);
-  box-shadow: 0 0 14px rgba(240, 255, 0, 0.6);
+  background: var(--betz-accent);
+  color: var(--betz-bg);
+  border-color: var(--betz-accent);
 }
 
-/* Global Animations */
+/* ===== ANIMATIONS ===== */
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--betz-live-55); }
+  50% { box-shadow: 0 0 0 5px rgba(255,86,86,0); }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+@keyframes sheen {
+  0% { transform: translateX(-130%) skewX(-18deg); }
+  100% { transform: translateX(240%) skewX(-18deg); }
+}
+
 @keyframes slideDownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
+/* ===== SIDEBAR CONTAINERS ===== */
 .sidebar-container {
   display: block;
 }
@@ -219,6 +250,7 @@ ul {
   min-width: 0;
 }
 
+/* ===== MOBILE ===== */
 .mobile-overlay {
   display: none;
   position: fixed;
@@ -231,13 +263,20 @@ ul {
 }
 
 @media (max-width: 1024px) {
+  .main-layout {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+  }
+  
   .sidebar-container {
     position: fixed;
     top: 0;
     bottom: 0;
     z-index: 50;
     transition: transform 0.3s ease;
-    background-color: var(--bwin-bg-secondary);
+    background-color: var(--betz-surface);
     width: 280px;
     height: 100vh;
     overflow-y: auto;
@@ -254,7 +293,7 @@ ul {
   
   .sidebar-container.right {
     right: 0;
-    width: 320px;
+    width: 344px;
     transform: translateX(100%);
   }
   
@@ -264,9 +303,5 @@ ul {
   
   .mobile-overlay {
     display: block;
-  }
-  
-  .main-layout {
-    padding: 10px;
   }
 }
