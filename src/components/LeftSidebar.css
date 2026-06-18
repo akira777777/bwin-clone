@@ -213,17 +213,32 @@
 }
 
 .sidebar-search-input {
+  flex: 1;
+  min-width: 0;
   background: none;
   border: none;
   outline: none;
   color: var(--betz-text-primary);
   font-family: 'Manrope', sans-serif;
   font-size: 13px;
-  width: 100%;
 }
 
 .sidebar-search-input::placeholder {
   color: var(--betz-text-muted);
+}
+
+/* Item Meta and Chevron */
+.item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.chevron {
+  color: var(--betz-text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 /* Sport A-Z styling */

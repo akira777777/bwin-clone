@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import MainContent from './MainContent';
 import type { Bet, Category, Sport, MatchData } from '../App';
-import { initialMatches } from '../data/matches';
+import { initialMatches, getDynamicizedMatches } from '../data/matches';
 import * as api from '../services/api';
 
 // Mock the service
@@ -149,7 +149,7 @@ describe('MainContent (RTL component + integration tests)', () => {
     });
 
     // Falls back
-    expect(setMatches).toHaveBeenCalledWith(initialMatches);
+    expect(setMatches).toHaveBeenCalledWith(getDynamicizedMatches(initialMatches));
   });
 
   it('shows league tabs (Matches, Standings, Outrights, Stats) when activeLeague is provided', () => {

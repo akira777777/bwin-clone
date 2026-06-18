@@ -12,7 +12,7 @@ import { Casino } from './Casino';
 import { LiveCasino } from './LiveCasino';
 import { Poker } from './Poker';
 import { Virtuals } from './Virtuals';
-import { initialMatches } from '../data/matches';
+import { initialMatches, getDynamicizedMatches } from '../data/matches';
 import type { MatchData } from '../data/matches';
 import { leagueStandings, leagueOutrights, leagueStatsData } from '../data/leaguesData';
 import './MainContent.css';
@@ -95,13 +95,13 @@ const MainContent: React.FC<MainContentProps> = ({
         setIsUsingMock(false);
       } else {
         setError('No matches found for today. Using mock data.');
-        setMatches(initialMatches);
+        setMatches(getDynamicizedMatches(initialMatches));
         setIsUsingMock(true);
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load live matches. Using mock data.';
       setError(errorMessage);
-      setMatches(initialMatches);
+      setMatches(getDynamicizedMatches(initialMatches));
       setIsUsingMock(true);
     } finally {
       setIsLoading(false);
@@ -121,7 +121,7 @@ const MainContent: React.FC<MainContentProps> = ({
   const handleSkipApiKey = () => {
     setIsKeyModalOpen(false);
     setIsUsingMock(true);
-    setMatches(initialMatches);
+    setMatches(getDynamicizedMatches(initialMatches));
   };
 
   useEffect(() => {
@@ -207,16 +207,20 @@ const MainContent: React.FC<MainContentProps> = ({
             <p style={{ margin: '15px 0' }}>To view real, live matches instead of mock data, you need a free API key from <strong>The Odds API</strong>.</p>
             <ol style={{ textAlign: 'left', margin: '0 auto 20px', maxWidth: '400px', color: 'var(--betz-text-secondary)' }}>
               <li>Go to <a href="https://the-odds-api.com/" target="_blank" rel="noreferrer" style={{ color: 'var(--betz-accent)' }}>the-odds-api.com</a></li>
-              <li>Click "Get a free API key"</li>
-              <li>Paste the key below</li>
             </ol>
             <input 
               ref={apiKeyInputRef}
               type="text" 
               placeholder="Paste your API key here..." 
+              defaultValue={apiKey}
               style={{ width: '100%', padding: '12px', marginBottom: '20px', backgroundColor: 'var(--betz-input)', border: '1px solid rgba(255, 255, 255, 0.08)', color: '#fff', borderRadius: '11px', outline: 'none' }}
             />
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              {(apiKey || isUsingMock) && (
+                <button className="btn-promo" style={{ backgroundColor: 'transparent', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--betz-text-muted)' }} onClick={() => setIsKeyModalOpen(false)}>
+                  Cancel
+                </button>
+              )}
               <button className="btn-promo" style={{ backgroundColor: 'transparent', border: '1px solid var(--betz-text-muted)', color: 'var(--betz-text-secondary)' }} onClick={handleSkipApiKey}>
                 Skip (Use Mock Data)
               </button>
@@ -273,10 +277,45 @@ const MainContent: React.FC<MainContentProps> = ({
         </div>
       )}
 
-      {error && (
+      {error && error !== 'Invalid API Key' && (
         <div style={{ backgroundColor: 'rgba(255, 68, 68, 0.1)', border: '1px solid #ff4444', color: '#ff4444', padding: '10px 15px', borderRadius: '4px', margin: '0 20px 20px 20px', display: 'flex', justifyContent: 'space-between' }}>
           <span>{error}</span>
           <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer' }} aria-label="Close Error">×</button>
+        </div>
+      )}
+
+      {(error === 'Invalid API Key' || isUsingMock) && (
+        <div className="subtle-api-indicator" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 16px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.05)', color: 'var(--betz-text-muted)', fontSize: '12.5px', margin: '0 20px 20px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: error ? '#ff4444' : '#34D399' }}></span>
+            <span>
+              {error === 'Invalid API Key' ? (
+                language === 'ru' 
+                  ? 'Режим демо: API ключ недействителен. Используются симулированные данные.' 
+                  : language === 'de' 
+                    ? 'Demo-Modus: API-Schlüssel ist ungültig. Simulierte Daten werden verwendet.' 
+                    : language === 'es'
+                      ? 'Modo Demo: La clave API es inválida. Usando datos simulados.'
+                      : 'Demo Mode: API key is invalid. Using simulated live data.'
+              ) : (
+                language === 'ru' 
+                  ? 'Режим демо: Используются симулированные данные.' 
+                  : language === 'de' 
+                    ? 'Demo-Modus: Simulierte Daten werden verwendet.' 
+                    : language === 'es'
+                      ? 'Modo Demo: Usando datos simulados.'
+                      : 'Demo Mode: Using simulated live data.'
+              )}
+            </span>
+          </div>
+          <button 
+            onClick={() => setIsKeyModalOpen(true)} 
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--betz-text-primary)', padding: '5px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '11px', fontWeight: '600', transition: 'all 0.15s ease' }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--betz-accent)'; e.currentTarget.style.color = '#0A0C0F'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.color = 'var(--betz-text-primary)'; }}
+          >
+            {language === 'ru' ? 'Ввести API ключ' : language === 'de' ? 'API-Schlüssel eingeben' : language === 'es' ? 'Ingresar clave API' : 'Enter API Key'}
+          </button>
         </div>
       )}
 

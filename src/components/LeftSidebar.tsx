@@ -243,13 +243,14 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 </div>
                 <span className="comp-name">{league.name}</span>
                 <div className="item-meta">
-                  {stats?.live > 0 && (
+                  {stats?.live > 0 ? (
                     <span className="live-indicator">
                       <span className="live-dot-mini"></span>
                       {stats.live}
                     </span>
+                  ) : (
+                    stats && <span className="comp-count">{stats.total}</span>
                   )}
-                  {stats && <span className="comp-count">{stats.total}</span>}
                   <ChevronRight size={14} className="chevron" />
                 </div>
               </li>
@@ -303,13 +304,14 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 <span className="sport-badge-emoji">{SPORT_ICONS[sport]}</span>
                 <span className="comp-name">{t(sport, language)}</span>
                 <div className="item-meta">
-                  {stats?.live > 0 && (
+                  {stats?.live > 0 ? (
                     <span className="live-indicator">
                       <span className="live-dot-mini"></span>
                       {stats.live}
                     </span>
+                  ) : (
+                    stats && <span className="comp-count">{stats.total}</span>
                   )}
-                  {stats && <span className="comp-count">{stats.total}</span>}
                 </div>
               </li>
             );
@@ -334,13 +336,14 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 <span className="league-flag">{league.flag}</span>
                 <span className="comp-name">{league.name}</span>
                 <div className="item-meta">
-                  {stats?.live > 0 && (
+                  {stats?.live > 0 ? (
                     <span className="live-indicator">
                       <span className="live-dot-mini"></span>
                       {stats.live}
                     </span>
+                  ) : (
+                    stats && <span className="comp-count">{stats.total}</span>
                   )}
-                  {stats && <span className="comp-count">{stats.total}</span>}
                 </div>
               </li>
             );

@@ -236,3 +236,51 @@ export const initialMatches: MatchData[] = [
     odds: { home: 1.80, draw: 4.10, away: 3.80 }
   },
 ];
+
+export const getDynamicizedMatches = (matches: MatchData[]): MatchData[] => {
+  const now = new Date();
+  
+  return matches.map(match => {
+    if (match.isLive) {
+      return match;
+    }
+    
+    // If it is an upcoming match with a static Today/Tonight time, make it relative to current time
+    if (match.time.includes('Today') || match.time.includes('Tonight') || match.time.includes('Tomorrow')) {
+      if (match.time.includes('Today') || match.time.includes('Tonight')) {
+        if (match.id === 'm11') {
+          // Man City vs Tottenham
+          const target = new Date(now.getTime() + 45 * 60 * 1000); // 45 mins from now
+          return { ...match, time: `Today, ${target.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` };
+        }
+        if (match.id === 'm13') {
+          // Atletico Madrid vs Sevilla
+          const target = new Date(now.getTime() + 120 * 60 * 1000); // 2 hours from now
+          return { ...match, time: `Today, ${target.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` };
+        }
+        if (match.id === 't2') {
+          // J. Sinner vs D. Medvedev
+          const target = new Date(now.getTime() + 90 * 60 * 1000); // 1.5 hours from now
+          return { ...match, time: `Today, ${target.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` };
+        }
+        if (match.id === 'b4') {
+          // Denver Nuggets vs Phoenix Suns
+          const target = new Date(now.getTime() + 180 * 60 * 1000); // 3 hours from now
+          return { ...match, time: `Today, ${target.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` };
+        }
+        if (match.id === 'h2') {
+          // Edmonton Oilers vs Florida Panthers
+          const target = new Date(now.getTime() + 240 * 60 * 1000); // 4 hours from now
+          return { ...match, time: `Today, ${target.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` };
+        }
+      } else if (match.time.includes('Tomorrow')) {
+        const parts = match.time.split(',');
+        const timePart = parts.length > 1 ? parts[1].trim() : '18:00';
+        return { ...match, time: `Tomorrow, ${timePart}` };
+      }
+    }
+    
+    return match;
+  });
+};
+

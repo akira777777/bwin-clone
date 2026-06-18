@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 import FooterModal from './components/FooterModal';
 import LiveChatWidget from './components/LiveChatWidget';
 import LiveTicker from './components/LiveTicker';
-import { initialMatches } from './data/matches';
+import { initialMatches, getDynamicizedMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
 import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
 import type { OddsFormat } from './utils/betting';
@@ -153,7 +153,7 @@ function App() {
     setNotifications([]);
   }, []);
 
-  const [matches, setMatches] = useState<MatchData[]>(initialMatches);
+  const [matches, setMatches] = useState<MatchData[]>(() => getDynamicizedMatches(initialMatches));
   const [searchQuery, setSearchQuery] = useState('');
   const [balance, setBalance] = useState<number>(1000);
   const [globalToast, setGlobalToast] = useState<string | null>(null);
@@ -723,15 +723,34 @@ function App() {
     };
   }, [loadPlacedBets]);
 
-  const handleAuthSuccess = useCallback((/* email: string */) => {
-    // This is now mostly a no-op because onAuthStateChange will fire and set the real user.
-    // Kept for the simulation fallback path when no Supabase keys are configured.
-    // The param is required by the AuthModal onSuccess prop but unused here.
+  const handleAuthSuccess = useCallback((email: string) => {
+    const mockUser: User = {
+      id: 'mock-user-id-' + Math.random().toString(36).substring(2, 11),
+      email: email,
+      role: 'authenticated',
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      app_metadata: {},
+      user_metadata: {},
+      confirmed_at: new Date().toISOString(),
+      last_sign_in_at: new Date().toISOString(),
+      phone: '',
+      identities: [],
+      factors: []
+    } as unknown as User;
+    setUser(mockUser);
   }, []);
 
   const handleLogout = useCallback(async () => {
-    await supabase.auth.signOut();
-    // user will be cleared by the onAuthStateChange listener above
+    try {
+      if (hasRealSupabaseConfig) {
+        await supabase.auth.signOut();
+      }
+    } catch (e) {
+      console.warn('Supabase signOut error:', e);
+    }
+    setUser(null);
+    setPlacedBets([]);
   }, []);
 
   const handleCategoryChange = useCallback((cat: Category) => {
