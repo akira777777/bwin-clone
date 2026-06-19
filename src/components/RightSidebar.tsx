@@ -19,6 +19,7 @@ interface RightSidebarProps {
   matches: MatchData[];
   balance?: number;
   onCashOut?: (id: string, amount: number) => void;
+  onShareBet?: (bet: PlacedBet) => void;
   isSelfExcluded?: boolean;
   oddsFormat?: OddsFormat;
   language?: string;
@@ -94,6 +95,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   matches, 
   balance = 1000, 
   onCashOut = () => {},
+  onShareBet = () => {},
   isSelfExcluded = false,
   oddsFormat = 'decimal',
   language = 'en'
@@ -681,15 +683,40 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                           <span>€{pb.potentialReturn.toFixed(2)}</span>
                         </div>
                       </div>
-                      {pb.status === 'Pending' && cashoutVal > 0 && (
+                      <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                        {pb.status === 'Pending' && cashoutVal > 0 && (
+                          <button 
+                            className="btn-cashout" 
+                            disabled={cashingOutId !== null}
+                            style={{ flex: 1, margin: 0 }}
+                            onClick={() => handleCashOutClick(pb.id, cashoutVal)}
+                          >
+                            {cashingOutId === pb.id ? t('Cashing out...', language) : `${t('Cash Out', language)} €${cashoutVal.toFixed(2)}`}
+                          </button>
+                        )}
                         <button 
-                           className="btn-cashout" 
-                          disabled={cashingOutId !== null}
-                          onClick={() => handleCashOutClick(pb.id, cashoutVal)}
+                          className="btn-share-bet" 
+                          style={{ 
+                            flex: 1, 
+                            backgroundColor: 'rgba(194, 249, 90, 0.1)', 
+                            border: '1px solid rgba(194, 249, 90, 0.2)', 
+                            color: 'var(--betz-accent)', 
+                            padding: '8px 10px', 
+                            borderRadius: '4px', 
+                            fontWeight: 'bold', 
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '4px',
+                            borderStyle: 'solid'
+                          }}
+                          onClick={() => onShareBet(pb)}
                         >
-                          {cashingOutId === pb.id ? t('Cashing out...', language) : `${t('Cash Out', language)} €${cashoutVal.toFixed(2)}`}
+                          <span>🔗</span> {language === 'ru' ? 'Чат' : 'Share'}
                         </button>
-                      )}
+                      </div>
                     </div>
                   </div>
                 );

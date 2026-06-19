@@ -131,15 +131,29 @@
   gap: 4px;
 }
 
-.ticker-odds-mini span {
+.ticker-odds-btn {
   font-family: 'Sora', sans-serif;
   font-size: 10px;
   font-weight: 700;
   color: var(--betz-accent);
   background: rgba(194, 249, 90, 0.06);
-  padding: 2px 5px;
+  padding: 2px 6px;
   border-radius: 4px;
   border: 1px solid rgba(194, 249, 90, 0.12);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.ticker-odds-btn:hover {
+  background: rgba(194, 249, 90, 0.15);
+  border-color: rgba(194, 249, 90, 0.3);
+}
+
+.ticker-odds-btn.selected {
+  background: var(--betz-accent);
+  color: #0A0C0F;
+  border-color: var(--betz-accent);
 }
 
 /* No live events fallback */

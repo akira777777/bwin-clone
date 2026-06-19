@@ -131,6 +131,9 @@ describe('Header (RTL component tests)', () => {
           isLoggedIn: true,
           userEmail: 'alex@example.com',
           balance: 1500,
+          vipLevel: 'Silver',
+          vipProgress: 30,
+          vipProgressSubtext: '350 points to Gold VIP status',
           onLogout,
           onDeposit,
         })}

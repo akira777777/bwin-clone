@@ -41,8 +41,8 @@ describe('App (focused RTL slice for global state, simulations, bet flow)', () =
     expect(screen.getByText('Log In')).toBeInTheDocument();
     expect(screen.getByText('Register')).toBeInTheDocument();
 
-    // Sports nav / categories are in Header (use getAll + [0] because "Live Betting" can appear in nav + other links)
-    expect(screen.getByText('Sports')).toBeInTheDocument();
+    // Sports nav / categories are in Header (use getAll + [0] because "Sports" and "Live Betting" can appear in nav + other links)
+    expect(screen.getAllByText('Sports')[0]).toBeInTheDocument();
     expect(screen.getAllByText('Live Betting')[0]).toBeInTheDocument();
 
     // Main content area (from MainContent) - sections exist (use All to tolerate "Live Now" + "Upcoming Matches")

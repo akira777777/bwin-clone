@@ -6,7 +6,10 @@ import RightSidebar from './components/RightSidebar';
 import Footer from './components/Footer';
 import FooterModal from './components/FooterModal';
 import LiveChatWidget from './components/LiveChatWidget';
+import type { Message } from './components/LiveChatWidget';
 import LiveTicker from './components/LiveTicker';
+import { DailyWheelModal } from './components/DailyWheelModal';
+import MobileBottomNav from './components/MobileBottomNav';
 import { initialMatches, getDynamicizedMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
 import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
@@ -72,6 +75,13 @@ function App() {
   const [depositLimit, setDepositLimit] = useState<number>(1000);
   const [selfExclusionEndTime, setSelfExclusionEndTime] = useState<number>(0);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [totalWagered, setTotalWagered] = useState<number>(() => {
+    return parseFloat(localStorage.getItem('betz_total_wagered') || '0') || 0;
+  });
+  const [isDailyWheelOpen, setIsDailyWheelOpen] = useState(false);
+
+
 
   const addBet = useCallback((bet: Bet) => {
     setBetSlip(prev => {
@@ -208,6 +218,68 @@ function App() {
     }, 4500);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleWager = useCallback((amount: number) => {
+    setTotalWagered(prev => {
+      const next = prev + amount;
+      localStorage.setItem('betz_total_wagered', next.toString());
+      return next;
+    });
+  }, []);
+
+  const vipStats = useMemo(() => {
+    if (totalWagered < 100) {
+      return {
+        level: 'Bronze',
+        nextLevel: 'Silver',
+        progress: (totalWagered / 100) * 100,
+        subtext: `${(100 - totalWagered).toFixed(2)} to Silver VIP`
+      };
+    } else if (totalWagered < 500) {
+      return {
+        level: 'Silver',
+        nextLevel: 'Gold',
+        progress: ((totalWagered - 100) / 400) * 100,
+        subtext: `${(500 - totalWagered).toFixed(2)} to Gold VIP`
+      };
+    } else if (totalWagered < 2000) {
+      return {
+        level: 'Gold',
+        nextLevel: 'Platinum',
+        progress: ((totalWagered - 500) / 1500) * 100,
+        subtext: `${(2000 - totalWagered).toFixed(2)} to Platinum VIP`
+      };
+    } else {
+      return {
+        level: 'Platinum',
+        nextLevel: 'Max',
+        progress: 100,
+        subtext: 'You have reached the maximum VIP level!'
+      };
+    }
+  }, [totalWagered]);
+
+  const handleShareBet = useCallback((pb: PlacedBet) => {
+    setIsLiveChatOpen(true);
+    setChatMessages(prev => [
+      ...prev,
+      {
+        id: `share-${Date.now()}`,
+        sender: 'user',
+        text: language === 'ru' ? '📢 Я поделился своим купоном!' : '📢 I shared my bet slip!',
+        timestamp: new Date(),
+        sharedBet: pb
+      }
+    ]);
+    triggerGlobalToast(language === 'ru' ? 'Ставка опубликована в чате!' : 'Bet shared in chat!', 'system');
+  }, [language, triggerGlobalToast]);
+
+  const handleCopyBetSlip = useCallback((bets: Bet[]) => {
+    setBetSlip(bets);
+    triggerGlobalToast(language === 'ru' ? 'Купон скопирован в ваш билет!' : 'Bet slip copied to your ticket!', 'system');
+    setIsLiveChatOpen(false);
+    setIsMobileSlipOpen(true);
+  }, [language, triggerGlobalToast]);
 
   // Load balance from localStorage based on guest or user
   useEffect(() => {
@@ -615,6 +687,7 @@ function App() {
     if (betSlip.length === 0 || stake <= 0 || balance < stake) return;
 
     updateBalance(balance - stake);
+    handleWager(stake);
 
     const newPlacedBet: PlacedBet = {
       id: generateBetId('ticket', Date.now().toString(36)),
@@ -655,7 +728,7 @@ function App() {
     }
 
     clearBetSlip();
-  }, [betSlip, clearBetSlip, user, loadPlacedBets, balance, updateBalance, selfExclusionEndTime, triggerGlobalToast]);
+  }, [betSlip, clearBetSlip, user, loadPlacedBets, balance, updateBalance, selfExclusionEndTime, triggerGlobalToast, handleWager]);
 
   const handleCashOut = useCallback(async (betId: string, amount: number) => {
     updateBalance(balance + amount);
@@ -784,8 +857,18 @@ function App() {
   const toggleMobileSlip = useCallback(() => setIsMobileSlipOpen(prev => !prev), []);
   const closeMobileSlip = useCallback(() => setIsMobileSlipOpen(false), []);
 
-  // eslint-disable-next-line react-hooks/purity
-  const isSelfExcluded = useMemo(() => selfExclusionEndTime > Date.now(), [selfExclusionEndTime]);
+  const [isSelfExcluded, setIsSelfExcluded] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsSelfExcluded(selfExclusionEndTime > Date.now());
+    if (selfExclusionEndTime > Date.now()) {
+      const delay = selfExclusionEndTime - Date.now();
+      const timer = setTimeout(() => {
+        setIsSelfExcluded(false);
+      }, delay);
+      return () => clearTimeout(timer);
+    }
+  }, [selfExclusionEndTime]);
 
   return (
     <div className={`app-container ${isMobileSlipOpen ? 'slip-open' : ''} ${isMobileMenuOpen ? 'menu-open' : ''}`}>
@@ -819,6 +902,10 @@ function App() {
         setSearchQuery={setSearchQuery}
         activeSport={activeSport}
         setActiveSport={handleSportChange}
+        vipLevel={vipStats.level}
+        vipProgress={vipStats.progress}
+        vipProgressSubtext={vipStats.subtext}
+        onOpenDailyWheel={() => setIsDailyWheelOpen(true)}
       />
 
       <LiveTicker matches={matches} onSelectMatch={setSelectedMatchId} />
@@ -863,6 +950,9 @@ function App() {
             language={language}
             favorites={favorites}
             toggleFavorite={toggleFavorite}
+            balance={balance}
+            updateBalance={updateBalance}
+            onWager={handleWager}
           />
         </div>
 
@@ -881,6 +971,7 @@ function App() {
             isSelfExcluded={isSelfExcluded}
             oddsFormat={oddsFormat}
             language={language}
+            onShareBet={handleShareBet}
           />
         </div>
       </div>
@@ -933,8 +1024,20 @@ function App() {
         placedBetsCount={placedBets.length}
         selfExclusionEndTime={selfExclusionEndTime}
         language={language}
+        messages={chatMessages}
+        setMessages={setChatMessages}
+        onCopyBetSlip={handleCopyBetSlip}
       />
       
+      <MobileBottomNav 
+        activeCategory={activeCategory}
+        setActiveCategory={handleCategoryChange}
+        betSlipCount={betSlip.length}
+        toggleMobileSlip={toggleMobileSlip}
+        toggleMobileMenu={toggleMobileMenu}
+        language={language}
+      />
+
       {/* Mobile Overlay */}
       {(isMobileMenuOpen || isMobileSlipOpen) && (
         <div className="mobile-overlay" onClick={() => {
@@ -942,6 +1045,15 @@ function App() {
           setIsMobileSlipOpen(false);
         }}></div>
       )}
+
+      <DailyWheelModal 
+        isOpen={isDailyWheelOpen}
+        onClose={() => setIsDailyWheelOpen(false)}
+        balance={balance}
+        updateBalance={updateBalance}
+        language={language}
+        triggerToast={triggerGlobalToast}
+      />
     </div>
   );
 }

@@ -13,11 +13,19 @@
 
 /* Row 1: Main Header */
 .header-top {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
+}
+
+.header-top-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 66px;
-  padding: 0 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 22px;
 }
 
 .header-left {
@@ -398,16 +406,24 @@
 
 /* Row 2: Category Bar */
 .category-bar {
+  height: 50px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
+}
+
+.category-bar-inner {
   display: flex;
   align-items: center;
-  height: 50px;
-  padding: 0 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 22px;
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-.category-bar::-webkit-scrollbar {
+.category-bar-inner::-webkit-scrollbar {
   display: none;
 }
 
@@ -840,12 +856,23 @@
 }
 
 /* Responsive Overrides */
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .top-nav-link {
+    padding: 8px 10px;
+    font-size: 13.5px;
+    gap: 4px;
+  }
+  .header-search {
+    max-width: 230px;
+  }
+}
+
 @media (max-width: 1024px) {
-  .header-top {
+  .header-top-inner {
     padding: 0 16px;
   }
   
-  .category-bar {
+  .category-bar-inner {
     padding: 0 16px;
   }
   
@@ -914,4 +941,21 @@
     height: 36px;
     border-radius: 9px;
   }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .btn-login {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .btn-register {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
 }
+

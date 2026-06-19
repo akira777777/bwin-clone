@@ -62,7 +62,7 @@
 }
 
 .lc-close-btn:hover {
-  color: #ffc107;
+  color: var(--betz-accent);
 }
 
 .lc-messages-container {
@@ -126,8 +126,8 @@
 
 /* Bubbles Styles */
 .user-style {
-  background: #ffc107;
-  color: #121212;
+  background: var(--betz-accent);
+  color: #0A0C0F;
   border-bottom-right-radius: 2px;
 }
 
@@ -167,12 +167,12 @@
 }
 
 .lc-input:focus {
-  border-color: #ffc107;
+  border-color: var(--betz-accent);
 }
 
 .lc-send-btn {
-  background: #ffc107;
-  color: #121212;
+  background: var(--betz-accent);
+  color: #0A0C0F;
   border: none;
   font-weight: 700;
   font-size: 0.8rem;
@@ -183,7 +183,7 @@
 }
 
 .lc-send-btn:hover:not(:disabled) {
-  background: #ffb300;
+  background: var(--betz-accent-hover);
 }
 
 .lc-send-btn:disabled {
@@ -244,3 +244,93 @@
     border: none;
   }
 }
+
+/* SHARED BET STYLING IN CHAT */
+.lc-shared-bet {
+  margin-top: 8px;
+  background-color: var(--betz-input);
+  border: 1px solid var(--betz-border-08);
+  border-radius: 8px;
+  padding: 10px;
+  width: 250px;
+  max-width: 100%;
+}
+
+.lc-shared-bet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--betz-border-08);
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.lc-shared-bet-header span {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--betz-text-muted);
+  text-transform: uppercase;
+}
+
+.lc-shared-bet-header .lc-shared-bet-odds {
+  color: var(--betz-accent);
+}
+
+.lc-shared-bet-legs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.lc-shared-bet-leg {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 12px;
+  gap: 10px;
+}
+
+.lc-leg-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.lc-leg-sel {
+  color: var(--betz-text-primary);
+  font-weight: 700;
+}
+
+.lc-leg-match {
+  color: var(--betz-text-muted);
+  font-size: 10px;
+}
+
+.lc-leg-odds {
+  font-weight: 700;
+  color: var(--betz-text-primary);
+}
+
+.lc-btn-copy-bet {
+  width: 100%;
+  padding: 6px 10px;
+  background-color: var(--betz-accent);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lc-btn-copy-bet:hover {
+  background-color: var(--betz-accent-hover);
+  transform: translateY(-1px);
+}
+
+.lc-btn-copy-bet:active {
+  transform: translateY(1px);
+}
+

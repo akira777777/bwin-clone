@@ -63,10 +63,16 @@ const formatTime = (sec: number): string => {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 };
 
-export const Virtuals: React.FC = () => {
+import type { Bet } from '../App';
+
+interface VirtualsProps {
+  betSlip?: Bet[];
+  addBet?: (bet: Bet) => void;
+}
+
+export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
   const [events, setEvents] = useState<VirtualEvent[]>(INITIAL_EVENTS);
   const [toast, setToast] = useState<string | null>(null);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -86,17 +92,24 @@ export const Virtuals: React.FC = () => {
 
   const handleOdd = (eventId: string, marketLabel: string, oddValue: string, sportName: string) => {
     const key = `${eventId}-${marketLabel}`;
-    setSelected(prev => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
+    const matchEvent = events.find(e => e.id === eventId);
+    if (!matchEvent) return;
+
+    if (addBet) {
+      addBet({
+        id: key,
+        match: `${matchEvent.team1} vs ${matchEvent.team2}`,
+        selection: `${marketLabel}`,
+        odds: parseFloat(oddValue)
+      });
+
+      const isCurrentlySelected = betSlip.some(b => b.id === key);
+      if (isCurrentlySelected) {
         showToast(`Removed: ${sportName} — ${marketLabel}`);
       } else {
-        next.add(key);
         showToast(`Added to slip: ${sportName} ${marketLabel} @ ${oddValue}`);
       }
-      return next;
-    });
+    }
   };
 
   const liveEvent = useMemo(() => events.find(e => e.isLive) ?? null, [events]);
@@ -153,7 +166,7 @@ export const Virtuals: React.FC = () => {
                   <button
                     type="button"
                     key={m.label}
-                    className={`vf-odd-btn${selected.has(key) ? ' selected' : ''}`}
+                    className={`vf-odd-btn${betSlip.some(b => b.id === key) ? ' selected' : ''}`}
                     onClick={() => handleOdd(liveEvent.id, m.label, m.value, liveEvent.sport)}
                   >
                     <span className="vf-label">{m.label}</span>
@@ -203,7 +216,7 @@ export const Virtuals: React.FC = () => {
                   <button
                     type="button"
                     key={m.label}
-                    className={`vec-odd-btn${selected.has(key) ? ' selected' : ''}`}
+                    className={`vec-odd-btn${betSlip.some(b => b.id === key) ? ' selected' : ''}`}
                     onClick={() => handleOdd(ev.id, m.label, m.value, ev.sport)}
                   >
                     <span className="vec-odd-label">{m.label}</span>

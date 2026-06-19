@@ -75,7 +75,7 @@ const Footer: React.FC<FooterProps> = (props) => {
     : getFooterText('disclaimer');
 
   return (
-    <footer className="bwin-footer">
+    <footer className="betz-footer">
       {/* Top Row: Links */}
       <div className="footer-links-row">
         <a href="#" onClick={(e) => handleFooterLinkClick(e, 'About Us')}>{getFooterText('About Us')}</a>

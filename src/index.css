@@ -152,6 +152,10 @@ ul {
   padding: 20px 22px 60px;
 }
 
+.main-layout.full-width {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* ===== CARDS ===== */
 .betz-card {
   background: var(--betz-surface);

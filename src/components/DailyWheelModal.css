@@ -1,0 +1,216 @@
+.wheel-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 12, 15, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.wheel-modal-card {
+  background-color: var(--betz-surface);
+  border: 1px solid var(--betz-border-06);
+  border-radius: 16px;
+  width: 420px;
+  max-width: 90%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.wheel-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--betz-border-08);
+  padding-bottom: 14px;
+}
+
+.wheel-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wheel-header-title h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--betz-text-primary);
+  margin: 0;
+}
+
+.wheel-sparkle-icon {
+  color: var(--betz-gold);
+  filter: drop-shadow(0 0 6px var(--betz-gold));
+}
+
+.wheel-close-btn {
+  background: none;
+  border: none;
+  color: var(--betz-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.wheel-close-btn:hover:not(:disabled) {
+  color: var(--betz-white);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.wheel-close-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.wheel-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.wheel-subtitle {
+  font-size: 13px;
+  color: var(--betz-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Wheel visual */
+.wheel-visual-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: radial-gradient(circle at center, #1b232b 0%, #0a0c0f 100%);
+  border-radius: 50%;
+  border: 4px solid var(--betz-border-06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.wheel-outer {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.wheel-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.segment-text {
+  dominant-baseline: middle;
+}
+
+/* Pointer arrow */
+.wheel-pointer {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 24px solid var(--betz-accent);
+  z-index: 5;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(194, 249, 90, 0.4));
+  animation: pointer-bob 1s ease-in-out infinite;
+}
+
+@keyframes pointer-bob {
+  0%, 100% { top: -4px; }
+  50% { top: -8px; }
+}
+
+/* Controls */
+.wheel-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.wheel-prize-announcement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--betz-success-12);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  color: var(--betz-success);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.wheel-prize-announcement strong {
+  font-size: 18px;
+  text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
+}
+
+.btn-spin-wheel {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--betz-accent) 0%, #a4e12e 100%);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(194, 249, 90, 0.25);
+}
+
+.btn-spin-wheel:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(194, 249, 90, 0.4);
+}
+
+.btn-spin-wheel:active {
+  transform: translateY(1px);
+}
+
+.btn-spin-wheel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.wheel-cooldown-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--betz-text-muted);
+  font-size: 13px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--betz-border-08);
+  padding: 10px 20px;
+  border-radius: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.wheel-cooldown-indicator strong {
+  color: var(--betz-gold);
+}

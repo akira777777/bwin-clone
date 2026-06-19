@@ -34,6 +34,9 @@ interface MainContentProps {
   language?: string;
   favorites?: string[];
   toggleFavorite?: (id: string) => void;
+  balance?: number;
+  updateBalance?: (newBalance: number) => void;
+  onWager?: (amount: number) => void;
 }
 
 const LEAGUE_FLAGS: Record<string, string> = {
@@ -58,7 +61,7 @@ const MainContent: React.FC<MainContentProps> = ({
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
   matches, setMatches, searchQuery = '', oddsFormat, language = 'en',
-  favorites = [], toggleFavorite
+  favorites = [], toggleFavorite, balance = 1000, updateBalance = () => {}, onWager
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');
@@ -235,7 +238,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   if (activeCategory === 'Casino') {
-    return <Casino language={language} />;
+    return <Casino language={language} balance={balance} updateBalance={updateBalance} onWager={onWager} />;
   }
   if (activeCategory === 'Live Casino') {
     return <LiveCasino language={language} />;
@@ -245,7 +248,7 @@ const MainContent: React.FC<MainContentProps> = ({
   }
 
   if (activeCategory === 'Virtuals') {
-    return <Virtuals />;
+    return <Virtuals betSlip={betSlip} addBet={addBet} />;
   }
 
   if (selectedMatch) {

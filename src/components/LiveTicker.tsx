@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import type { MatchData } from '../data/matches';
+import type { Bet } from '../App';
 import './LiveTicker.css';
 
 const SPORT_ICONS: Record<string, string> = {
@@ -17,13 +18,31 @@ const SPORT_ICONS: Record<string, string> = {
 interface LiveTickerProps {
   matches: MatchData[];
   onSelectMatch: (id: string) => void;
+  betSlip?: Bet[];
+  addBet?: (bet: Bet) => void;
 }
 
-const LiveTicker: React.FC<LiveTickerProps> = ({ matches, onSelectMatch }) => {
+const LiveTicker: React.FC<LiveTickerProps> = ({ matches, onSelectMatch, betSlip = [], addBet }) => {
   const liveMatches = useMemo(
     () => matches.filter(m => m.isLive && m.time !== 'Finished'),
     [matches]
   );
+
+  const isBetSelected = (matchId: string, selection: string) => {
+    return betSlip.some(b => b.id === `${matchId}-${selection}`);
+  };
+
+  const handleOddsClick = (e: React.MouseEvent, match: MatchData, selection: string, oddsValue: number) => {
+    e.stopPropagation(); // Prevent ticker item click
+    if (!addBet || oddsValue === 0) return;
+    const bet: Bet = {
+      id: `${match.id}-${selection}`,
+      match: `${match.team1} vs ${match.team2}`,
+      selection: selection === 'home' ? match.team1 : selection === 'away' ? match.team2 : 'Draw',
+      odds: oddsValue
+    };
+    addBet(bet);
+  };
 
   if (liveMatches.length === 0) return null;
 
@@ -55,9 +74,30 @@ const LiveTicker: React.FC<LiveTickerProps> = ({ matches, onSelectMatch }) => {
               )}
               <span className="ticker-time">{match.time}</span>
               <div className="ticker-odds-mini">
-                {match.odds.home > 0 && <span>{match.odds.home.toFixed(2)}</span>}
-                {match.odds.draw > 0 && <span>{match.odds.draw.toFixed(2)}</span>}
-                {match.odds.away > 0 && <span>{match.odds.away.toFixed(2)}</span>}
+                {match.odds.home > 0 && (
+                  <button 
+                    className={`ticker-odds-btn ${isBetSelected(match.id, 'home') ? 'selected' : ''}`}
+                    onClick={(e) => handleOddsClick(e, match, 'home', match.odds.home)}
+                  >
+                    {match.odds.home.toFixed(2)}
+                  </button>
+                )}
+                {match.odds.draw > 0 && (
+                  <button 
+                    className={`ticker-odds-btn ${isBetSelected(match.id, 'draw') ? 'selected' : ''}`}
+                    onClick={(e) => handleOddsClick(e, match, 'draw', match.odds.draw)}
+                  >
+                    {match.odds.draw.toFixed(2)}
+                  </button>
+                )}
+                {match.odds.away > 0 && (
+                  <button 
+                    className={`ticker-odds-btn ${isBetSelected(match.id, 'away') ? 'selected' : ''}`}
+                    onClick={(e) => handleOddsClick(e, match, 'away', match.odds.away)}
+                  >
+                    {match.odds.away.toFixed(2)}
+                  </button>
+                )}
               </div>
             </div>
           ))}

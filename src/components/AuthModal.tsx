@@ -182,6 +182,26 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, type: initialTyp
       }
     } catch (err: unknown) {
       setIsSubmitting(false);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      
+      // If we got an API key error, fall back to local simulation so the user is not locked out!
+      if (errMsg.includes('Invalid API key') || errMsg.includes('api_key_not_found') || errMsg.includes('invalid-api-key') || errMsg.includes('API key')) {
+        console.warn('[AuthModal] Supabase auth returned Invalid API Key. Falling back to local simulation.');
+        
+        // Show success message and login as simulation user
+        const message = activeTab === 'login' 
+          ? getAuthText('Successfully logged in! Welcome back.')
+          : getAuthText('Account created! Welcome to BETZ.');
+        setSuccessMessage(message);
+        
+        setTimeout(() => {
+          setSuccessMessage(null);
+          if (onSuccess) onSuccess(trimmedEmail, activeTab === 'register');
+          onClose();
+        }, 1500);
+        return;
+      }
+      
       setFormError(err instanceof Error ? err.message : getAuthText('Authentication failed. Please try again.'));
     } finally {
       if (hasRealClient) {

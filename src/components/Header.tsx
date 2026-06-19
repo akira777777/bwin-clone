@@ -30,6 +30,10 @@ interface HeaderProps {
   setSearchQuery?: (query: string) => void;
   activeSport?: Sport;
   setActiveSport?: (sport: Sport) => void;
+  vipLevel?: string;
+  vipProgress?: number;
+  vipProgressSubtext?: string;
+  onOpenDailyWheel?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -55,7 +59,11 @@ const Header: React.FC<HeaderProps> = ({
   searchQuery = '',
   setSearchQuery = () => {},
   activeSport = 'Football',
-  setActiveSport
+  setActiveSport,
+  vipLevel = 'Bronze',
+  vipProgress = 0,
+  vipProgressSubtext = '',
+  onOpenDailyWheel = () => {}
 }) => {
   // Deposit modal state
   const [isCryptoDepositOpen, setIsCryptoDepositOpen] = useState(false);
@@ -109,6 +117,7 @@ const Header: React.FC<HeaderProps> = ({
   const emailPrefix = userEmail ? userEmail.split('@')[0] : 'Account';
   const avatarChar = emailPrefix.charAt(0).toUpperCase();
   const unreadCount = notifications.filter(n => !n.read).length;
+  const isSportsCategory = activeCategory === 'Sports' || activeCategory === 'Live Betting';
 
   // Handles clicking a sport or category in the second row Category Bar
   const handleCategoryItemClick = (type: 'live' | 'sport' | 'category' | 'boosted', value?: string) => {
@@ -132,44 +141,59 @@ const Header: React.FC<HeaderProps> = ({
     <header className="header">
       {/* Row 1: Logo, Nav Links, Search, Balance, Dropdowns, Auth */}
       <div className="header-top">
-        <div className="header-left">
-          <button className="mobile-toggle-btn" onClick={toggleMobileMenu}>
-            <Menu size={20} />
-          </button>
-          
-          <div className="logo" onClick={onLogoClick}>
-            <div className="logo-icon-box">B</div>
-            <span className="logo-text">BETZ<span className="logo-dot">.</span></span>
-          </div>
+        <div className="header-top-inner">
+          <div className="header-left">
+            {isSportsCategory && (
+              <button className="mobile-toggle-btn" onClick={toggleMobileMenu}>
+                <Menu size={20} />
+              </button>
+            )}
+            
+            <div className="logo" onClick={onLogoClick}>
+              <div className="logo-icon-box">B</div>
+              <span className="logo-text">BETZ<span className="logo-dot">.</span></span>
+            </div>
 
-          <nav className="top-nav">
-            <div 
-              className={`top-nav-link ${activeCategory === 'Sports' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('Sports')}
-            >
-              {t('Sports', language)}
-            </div>
-            <div 
-              className={`top-nav-link ${activeCategory === 'Live Betting' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('Live Betting')}
-            >
-              <span className="pulse-dot"></span>
-              {t('Live', language)}
-            </div>
-            <div 
-              className={`top-nav-link ${activeCategory === 'Casino' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('Casino')}
-            >
-              {t('Casino', language)}
-            </div>
-            <div 
-              className={`top-nav-link ${activeCategory === 'Poker' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('Poker')}
-            >
-              {t('Promotions', language)}
-            </div>
-          </nav>
-        </div>
+            <nav className="top-nav">
+              <div 
+                className={`top-nav-link ${activeCategory === 'Sports' ? 'active' : ''}`}
+                onClick={() => setActiveCategory('Sports')}
+              >
+                {t('Sports', language)}
+              </div>
+              <div 
+                className={`top-nav-link ${activeCategory === 'Live Betting' ? 'active' : ''}`}
+                onClick={() => setActiveCategory('Live Betting')}
+              >
+                <span className="pulse-dot"></span>
+                {t('Live', language)}
+              </div>
+              <div 
+                className={`top-nav-link ${activeCategory === 'Casino' ? 'active' : ''}`}
+                onClick={() => setActiveCategory('Casino')}
+              >
+                {t('Casino', language)}
+              </div>
+              <div 
+                className={`top-nav-link ${activeCategory === 'Live Casino' ? 'active' : ''}`}
+                onClick={() => setActiveCategory('Live Casino')}
+              >
+                {t('Live Casino', language)}
+              </div>
+              <div 
+                className={`top-nav-link ${activeCategory === 'Poker' ? 'active' : ''}`}
+                onClick={() => setActiveCategory('Poker')}
+              >
+                {t('Poker', language)}
+              </div>
+              <div 
+                className={`top-nav-link ${activeCategory === 'Virtuals' ? 'active' : ''}`}
+                onClick={() => setActiveCategory('Virtuals')}
+              >
+                {t('Virtuals', language)}
+              </div>
+            </nav>
+          </div>
 
         {/* Search Input */}
         <div className="header-search">
@@ -271,6 +295,32 @@ const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
+          {/* Daily Spin Button */}
+          {isLoggedIn && (
+            <button 
+              className="daily-wheel-trigger-btn"
+              onClick={onOpenDailyWheel}
+              style={{
+                background: 'linear-gradient(135deg, var(--betz-gold) 0%, #d4951b 100%)',
+                color: '#000',
+                border: 'none',
+                padding: '8px 14px',
+                borderRadius: '8px',
+                fontWeight: '800',
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                marginRight: '12px',
+                boxShadow: '0 0 10px rgba(244, 183, 64, 0.2)',
+                transition: 'all 0.25s'
+              }}
+            >
+              🎡 {language === 'ru' ? 'Колесо' : 'Daily Spin'}
+            </button>
+          )}
+
           {/* User Balance Pill & Deposit Button */}
           <div className="balance-container">
             <div className="balance-widget" key={balance}>
@@ -284,7 +334,7 @@ const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Auth Section / Profile Dropdown */}
+          {/* User Profile / Auth */}
           {isLoggedIn ? (
             <div className="header-dropdown-container profile-container" ref={profileRef}>
               <button className="profile-trigger-btn" onClick={() => setIsProfileOpen(!isProfileOpen)}>
@@ -301,7 +351,7 @@ const Header: React.FC<HeaderProps> = ({
                       <p className="profile-email" title={userEmail || undefined}>{userEmail}</p>
                       <div className="vip-badge-container">
                         <Award size={12} style={{ color: 'var(--betz-accent)' }} />
-                        <span className="vip-badge">Silver VIP</span>
+                        <span className="vip-badge">{vipLevel} VIP</span>
                       </div>
                     </div>
                   </div>
@@ -311,11 +361,12 @@ const Header: React.FC<HeaderProps> = ({
                       <span>Bronze</span>
                       <span>Silver</span>
                       <span>Gold</span>
+                      <span>Plat</span>
                     </div>
                     <div className="vip-progress-bar-wrapper">
-                      <div className="vip-progress-bar" style={{ width: '65%' }}></div>
+                      <div className="vip-progress-bar" style={{ width: `${vipProgress}%` }}></div>
                     </div>
-                    <span className="vip-progress-subtext">{t('Gold VIP Progress', language)}</span>
+                    <span className="vip-progress-subtext">{vipProgressSubtext}</span>
                   </div>
 
                   <div className="balance-breakdown">
@@ -352,60 +403,67 @@ const Header: React.FC<HeaderProps> = ({
           )}
           
           {/* Mobile bet slip toggle */}
-          <button className="mobile-slip-btn" onClick={toggleMobileSlip}>
-            <ShoppingCart size={20} />
-            {betSlipCount > 0 && <span className="slip-badge">{betSlipCount}</span>}
-          </button>
+          {isSportsCategory && (
+            <button className="mobile-slip-btn" onClick={toggleMobileSlip}>
+              <ShoppingCart size={20} />
+              {betSlipCount > 0 && <span className="slip-badge">{betSlipCount}</span>}
+            </button>
+          )}
         </div>
+      </div>
       </div>
       
       {/* Row 2: Category bar */}
-      <nav className="category-bar">
-        <ul className="category-list">
-          <li 
-            className={`category-item live-category ${activeCategory === 'Live Betting' ? 'active' : ''}`}
-            onClick={() => handleCategoryItemClick('live')}
-          >
-            Live Betting <span className="category-live-badge">24</span>
-          </li>
-          <li 
-            className={`category-item ${activeCategory === 'Sports' && activeSport === 'Football' ? 'active' : ''}`}
-            onClick={() => handleCategoryItemClick('sport', 'Football')}
-          >
-            {t('Football', language)}
-          </li>
-          <li 
-            className={`category-item ${activeCategory === 'Sports' && activeSport === 'Tennis' ? 'active' : ''}`}
-            onClick={() => handleCategoryItemClick('sport', 'Tennis')}
-          >
-            {t('Tennis', language)}
-          </li>
-          <li 
-            className={`category-item ${activeCategory === 'Sports' && activeSport === 'Basketball' ? 'active' : ''}`}
-            onClick={() => handleCategoryItemClick('sport', 'Basketball')}
-          >
-            {t('Basketball', language)}
-          </li>
-          <li 
-            className={`category-item ${activeCategory === 'Sports' && activeSport === 'MMA' ? 'active' : ''}`}
-            onClick={() => handleCategoryItemClick('sport', 'MMA')}
-          >
-            Esports
-          </li>
-          <li 
-            className={`category-item ${activeCategory === 'Casino' ? 'active' : ''}`}
-            onClick={() => handleCategoryItemClick('category', 'Casino')}
-          >
-            {t('Casino', language)}
-          </li>
-          <li 
-            className={`category-item`}
-            onClick={() => handleCategoryItemClick('boosted')}
-          >
-            Boosted
-          </li>
-        </ul>
-      </nav>
+      {isSportsCategory && (
+        <nav className="category-bar">
+          <div className="category-bar-inner">
+            <ul className="category-list">
+            <li 
+              className={`category-item live-category ${activeCategory === 'Live Betting' ? 'active' : ''}`}
+              onClick={() => handleCategoryItemClick('live')}
+            >
+              Live Betting <span className="category-live-badge">24</span>
+            </li>
+            <li 
+              className={`category-item ${activeCategory === 'Sports' && activeSport === 'Football' ? 'active' : ''}`}
+              onClick={() => handleCategoryItemClick('sport', 'Football')}
+            >
+              {t('Football', language)}
+            </li>
+            <li 
+              className={`category-item ${activeCategory === 'Sports' && activeSport === 'Tennis' ? 'active' : ''}`}
+              onClick={() => handleCategoryItemClick('sport', 'Tennis')}
+            >
+              {t('Tennis', language)}
+            </li>
+            <li 
+              className={`category-item ${activeCategory === 'Sports' && activeSport === 'Basketball' ? 'active' : ''}`}
+              onClick={() => handleCategoryItemClick('sport', 'Basketball')}
+            >
+              {t('Basketball', language)}
+            </li>
+            <li 
+              className={`category-item ${activeCategory === 'Sports' && activeSport === 'MMA' ? 'active' : ''}`}
+              onClick={() => handleCategoryItemClick('sport', 'MMA')}
+            >
+              Esports
+            </li>
+            <li 
+              className={`category-item ${(activeCategory as string) === 'Casino' ? 'active' : ''}`}
+              onClick={() => handleCategoryItemClick('category', 'Casino')}
+            >
+              {t('Casino', language)}
+            </li>
+            <li 
+              className={`category-item`}
+              onClick={() => handleCategoryItemClick('boosted')}
+            >
+              Boosted
+            </li>
+          </ul>
+          </div>
+        </nav>
+      )}
     </header>
     {isCryptoDepositOpen && (
       <CryptoDeposit

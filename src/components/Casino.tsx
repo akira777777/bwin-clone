@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Sparkles, Diamond, Coins } from 'lucide-react';
 import { t } from '../utils/i18n';
+import { MinesGame } from './MinesGame';
 import './Casino.css';
 
 interface Game {
@@ -14,6 +15,7 @@ interface Game {
 }
 
 const CASINO_GAMES: Game[] = [
+  { id: 'mines', title: 'BETZ Mines', provider: 'BETZ Originals', color: 'linear-gradient(135deg, #1b232b, #0e1216)', icon: <Sparkles size={40} />, category: 'Slots' },
   { id: '1', title: 'Book of Dead', provider: 'Play\'n GO', color: 'linear-gradient(135deg, #b92b27, #1565C0)', icon: <Sparkles size={40} />, category: 'Slots', image: '/casino/book_of_dead.png' },
   { id: '2', title: 'Lightning Roulette', provider: 'Evolution', color: 'linear-gradient(135deg, #1f4037, #99f2c8)', icon: <Coins size={40} />, category: 'Live Dealer', image: '/casino/lightning_roulette.png' },
   { id: '3', title: 'Crazy Time', provider: 'Evolution', color: 'linear-gradient(135deg, #f12711, #f5af19)', icon: <Play size={40} />, category: 'Live Dealer', image: '/casino/crazy_time.png' },
@@ -25,13 +27,17 @@ const CASINO_GAMES: Game[] = [
 ];
 
 interface CasinoProps {
+  balance?: number;
+  updateBalance?: (newBalance: number) => void;
   language?: string;
+  onWager?: (amount: number) => void;
 }
 
-export const Casino: React.FC<CasinoProps> = ({ language = 'en' }) => {
+export const Casino: React.FC<CasinoProps> = ({ balance = 1000, updateBalance = () => {}, language = 'en', onWager }) => {
   const [filter, setFilter] = useState<'All' | 'Slots' | 'Table Games' | 'Live Dealer'>('All');
   const [toast, setToast] = useState<string | null>(null);
   const [loadingGame, setLoadingGame] = useState<string | null>(null);
+  const [isMinesActive, setIsMinesActive] = useState(false);
 
   const filteredGames = CASINO_GAMES.filter(g => filter === 'All' || g.category === filter);
 
@@ -41,6 +47,10 @@ export const Casino: React.FC<CasinoProps> = ({ language = 'en' }) => {
   };
 
   const handlePlayGame = (game: Game) => {
+    if (game.id === 'mines') {
+      setIsMinesActive(true);
+      return;
+    }
     setLoadingGame(game.id);
     showToast(`${t('Loading', language)} ${game.title}...`);
     setTimeout(() => {
@@ -59,6 +69,18 @@ export const Casino: React.FC<CasinoProps> = ({ language = 'en' }) => {
       : '🎁 Bonus activated! 100% on first deposit + 50 Free Spins.';
     showToast(bonusText);
   };
+
+  if (isMinesActive) {
+    return (
+      <MinesGame
+        balance={balance}
+        updateBalance={updateBalance}
+        language={language}
+        onBack={() => setIsMinesActive(false)}
+        onWager={onWager}
+      />
+    );
+  }
 
   return (
     <main className="main-content casino-container">

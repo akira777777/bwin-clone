@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './LiveChatWidget.css';
+import type { Bet, PlacedBet } from '../App';
+import { t } from '../utils/i18n';
 
-interface Message {
+export interface Message {
   id: string;
   sender: 'user' | 'bot';
   text: string;
   timestamp: Date;
+  sharedBet?: PlacedBet;
 }
 
 interface LiveChatWidgetProps {
@@ -15,7 +17,34 @@ interface LiveChatWidgetProps {
   placedBetsCount: number;
   selfExclusionEndTime: number;
   language?: string;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  onCopyBetSlip: (bets: Bet[]) => void;
 }
+
+const translateSelection = (selection: string, lang: string): string => {
+  if (selection === 'Draw') return t('Draw', lang);
+  if (selection === 'Yes') return t('Yes', lang);
+  if (selection === 'No') return t('No', lang);
+  
+  if (selection.includes(':')) {
+    const parts = selection.split(':');
+    const marketName = parts[0].trim();
+    const outcome = parts[1].trim();
+    
+    const translatedMarket = t(marketName, lang);
+    let translatedOutcome = outcome;
+    if (outcome === 'Draw') translatedOutcome = t('Draw', lang);
+    else if (outcome === 'Yes') translatedOutcome = t('Yes', lang);
+    else if (outcome === 'No') translatedOutcome = t('No', lang);
+    else if (outcome === 'Over 2.5') translatedOutcome = t('Over 2.5', lang);
+    else if (outcome === 'Under 2.5') translatedOutcome = t('Under 2.5', lang);
+    
+    return `${translatedMarket}: ${translatedOutcome}`;
+  }
+  
+  return selection;
+};
 
 const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
   isOpen,
@@ -23,38 +52,41 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
   balance,
   placedBetsCount,
   selfExclusionEndTime,
-  language = 'en'
+  language = 'en',
+  messages,
+  setMessages,
+  onCopyBetSlip
 }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Set initial welcoming message in the correct language
   useEffect(() => {
-    const getWelcomeMessage = () => {
-      switch (language) {
-        case 'ru':
-          return "👋 Привет! Добро пожаловать в службу поддержки BETZ. Я ваш автоматический помощник. Чем могу помочь? (Попробуйте ввести: 'баланс', 'ставки', 'блокировка' или 'вывод')";
-        case 'de':
-          return "👋 Hallo! Willkommen beim BETZ Live-Support. Ich bin Ihr automatisierter Assistent. Wie kann ich Ihnen heute helfen? (Geben Sie ein: 'Guthaben', 'Wetten', 'Ausschluss' oder 'Auszahlung')";
-        case 'es':
-          return "👋 ¡Hola! Bienvenido al soporte en vivo de BETZ. Soy su asistente automatizado. ¿Cómo puedo ayudarle hoy? (Escriba: 'saldo', 'apuestas', 'exclusión' o 'retiro')";
-        default:
-          return "👋 Hello! Welcome to BETZ Live Support. I'm your automated assistant. How can I help you today? (Try typing: 'balance', 'bets', 'exclusion', or 'withdraw')";
-      }
-    };
-    
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMessages([
-      {
-        id: 'welcome',
-        sender: 'bot',
-        text: getWelcomeMessage(),
-        timestamp: new Date(),
-      }
-    ]);
-  }, [language, isOpen]);
+    if (isOpen && messages.length === 0) {
+      const getWelcomeMessage = () => {
+        switch (language) {
+          case 'ru':
+            return "👋 Привет! Добро пожаловать в службу поддержки BETZ. Я ваш автоматический помощник. Чем могу помочь? (Попробуйте ввести: 'баланс', 'ставки', 'блокировка' или 'вывод')";
+          case 'de':
+            return "👋 Hallo! Willkommen beim BETZ Live-Support. Ich bin Ihr automatisierter Assistent. Wie kann ich Ihnen heute helfen? (Geben Sie ein: 'Guthaben', 'Wetten', 'Ausschluss' oder 'Auszahlung')";
+          case 'es':
+            return "👋 ¡Hola! Bienvenido al soporte en vivo de BETZ. Soy su asistente automatizado. ¿Cómo puedo ayudarle hoy? (Escriba: 'saldo', 'apuestas', 'exclusión' o 'retiro')";
+          default:
+            return "👋 Hello! Welcome to BETZ Live Support. I'm your automated assistant. How can I help you today? (Try typing: 'balance', 'bets', 'exclusion', or 'withdraw')";
+        }
+      };
+      
+      setMessages([
+        {
+          id: 'welcome',
+          sender: 'bot',
+          text: getWelcomeMessage(),
+          timestamp: new Date(),
+        }
+      ]);
+    }
+  }, [language, isOpen, messages.length, setMessages]);
 
   useEffect(() => {
     if (chatEndRef.current) {
@@ -216,6 +248,37 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
           <div key={msg.id} className={`lc-bubble-row ${msg.sender === 'user' ? 'lc-user-row' : 'lc-bot-row'}`}>
             <div className={`lc-bubble ${msg.sender === 'user' ? 'user-style' : 'bot-style'}`}>
               <p>{msg.text}</p>
+              {msg.sharedBet && (
+                <div className="lc-shared-bet">
+                  <div className="lc-shared-bet-header">
+                    <span>🎫 {msg.sharedBet.type} {language === 'ru' ? 'Купон' : 'Bet'}</span>
+                    <span className="lc-shared-bet-odds">
+                      {msg.sharedBet.bets.reduce((acc, b) => acc * b.odds, 1).toFixed(2)}x
+                    </span>
+                  </div>
+                  <div className="lc-shared-bet-legs">
+                    {msg.sharedBet.bets.map((bet, i) => (
+                      <div key={i} className="lc-shared-bet-leg">
+                        <div className="lc-leg-info">
+                          <span className="lc-leg-sel">{translateSelection(bet.selection, language)}</span>
+                          <span className="lc-leg-match">{bet.match}</span>
+                        </div>
+                        <span className="lc-leg-odds">{bet.odds.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button 
+                    type="button"
+                    className="lc-btn-copy-bet"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCopyBetSlip(msg.sharedBet!.bets);
+                    }}
+                  >
+                    📋 {language === 'ru' ? 'Скопировать купон' : 'Copy Bet Slip'}
+                  </button>
+                </div>
+              )}
               <span className="lc-time">
                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
