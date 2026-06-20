@@ -61,7 +61,7 @@ const MainContent: React.FC<MainContentProps> = ({
   betSlip, addBet, activeCategory, activeSport, setActiveSport, 
   activeLeague, selectedMatchId, setSelectedMatchId,
   matches, setMatches, searchQuery = '', oddsFormat, language = 'en',
-  favorites = [], toggleFavorite, balance = 1000, updateBalance = () => {}, onWager
+  favorites = [], toggleFavorite, balance = 10000, updateBalance = () => {}, onWager
 }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'matches' | 'standings' | 'outrights' | 'stats'>('matches');

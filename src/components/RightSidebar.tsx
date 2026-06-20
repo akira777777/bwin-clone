@@ -93,7 +93,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   onPlaceBet, 
   closeMobileSlip, 
   matches, 
-  balance = 1000, 
+  balance = 10000, 
   onCashOut = () => {},
   onShareBet = () => {},
   isSelfExcluded = false,
