@@ -455,3 +455,9 @@
   .v-events-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
   .virtuals-hero-emoji { display: none; }
 }
+
+.v-featured.active-simulating,
+.v-event-card.active-simulating {
+  border-color: var(--betz-accent) !important;
+  box-shadow: 0 0 12px rgba(194, 249, 90, 0.2) !important;
+}

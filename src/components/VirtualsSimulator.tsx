@@ -130,7 +130,9 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
 
   // Scroll commentary to bottom
   useEffect(() => {
-    commentaryEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (typeof commentaryEndRef.current?.scrollIntoView === 'function') {
+      commentaryEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [commentary]);
 
   // Initial Simulator Commentary

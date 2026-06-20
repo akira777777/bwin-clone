@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { VirtualsSimulator } from './VirtualsSimulator';
 import './Virtuals.css';
 
 interface OddsMarket { label: string; value: string; }
@@ -68,19 +69,32 @@ import type { Bet } from '../App';
 interface VirtualsProps {
   betSlip?: Bet[];
   addBet?: (bet: Bet) => void;
+  language?: string;
 }
 
-export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
+export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet, language = 'en' }) => {
   const [events, setEvents] = useState<VirtualEvent[]>(INITIAL_EVENTS);
+  const [selectedEvent, setSelectedEvent] = useState<VirtualEvent | null>(INITIAL_EVENTS[0]);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setEvents(prev => prev.map(ev => {
-        if (ev.isLive) return { ...ev, minute: Math.min((ev.minute ?? 0) + 1, 90) };
-        if (ev.countdown <= 1) return { ...ev, countdown: 180 };
-        return { ...ev, countdown: ev.countdown - 1 };
-      }));
+      setEvents(prev => {
+        const next = prev.map(ev => {
+          if (ev.isLive) return { ...ev, minute: Math.min((ev.minute ?? 0) + 1, 90) };
+          if (ev.countdown <= 1) return { ...ev, countdown: 180 };
+          return { ...ev, countdown: ev.countdown - 1 };
+        });
+
+        // Sync selectedEvent with background live timer ticks
+        setSelectedEvent(curr => {
+          if (!curr) return null;
+          const found = next.find(e => e.id === curr.id);
+          return found ? found : curr;
+        });
+
+        return next;
+      });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -115,6 +129,8 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
   const liveEvent = useMemo(() => events.find(e => e.isLive) ?? null, [events]);
   const upcomingEvents = useMemo(() => events.filter(e => !e.isLive), [events]);
 
+  const tLabel = (en: string, ru: string) => (language === 'ru' ? ru : en);
+
   return (
     <main className="main-content virtuals-container">
       {toast && <div className="v-toast" role="alert">{toast}</div>}
@@ -122,24 +138,43 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
       {/* Hero Banner */}
       <div className="virtuals-hero">
         <div className="virtuals-hero-content">
-          <h2>Virtual Sports</h2>
-          <p>Non-stop action — events every 3 minutes, 24/7</p>
+          <h2>{tLabel('Virtual Sports', 'Виртуальный спорт')}</h2>
+          <p>{tLabel('Non-stop action — events every 3 minutes, 24/7', 'Круглосуточный экшен — события каждые 3 минуты, 24/7')}</p>
           <div className="virtuals-hero-badges">
-            <span className="v-live-badge">Live Now</span>
-            <span className="v-events-count">{events.length} events active</span>
+            <span className="v-live-badge">{tLabel('Live Now', 'В эфире')}</span>
+            <span className="v-events-count">{tLabel(`${events.length} events active`, `${events.length} активных событий`)}</span>
           </div>
-          <button className="btn-v-start" onClick={() => showToast('Select an event and pick your odds!')}>
-            Start Betting
+          <button className="btn-v-start" onClick={() => showToast(tLabel('Select an event and pick your odds!', 'Выберите событие и кликайте по коэффициентам!'))}>
+            {tLabel('Start Betting', 'Начать игру')}
           </button>
         </div>
         <div className="virtuals-hero-emoji">🏆</div>
       </div>
 
+      {/* Live Match Simulator */}
+      {selectedEvent && (
+        <div className="v-simulator-section">
+          <p className="v-section-title">{tLabel('Visual Live Simulator', 'Визуальный Лайв-Симулятор')}</p>
+          <VirtualsSimulator 
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+            onScoreUpdate={(id, s1, s2) => {
+              setEvents(prev => prev.map(e => e.id === id ? { ...e, score1: s1, score2: s2 } : e));
+            }}
+            language={language}
+          />
+        </div>
+      )}
+
       {/* Featured Live Match */}
       {liveEvent && (
         <>
-          <p className="v-section-title">Live Now</p>
-          <div className="v-featured">
+          <p className="v-section-title">{tLabel('Live Now', 'В игре')}</p>
+          <div 
+            className={`v-featured ${selectedEvent?.id === liveEvent.id ? 'active-simulating' : ''}`}
+            onClick={() => setSelectedEvent(liveEvent)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="v-featured-top">
               <span className="vf-badge">Live</span>
               <span className="vf-sport-label">{liveEvent.sport}</span>
@@ -159,7 +194,7 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
                 <div className="vf-team-name">{liveEvent.team2}</div>
               </div>
             </div>
-            <div className="vf-odds-strip">
+            <div className="vf-odds-strip" onClick={(e) => e.stopPropagation()}>
               {liveEvent.markets.map(m => {
                 const key = `${liveEvent.id}-${m.label}`;
                 return (
@@ -180,10 +215,15 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
       )}
 
       {/* Upcoming Events */}
-      <p className="v-section-title">Next Events</p>
+      <p className="v-section-title">{tLabel('Next Events', 'Предстоящие события')}</p>
       <div className="v-events-grid">
         {upcomingEvents.map(ev => (
-          <div key={ev.id} className={`v-event-card${ev.isLive ? ' is-live' : ''}`}>
+          <div 
+            key={ev.id} 
+            className={`v-event-card${ev.isLive ? ' is-live' : ''} ${selectedEvent?.id === ev.id ? 'active-simulating' : ''}`}
+            onClick={() => setSelectedEvent(ev)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="vec-head">
               <div className={`vec-head-bg ${ev.gradientClass}`} />
               <div className="vec-sport-row">
@@ -191,7 +231,7 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
                 <span className="vec-sport-name">{ev.sport}</span>
               </div>
               <div className="vec-timer">
-                <span className="vec-timer-label">{ev.isLive ? 'Live' : 'Starts in'}</span>
+                <span className="vec-timer-label">{ev.isLive ? 'Live' : tLabel('Starts in', 'Старт через')}</span>
                 <span className={`vec-timer-value${ev.isLive ? ' live-timer' : ''}`}>
                   {ev.isLive ? `${ev.minute ?? 0}′` : formatTime(ev.countdown)}
                 </span>
@@ -209,7 +249,7 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet }) => {
               </div>
             </div>
 
-            <div className="vec-odds">
+            <div className="vec-odds" onClick={(e) => e.stopPropagation()}>
               {ev.markets.map(m => {
                 const key = `${ev.id}-${m.label}`;
                 return (
