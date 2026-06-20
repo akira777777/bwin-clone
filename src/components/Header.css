@@ -245,6 +245,34 @@
   transform: scale(0.97);
 }
 
+.header-quick-deposit-btn {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 9px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 0 8px;
+  height: 34px;
+  margin-right: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-quick-deposit-btn:hover {
+  background-color: rgba(34, 197, 94, 0.25);
+  border-color: #22c55e;
+}
+
+.header-quick-deposit-btn:active {
+  transform: scale(0.95);
+}
+
+
 /* Action button (bell / settings / etc) */
 .header-action-btn {
   width: 40px;

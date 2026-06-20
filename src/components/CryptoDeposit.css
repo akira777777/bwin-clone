@@ -342,6 +342,33 @@
   font-size: 16px;
 }
 
+.crypto-presets-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+.crypto-preset-btn {
+  background: #20242a;
+  border: 1px solid #2e3238;
+  color: #c9ccd3;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.crypto-preset-btn:hover {
+  background: #2d333d;
+  color: #fff;
+  border-color: #f5a623;
+}
+
+
 .crypto-min-warning {
   font-size: 12px;
   color: #ef4444;

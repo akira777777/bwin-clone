@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign } from 'lucide-react';
+import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign, PlusCircle } from 'lucide-react';
 import type { Category, AppNotification, Sport } from '../App';
 import type { OddsFormat } from '../utils/betting';
 import { t } from '../utils/i18n';
@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({
   isLoggedIn = false,
   userEmail,
   onLogout,
-  balance = 1000,
+  balance = 10000,
   onDeposit = () => {},
   oddsFormat,
   setOddsFormat,
@@ -328,6 +328,9 @@ const Header: React.FC<HeaderProps> = ({
                 <span className="balance-label">Balance</span>
                 <span className="balance-val">{`€${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               </div>
+              <button className="header-quick-deposit-btn" onClick={() => { if (onDeposit) onDeposit(10000); }} title="Quick Deposit €10,000">
+                +€10k
+              </button>
               <button className="header-deposit-btn" onClick={() => setIsCryptoDepositOpen(true)}>
                 {language === 'ru' ? 'Депозит' : language === 'de' ? 'Einzahlung' : language === 'es' ? 'Depósito' : 'Deposit'}
               </button>
@@ -385,6 +388,9 @@ const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   <div className="profile-actions-list">
+                    <button className="menu-action-btn quick-deposit-btn" onClick={() => { if (onDeposit) onDeposit(10000); setIsProfileOpen(false); }}>
+                      <PlusCircle size={14} /> {language === 'ru' ? 'Быстрый депозит €10 000' : language === 'de' ? 'Schnelleinzahlung €10.000' : language === 'es' ? 'Depósito Rápido €10.000' : 'Quick Deposit €10,000'}
+                    </button>
                     <button className="menu-action-btn deposit-btn" onClick={() => { setIsCryptoDepositOpen(true); setIsProfileOpen(false); }}>
                       <DollarSign size={14} /> {t('Crypto Deposit', language)}
                     </button>
