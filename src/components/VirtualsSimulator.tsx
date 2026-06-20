@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import './VirtualsSimulator.css';
 
@@ -32,26 +32,8 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
   onScoreUpdate,
   language = 'en'
 }) => {
-  const [commentary, setCommentary] = useState<string[]>([]);
-  const [possession, setPossession] = useState<number>(50); // percentage for team1
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-  
-  // Specific sports states
-  // Racing states
-  const [runners, setRunners] = useState<RunnerState[]>([]);
-  const [raceActive, setRaceActive] = useState<boolean>(false);
-  const [podium, setPodium] = useState<number[]>([]);
-
-  // Tennis states
-  const [tennisPoints1, setTennisPoints1] = useState<string>('0');
-  const [tennisPoints2, setTennisPoints2] = useState<string>('0');
-  const [isBallOnLeft, setIsBallOnLeft] = useState<boolean>(true);
-
-  const commentaryEndRef = useRef<HTMLDivElement>(null);
   const tLabel = (en: string, ru: string) => (language === 'ru' ? ru : en);
-
-  // Determine current sport subtype
-  const sportType = useMemo(() => {
+  const sportType = (() => {
     const s = event.sport.toLowerCase();
     if (s.includes('football')) return 'football';
     if (s.includes('basketball')) return 'basketball';
@@ -59,7 +41,57 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
     if (s.includes('horse') || s.includes('racing')) return 'horses';
     if (s.includes('tennis')) return 'tennis';
     return 'generic';
-  }, [event.sport]);
+  })();
+
+  const [commentary, setCommentary] = useState<string[]>(() => {
+    const isRacing = sportType === 'horses' || sportType === 'greyhounds';
+    if (isRacing) {
+      return [
+        language === 'ru' ? '🏁 Участники выстраиваются на старте...' : '🏁 Runners are lining up at the starting gate...',
+        language === 'ru' ? '⚡ И они стартовали!' : '⚡ And they are OFF!'
+      ];
+    }
+    return [
+      language === 'ru' 
+        ? `🏁 Добро пожаловать на трансляцию матча ${event.team1} — ${event.team2}.` 
+        : `🏁 Welcome to the Live Simulator for ${event.team1} vs ${event.team2}.`,
+      language === 'ru' ? '⚡ Матч начался!' : '⚡ Match is underway!'
+    ];
+  });
+  const [possession, setPossession] = useState<number>(50); // percentage for team1
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  
+  // Specific sports states
+  // Racing states
+  const [runners, setRunners] = useState<RunnerState[]>(() => {
+    if (sportType !== 'horses' && sportType !== 'greyhounds') return [];
+    const isDog = sportType === 'greyhounds';
+    const names = isDog 
+      ? ['Bolt', 'Slasher', 'Rex', 'Mercury', 'Comet', 'Vixen']
+      : ['Desert Gold', 'Night Shadow', 'Stormbringer', 'Majesty', 'Gallop King', 'Wind Rider'];
+    const colors = ['#FF5656', '#F4B740', '#34D399', '#7FA0FF', '#C2F95A', '#EAEEF3'];
+    const emojis = isDog ? ['🐕', '🐕', '🐕', '🐕', '🐕', '🐕'] : ['🐎', '🐎', '🐎', '🐎', '🐎', '🐎'];
+
+    return Array.from({ length: 6 }, (_, i) => ({
+      id: i + 1,
+      name: `${language === 'ru' ? 'Бегун' : 'Runner'} ${i + 1} (${names[i]})`,
+      progress: 0,
+      color: colors[i],
+      emoji: emojis[i]
+    }));
+  });
+  const [raceActive, setRaceActive] = useState<boolean>(() => {
+    return sportType === 'horses' || sportType === 'greyhounds';
+  });
+  const [podium, setPodium] = useState<number[]>([]);
+
+  // Tennis states
+  const [tennisPoints1, setTennisPoints1] = useState<string>('0');
+  const [tennisPoints2, setTennisPoints2] = useState<string>('0');
+  const [isBallOnLeft, setIsBallOnLeft] = useState<boolean>(true);
+  const [tennisBallY, setTennisBallY] = useState<number>(55);
+
+  const commentaryEndRef = useRef<HTMLDivElement>(null);
 
   // Audio Context synth beep
   const playSoundEffect = (type: 'whistle' | 'bounce' | 'cheer' | 'gallop') => {
@@ -135,17 +167,10 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
     }
   }, [commentary]);
 
-  // Initial Simulator Commentary
+  // Initial Simulator Sound
   useEffect(() => {
     playSoundEffect('whistle');
-    setCommentary([
-      tLabel(
-        `🏁 Welcome to the Live Simulator for ${event.team1} vs ${event.team2}.`,
-        `🏁 Добро пожаловать на трансляцию матча ${event.team1} — ${event.team2}.`
-      ),
-      tLabel('⚡ Match is underway!', '⚡ Матч начался!')
-    ]);
-  }, [event.id]);
+  }, []);
 
   // 1. Football / Basketball Simulation Loop
   useEffect(() => {
@@ -218,10 +243,7 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
     ]);
   };
 
-  useEffect(() => {
-    if (sportType !== 'horses' && sportType !== 'greyhounds') return;
-    initializeRace();
-  }, [event.id]);
+  // Race starts automatically via default state values on keyed mount
 
   useEffect(() => {
     if (!raceActive) return;
@@ -271,6 +293,7 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
       playSoundEffect('bounce');
       // Alternate ball side
       setIsBallOnLeft(prev => !prev);
+      setTennisBallY(45 + Math.random() * 20);
 
       if (Math.random() < 0.25) {
         // Point scored!
@@ -391,7 +414,7 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
                 <div 
                   className={`v-court-ball ${isBallOnLeft ? 'left' : 'right'}`}
                   style={{
-                    top: `${45 + Math.random() * 20}%`
+                    top: `${tennisBallY}%`
                   }}
                 >
                   🎾

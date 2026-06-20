@@ -42,7 +42,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
   const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
 
   // Game phases: 'idle' | 'countdown' | 'live' | 'crashed'
-  const [gamePhase, setGamePhase] = useState<'idle' | 'countdown' | 'live' | 'crashed'>('idle');
+  const [gamePhase, setGamePhase] = useState<'idle' | 'countdown' | 'live' | 'crashed'>('countdown');
   const [countdown, setCountdown] = useState<number>(5);
   const [currentMultiplier, setCurrentMultiplier] = useState<number>(1.00);
   
@@ -70,6 +70,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
   const audioContextRef = useRef<AudioContext | null>(null);
   const soundGainRef = useRef<GainNode | null>(null);
   const startTimeRef = useRef<number>(0);
+  const triggerNextRoundRef = useRef<() => void>(() => {});
 
   // Helper translations
   const tLabel = (enVal: string, ruVal: string) => (language === 'ru' ? ruVal : enVal);
@@ -184,7 +185,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
   }, [isSoundOn, initAudio, stopMultiplierSound]);
 
   // Canvas drawing loop
-  const drawCanvas = useCallback((mult: number, phase: 'countdown' | 'live' | 'crashed') => {
+  const drawCanvas = useCallback((mult: number, phase: 'countdown' | 'live' | 'crashed', flameOffset: number = 0) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -278,7 +279,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
       // Simple yellow flame particles
       ctx.beginPath();
       ctx.moveTo(currentX - 10, currentY + 5);
-      ctx.lineTo(currentX - 25 - Math.random() * 10, currentY + 10 + Math.random() * 5);
+      ctx.lineTo(currentX - 25 - flameOffset * 10, currentY + 10 + flameOffset * 5);
       ctx.lineTo(currentX - 10, currentY + 12);
       ctx.fillStyle = '#ff8c00';
       ctx.fill();
@@ -376,7 +377,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
           setCashedOut(false);
           setBetAmount(0);
           setError(null);
-          triggerNextRound();
+          triggerNextRoundRef.current();
         }, 3500);
 
         // Draw final frame
@@ -387,7 +388,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
         playMultiplierSound(current);
 
         // Draw current curve point
-        drawCanvas(current, 'live');
+        drawCanvas(current, 'live', Math.random());
 
         // Auto Cashout check
         const autoVal = parseFloat(autoCashoutInput);
@@ -447,14 +448,44 @@ export const CrashGame: React.FC<CrashGameProps> = ({
     }, 1000);
   }, [drawCanvas, startMultiplierRun]);
 
+  // Keep ref updated
+  useEffect(() => {
+    triggerNextRoundRef.current = triggerNextRound;
+  }, [triggerNextRound]);
+
   // Initial trigger on mount
   useEffect(() => {
-    triggerNextRound();
+    drawCanvas(1.00, 'countdown');
+
+    const countdownTimer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownTimer);
+          
+          // Generate crash point using fair casino math
+          // House Edge 3% -> RTP 97%
+          const H = Math.floor(Math.random() * 100);
+          let target = 1.00;
+          if (H >= 3) {
+            // formula: target = 0.97 / (1 - P) where P is random [0,1)
+            target = 0.97 / (1.00 - Math.random());
+            target = Math.max(1.01, Math.round(target * 100) / 100);
+          }
+          
+          // Start the run
+          startMultiplierRun(target);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
     return () => {
+      clearInterval(countdownTimer);
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
       stopMultiplierSound();
     };
-  }, [triggerNextRound, stopMultiplierSound]);
+  }, [startMultiplierRun, stopMultiplierSound, drawCanvas]);
 
   // User places bet for next round
   const handlePlaceBet = () => {

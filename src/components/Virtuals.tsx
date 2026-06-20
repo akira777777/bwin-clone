@@ -156,6 +156,7 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet, langua
         <div className="v-simulator-section">
           <p className="v-section-title">{tLabel('Visual Live Simulator', 'Визуальный Лайв-Симулятор')}</p>
           <VirtualsSimulator 
+            key={selectedEvent.id}
             event={selectedEvent}
             onClose={() => setSelectedEvent(null)}
             onScoreUpdate={(id, s1, s2) => {

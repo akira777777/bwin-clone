@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, User, BarChart2, ShieldAlert, Award, Save, Lock } from 'lucide-react';
 import './ProfileModal.css';
 
@@ -48,6 +48,16 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   // Responsible gambling state
   const [localLimit, setLocalLimit] = useState<string>(depositLimit.toString());
   const [exclusionHours, setExclusionHours] = useState<string>('0');
+  const [now, setNow] = useState<number>(() => Date.now());
+
+  useEffect(() => {
+    if (isOpen) {
+      const handle = requestAnimationFrame(() => {
+        setNow(Date.now());
+      });
+      return () => cancelAnimationFrame(handle);
+    }
+  }, [isOpen]);
 
   // Stats mock calculated from totalWagered
   const stats = {
@@ -97,8 +107,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
   if (!isOpen) return null;
 
-  const isExcluded = selfExclusionEndTime > Date.now();
-  const timeRemaining = isExcluded ? Math.max(0, Math.round((selfExclusionEndTime - Date.now()) / 1000 / 60)) : 0;
+  const isExcluded = selfExclusionEndTime > now;
+  const timeRemaining = isExcluded ? Math.max(0, Math.round((selfExclusionEndTime - now) / 1000 / 60)) : 0;
 
   const tLabel = (en: string, ru: string) => (language === 'ru' ? ru : en);
 
