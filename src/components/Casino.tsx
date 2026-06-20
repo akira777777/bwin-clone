@@ -33,7 +33,7 @@ interface CasinoProps {
   onWager?: (amount: number) => void;
 }
 
-export const Casino: React.FC<CasinoProps> = ({ balance = 1000, updateBalance = () => {}, language = 'en', onWager }) => {
+export const Casino: React.FC<CasinoProps> = ({ balance = 10000, updateBalance = () => {}, language = 'en', onWager }) => {
   const [filter, setFilter] = useState<'All' | 'Slots' | 'Table Games' | 'Live Dealer'>('All');
   const [toast, setToast] = useState<string | null>(null);
   const [loadingGame, setLoadingGame] = useState<string | null>(null);

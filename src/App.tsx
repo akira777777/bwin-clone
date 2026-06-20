@@ -72,7 +72,7 @@ function App() {
   const [isMobileSlipOpen, setIsMobileSlipOpen] = useState(false);
 
   const [activeFooterTab, setActiveFooterTab] = useState<string | null>(null);
-  const [depositLimit, setDepositLimit] = useState<number>(1000);
+  const [depositLimit, setDepositLimit] = useState<number>(50000);
   const [selfExclusionEndTime, setSelfExclusionEndTime] = useState<number>(0);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
@@ -165,7 +165,7 @@ function App() {
 
   const [matches, setMatches] = useState<MatchData[]>(() => getDynamicizedMatches(initialMatches));
   const [searchQuery, setSearchQuery] = useState('');
-  const [balance, setBalance] = useState<number>(1000);
+  const [balance, setBalance] = useState<number>(10000);
   const [globalToast, setGlobalToast] = useState<string | null>(null);
 
   // Favorites system
@@ -294,7 +294,7 @@ function App() {
         return;
       }
     }
-    setBalance(1000.00);
+    setBalance(10000.00);
   }, [user]);
 
   const updateBalance = useCallback((newBalance: number) => {
@@ -306,12 +306,26 @@ function App() {
   // Deposit function passed to Header
   const handleDeposit = useCallback((amount: number) => {
     if (amount > depositLimit) {
-      triggerGlobalToast(`❌ Deposit blocked. This deposit of €${amount.toFixed(2)} exceeds your daily limit of €${depositLimit.toFixed(2)}.`);
+      const errorMsg = language === 'ru' 
+        ? `❌ Депозит заблокирован. Этот депозит в размере €${amount.toFixed(2)} превышает ваш дневной лимит в €${depositLimit.toFixed(2)}.`
+        : language === 'de'
+        ? `❌ Einzahlung blockiert. Diese Einzahlung von €${amount.toFixed(2)} überschreitet Ihr tägliches Limit von €${depositLimit.toFixed(2)}.`
+        : language === 'es'
+        ? `❌ Depósito bloqueado. Este depósito de €${amount.toFixed(2)} supera su límite diario de €${depositLimit.toFixed(2)}.`
+        : `❌ Deposit blocked. This deposit of €${amount.toFixed(2)} exceeds your daily limit of €${depositLimit.toFixed(2)}.`;
+      triggerGlobalToast(errorMsg);
       return;
     }
     updateBalance(balance + amount);
-    triggerGlobalToast(`💰 Deposit successful! €${amount.toFixed(2)} added to your balance.`);
-  }, [balance, updateBalance, triggerGlobalToast, depositLimit]);
+    const successMsg = language === 'ru'
+      ? `💰 Депозит выполнен успешно! €${amount.toFixed(2)} добавлено на ваш баланс.`
+      : language === 'de'
+      ? `💰 Einzahlung erfolgreich! €${amount.toFixed(2)} wurde Ihrem Guthaben gutgeschrieben.`
+      : language === 'es'
+      ? `💰 ¡Depósito exitoso! €${amount.toFixed(2)} añadido a su saldo.`
+      : `💰 Deposit successful! €${amount.toFixed(2)} added to your balance.`;
+    triggerGlobalToast(successMsg);
+  }, [balance, updateBalance, triggerGlobalToast, depositLimit, language]);
 
   // Simulate live match minute increments, score updates, and odds fluctuations
   useEffect(() => {
