@@ -10,6 +10,7 @@ import type { Message } from './components/LiveChatWidget';
 import LiveTicker from './components/LiveTicker';
 import { DailyWheelModal } from './components/DailyWheelModal';
 import MobileBottomNav from './components/MobileBottomNav';
+import { ProfileModal } from './components/ProfileModal';
 import { initialMatches, getDynamicizedMatches } from './data/matches';
 import type { MatchData, Trend } from './data/matches';
 import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/betting';
@@ -80,6 +81,7 @@ function App() {
     return parseFloat(localStorage.getItem('betz_total_wagered') || '0') || 0;
   });
   const [isDailyWheelOpen, setIsDailyWheelOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
 
 
@@ -920,6 +922,7 @@ function App() {
         vipProgress={vipStats.progress}
         vipProgressSubtext={vipStats.subtext}
         onOpenDailyWheel={() => setIsDailyWheelOpen(true)}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
       />
 
       <LiveTicker matches={matches} onSelectMatch={setSelectedMatchId} />
@@ -1066,6 +1069,23 @@ function App() {
         balance={balance}
         updateBalance={updateBalance}
         language={language}
+        triggerToast={triggerGlobalToast}
+      />
+
+      <ProfileModal 
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        language={language}
+        balance={balance}
+        vipLevel={vipStats.level}
+        vipProgress={vipStats.progress}
+        vipProgressSubtext={vipStats.subtext}
+        totalWagered={totalWagered}
+        depositLimit={depositLimit}
+        setDepositLimit={setDepositLimit}
+        selfExclusionEndTime={selfExclusionEndTime}
+        setSelfExclusionEndTime={setSelfExclusionEndTime}
+        userEmail={userEmail}
         triggerToast={triggerGlobalToast}
       />
     </div>

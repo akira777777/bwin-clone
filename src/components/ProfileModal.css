@@ -1,0 +1,517 @@
+/* ===== Profile Modal Overlay ===== */
+.profile-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+/* Modal Card */
+.profile-modal-card {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--betz-surface);
+  border: 1px solid var(--betz-border-06);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.profile-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--betz-border-05);
+}
+
+.profile-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-modal-title h3 {
+  font-family: 'Sora', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+
+.profile-modal-close {
+  background: none;
+  border: none;
+  color: var(--betz-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.profile-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+/* Navigation Tabs */
+.profile-modal-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--betz-border-05);
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0 10px;
+}
+
+.profile-modal-tabs button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 0;
+  color: var(--betz-text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.profile-modal-tabs button:hover {
+  color: #fff;
+}
+
+.profile-modal-tabs button.active {
+  color: var(--betz-accent);
+  border-bottom-color: var(--betz-accent);
+}
+
+/* Modal Body / Tab Panes */
+.profile-modal-body {
+  padding: 24px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.tab-pane {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Profile Form Elements */
+.avatar-selection-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--betz-border-05);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.current-avatar-preview {
+  font-size: 40px;
+  width: 72px;
+  height: 72px;
+  background-color: var(--betz-elevated);
+  border: 2px solid var(--betz-border-07);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  flex: 1;
+}
+
+.avatar-btn {
+  font-size: 20px;
+  padding: 6px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.15s;
+}
+
+.avatar-btn:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.avatar-btn.selected {
+  background-color: var(--betz-accent-14);
+  border-color: var(--betz-accent);
+}
+
+.profile-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.profile-form-group label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--betz-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-form-group input {
+  padding: 12px;
+  background-color: var(--betz-input);
+  border: 1px solid var(--betz-border-08);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 600;
+  outline: none;
+}
+
+.profile-form-group input:focus {
+  border-color: var(--betz-accent);
+}
+
+.disabled-input {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-save-profile {
+  background-color: var(--betz-accent);
+  color: #000;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 14.5px;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.btn-save-profile:hover {
+  background-color: var(--betz-accent-hover);
+  box-shadow: 0 4px 12px var(--betz-accent-14);
+}
+
+/* Statistics Tab Styling */
+.stats-header-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--betz-border-06);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-card .label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--betz-text-muted);
+}
+
+.summary-card .value {
+  font-family: 'Sora', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.stats-detailed-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.detailed-stat-card {
+  background-color: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--betz-border-05);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detailed-stat-card .label {
+  font-size: 12.5px;
+  color: var(--betz-text-dim);
+}
+
+.detailed-stat-card .val {
+  font-family: 'Sora', sans-serif;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.green-color {
+  color: var(--betz-success) !important;
+}
+
+.stats-footer-note {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--betz-text-faint);
+  line-height: 1.4;
+}
+
+/* VIP Rewards Styling */
+.vip-progress-card {
+  background: linear-gradient(135deg, rgba(194, 249, 90, 0.08) 0%, rgba(10, 12, 15, 0.2) 100%);
+  border: 1px solid var(--betz-border-06);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.vip-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.vip-badge-label {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--betz-accent);
+}
+
+.vip-progress-sub {
+  font-size: 12px;
+  color: var(--betz-text-muted);
+}
+
+.vip-progress-bar-container {
+  height: 8px;
+  background-color: var(--betz-scrollbar);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.vip-progress-bar-fill {
+  height: 100%;
+  background-color: var(--betz-accent);
+  border-radius: 4px;
+}
+
+.vip-tiers-title {
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  color: #fff;
+}
+
+.vip-tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vip-tier-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--betz-border-05);
+  background-color: rgba(255, 255, 255, 0.01);
+  transition: all 0.2s;
+}
+
+.vip-tier-item.active {
+  border-color: var(--betz-accent-18);
+  background-color: var(--betz-accent-10);
+}
+
+.tier-bullet {
+  font-size: 20px;
+}
+
+.tier-details h5 {
+  margin: 0 0 4px 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.tier-details p {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--betz-text-dim);
+  line-height: 1.4;
+}
+
+/* Responsible Gambling Styling */
+.safer-section-card {
+  background-color: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--betz-border-06);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.safer-section-card h5 {
+  margin: 0 0 6px 0;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.safer-section-card .desc {
+  margin: 0 0 14px 0;
+  font-size: 12px;
+  color: var(--betz-text-muted);
+  line-height: 1.4;
+}
+
+.safer-controls-row {
+  display: flex;
+  gap: 10px;
+}
+
+.deposit-limit-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.deposit-limit-input-wrapper span {
+  position: absolute;
+  left: 12px;
+  color: var(--betz-text-faint);
+  font-weight: 700;
+}
+
+.deposit-limit-input-wrapper input {
+  width: 100%;
+  padding: 10px 10px 10px 24px;
+  background-color: var(--betz-input);
+  border: 1px solid var(--betz-border-08);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  outline: none;
+  font-family: 'Sora', sans-serif;
+}
+
+.btn-save-limit {
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--betz-border-06);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.btn-save-limit:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.exclusion-select {
+  flex: 1;
+  padding: 10px;
+  background-color: var(--betz-input);
+  border: 1px solid var(--betz-border-08);
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  outline: none;
+}
+
+.btn-exclude-action {
+  background-color: var(--betz-live);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  font-family: 'Sora', sans-serif;
+}
+
+.btn-exclude-action:hover {
+  background-color: var(--betz-live-light);
+  box-shadow: 0 0 10px var(--betz-live-12);
+}
+
+/* Exclusion Active State */
+.exclusion-active-panel {
+  background-color: rgba(255, 86, 86, 0.06);
+  border: 1px solid rgba(255, 86, 86, 0.25);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.exclusion-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: var(--betz-live-light);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.time-remaining-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--betz-text-primary);
+  font-weight: 700;
+}
+
+.btn-remove-exclusion {
+  background: none;
+  border: 1px dashed rgba(255, 86, 86, 0.4);
+  color: var(--betz-live-light);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.btn-remove-exclusion:hover {
+  background-color: rgba(255, 86, 86, 0.05);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

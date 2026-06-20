@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign, PlusCircle } from 'lucide-react';
+import { Search, Menu, ShoppingCart, LogOut, Bell, ChevronDown, Award, DollarSign, PlusCircle, User } from 'lucide-react';
 import type { Category, AppNotification, Sport } from '../App';
 import type { OddsFormat } from '../utils/betting';
 import { t } from '../utils/i18n';
@@ -34,6 +34,7 @@ interface HeaderProps {
   vipProgress?: number;
   vipProgressSubtext?: string;
   onOpenDailyWheel?: () => void;
+  onOpenProfile?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -63,7 +64,8 @@ const Header: React.FC<HeaderProps> = ({
   vipLevel = 'Bronze',
   vipProgress = 0,
   vipProgressSubtext = '',
-  onOpenDailyWheel = () => {}
+  onOpenDailyWheel = () => {},
+  onOpenProfile
 }) => {
   // Deposit modal state
   const [isCryptoDepositOpen, setIsCryptoDepositOpen] = useState(false);
@@ -388,6 +390,9 @@ const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   <div className="profile-actions-list">
+                    <button className="menu-action-btn dashboard-btn" onClick={() => { if (onOpenProfile) onOpenProfile(); setIsProfileOpen(false); }} style={{ color: 'var(--betz-accent)', border: '1px solid rgba(194, 249, 90, 0.2)', backgroundColor: 'rgba(194, 249, 90, 0.05)' }}>
+                      <User size={14} /> {language === 'ru' ? 'Личный кабинет' : language === 'de' ? 'Spieler-Dashboard' : language === 'es' ? 'Panel de Jugador' : 'Player Dashboard'}
+                    </button>
                     <button className="menu-action-btn quick-deposit-btn" onClick={() => { if (onDeposit) onDeposit(10000); setIsProfileOpen(false); }}>
                       <PlusCircle size={14} /> {language === 'ru' ? 'Быстрый депозит €10 000' : language === 'de' ? 'Schnelleinzahlung €10.000' : language === 'es' ? 'Depósito Rápido €10.000' : 'Quick Deposit €10,000'}
                     </button>
