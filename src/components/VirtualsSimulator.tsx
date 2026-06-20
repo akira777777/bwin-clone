@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Play, Trophy, RotateCcw, Volume2, VolumeX, ShieldAlert } from 'lucide-react';
+import { RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import './VirtualsSimulator.css';
 
 interface VirtualsSimulatorProps {
@@ -160,9 +160,6 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
       setPossession(targetPossession);
 
       // Attack simulation
-      const attackTeam = isHomeAttack ? event.team1 : event.team2;
-      const defenseTeam = isHomeAttack ? event.team2 : event.team1;
-      
       const phrases = isHomeAttack ? [
         tLabel(`${event.team1} attacks down the left wing...`, `${event.team1} атакует по левому флангу...`),
         tLabel(`Possession controlled by ${event.team1}.`, `Владение мячом переходит к ${event.team1}.`),

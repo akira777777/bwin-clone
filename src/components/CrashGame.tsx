@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeft, Play, Coins, Shield, Flame, Activity } from 'lucide-react';
+import { ArrowLeft, Play, Coins, Flame, Activity } from 'lucide-react';
 import './CrashGame.css';
 
 interface CrashGameProps {
@@ -45,7 +45,6 @@ export const CrashGame: React.FC<CrashGameProps> = ({
   const [gamePhase, setGamePhase] = useState<'idle' | 'countdown' | 'live' | 'crashed'>('idle');
   const [countdown, setCountdown] = useState<number>(5);
   const [currentMultiplier, setCurrentMultiplier] = useState<number>(1.00);
-  const [crashPoint, setCrashPoint] = useState<number>(1.00);
   
   // User bet state
   const [hasPlacedBet, setHasPlacedBet] = useState<boolean>(false);
@@ -431,7 +430,6 @@ export const CrashGame: React.FC<CrashGameProps> = ({
           
           // Generate crash point using fair casino math
           // House Edge 3% -> RTP 97%
-          const E = 100;
           const H = Math.floor(Math.random() * 100);
           let target = 1.00;
           if (H >= 3) {
@@ -439,7 +437,6 @@ export const CrashGame: React.FC<CrashGameProps> = ({
             target = 0.97 / (1.00 - Math.random());
             target = Math.max(1.01, Math.round(target * 100) / 100);
           }
-          setCrashPoint(target);
           
           // Start the run
           startMultiplierRun(target);

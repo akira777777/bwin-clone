@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, User, BarChart2, ShieldAlert, Award, Save, Lock } from 'lucide-react';
 import './ProfileModal.css';
 
