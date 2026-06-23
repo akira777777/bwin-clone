@@ -3,6 +3,7 @@ import { Search, Star, ChevronRight, Zap, TrendingUp, Award, Shield } from 'luci
 import type { Sport } from '../App';
 import type { MatchData } from '../data/matches';
 import { t } from '../utils/i18n';
+import { logger } from '../utils/logger';
 import './LeftSidebar.css';
 
 interface LeftSidebarProps {
@@ -174,7 +175,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
 
   const handleQuickLinkClick = (linkName: string) => {
     // Show a simple console message or trigger filter
-    console.log(`Quick Link clicked: ${linkName}`);
+    logger.debug(`Quick Link clicked: ${linkName}`, { context: 'handleQuickLinkClick', linkName });
   };
 
   return (

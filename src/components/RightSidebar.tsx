@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Trash2, X, CheckCircle2, AlertTriangle, TrendingUp, TrendingDown, ShoppingCart, Award } from 'lucide-react';
 import type { Bet, PlacedBet } from '../App';
 import type { MatchData } from '../data/matches';
@@ -114,6 +114,20 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   const [showSuccess, setShowSuccess] = useState(false);
   const [cashingOutId, setCashingOutId] = useState<string | null>(null);
   const [shouldShake, setShouldShake] = useState(false);
+
+  // Refs for timeout cleanup
+  const shakeTimeoutRef = useRef<number | null>(null);
+  const cashoutTimeoutRef = useRef<number | null>(null);
+  const placeBetTimeoutRef = useRef<number | null>(null);
+
+  // Cleanup all timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (shakeTimeoutRef.current) clearTimeout(shakeTimeoutRef.current);
+      if (cashoutTimeoutRef.current) clearTimeout(cashoutTimeoutRef.current);
+      if (placeBetTimeoutRef.current) clearTimeout(placeBetTimeoutRef.current);
+    };
+  }, []);
 
   // 1. Detect odds fluctuations in real time
   const oddsStatus = useMemo(() => {
@@ -271,7 +285,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
 
   const handleCashOutClick = async (betId: string, val: number) => {
     setCashingOutId(betId);
-    await new Promise(resolve => setTimeout(resolve, 800)); // mock delay
+    await new Promise(resolve => {
+      if (cashoutTimeoutRef.current) clearTimeout(cashoutTimeoutRef.current);
+      cashoutTimeoutRef.current = window.setTimeout(resolve, 800);
+    });
     onCashOut(betId, val);
     setCashingOutId(null);
   };
@@ -299,7 +316,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
 
     // Call onPlaceBet (may be async if saving to Supabase).
     // We keep the 1500ms "processing" feel for UX, then await the actual save.
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => {
+      if (placeBetTimeoutRef.current) clearTimeout(placeBetTimeoutRef.current);
+      placeBetTimeoutRef.current = window.setTimeout(resolve, 1500);
+    });
 
     await onPlaceBet(finalStake, finalReturn, betMode === 'single' ? 'Single' : betMode === 'system' ? 'System' : 'Multi');
 
@@ -620,7 +640,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                                    (betMode === 'system' && (parseFloat(systemStake) || 0) <= 0);
                 if (hasNoStake && betSlip.length > 0 && !hasOddsChanged && !isBalanceInsufficient && !isSelfExcluded) {
                   setShouldShake(true);
-                  setTimeout(() => setShouldShake(false), 500);
+                  if (shakeTimeoutRef.current) clearTimeout(shakeTimeoutRef.current);
+                  shakeTimeoutRef.current = window.setTimeout(() => setShouldShake(false), 500);
                 }
               }}
               style={{ width: '100%' }}

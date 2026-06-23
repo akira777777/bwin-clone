@@ -17,6 +17,7 @@ import { generateBetId, getCombinations, checkIsSelectionWon } from './utils/bet
 import type { OddsFormat } from './utils/betting';
 import { supabase, hasRealSupabaseConfig } from './lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import { logger } from './utils/logger';
 import './App.css';
 
 // Lazy loading modals to reduce initial bundle size
@@ -636,7 +637,7 @@ function App() {
               .update({ status: ticketStatus, potential_return: finalReturn })
               .eq('id', pb.id);
           } catch (e) {
-            console.error('Failed to sync settled bet status to Supabase', e);
+            logger.error('Failed to sync settled bet status to Supabase', e, { context: 'syncStatusToSupabase', betId: pb.id });
           }
         }
       };
@@ -675,7 +676,7 @@ function App() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to load placed bets:', error);
+        logger.error('Failed to load placed bets', error, { context: 'loadPlacedBets' });
         return;
       }
 
@@ -692,7 +693,7 @@ function App() {
         setPlacedBets(mapped);
       }
     } catch (e) {
-      console.error('Failed to load placed bets from Supabase:', e);
+      logger.error('Failed to load placed bets from Supabase', e, { context: 'loadPlacedBets' });
     }
   }, [user]);
 
@@ -731,13 +732,13 @@ function App() {
           });
 
         if (error) {
-          console.error('Failed to save bet to Supabase:', error);
+          logger.error('Failed to save bet to Supabase', error, { context: 'handlePlaceBet', stake, type });
           setPlacedBets(prev => [newPlacedBet, ...prev]);
         } else {
           await loadPlacedBets();
         }
       } catch (e) {
-        console.error('Supabase insert error', e);
+        logger.error('Supabase insert error', e, { context: 'handlePlaceBet' });
         setPlacedBets(prev => [newPlacedBet, ...prev]);
       }
     } else {
@@ -776,7 +777,7 @@ function App() {
           })
           .eq('id', betId);
       } catch (e) {
-        console.error('Supabase update error during cashout', e);
+        logger.error('Supabase update error during cashout', e, { context: 'handleCashOut', betId });
       }
     }
   }, [balance, updateBalance, user, triggerGlobalToast]);
@@ -837,7 +838,7 @@ function App() {
         await supabase.auth.signOut();
       }
     } catch (e) {
-      console.warn('Supabase signOut error:', e);
+      logger.warn('Supabase signOut error', { error: e, context: 'handleLogout' });
     }
     setUser(null);
     setPlacedBets([]);
