@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Shield, Play, Gem, Bomb, ArrowLeft, RefreshCw, Trophy, Coins } from 'lucide-react';
 import './MinesGame.css';
 
@@ -65,9 +65,17 @@ export const MinesGame: React.FC<MinesGameProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [revealingAll, setRevealingAll] = useState<boolean>(false);
   const [clickedCellId, setClickedCellId] = useState<number | null>(null);
-  
+
   // Audio state
   const [isSoundOn, setIsSoundOn] = useState<boolean>(true);
+  const revealTimeoutRef = useRef<number | null>(null);
+
+  // Cleanup reveal timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+    };
+  }, []);
 
   // Play a simple retro synth sound
   const playSound = useCallback((type: 'gem' | 'bomb' | 'win' | 'start') => {
@@ -177,8 +185,9 @@ export const MinesGame: React.FC<MinesGameProps> = ({
     let minesPlaced = 0;
     while (minesPlaced < minesCount) {
       const randIndex = Math.floor(Math.random() * 25);
-      if (!newBoard[randIndex].hasMine) {
-        newBoard[randIndex].hasMine = true;
+      const cell = newBoard[randIndex];
+      if (cell && !cell.hasMine) {
+        cell.hasMine = true;
         minesPlaced++;
       }
     }
@@ -193,13 +202,17 @@ export const MinesGame: React.FC<MinesGameProps> = ({
   };
 
   const handleCellClick = (id: number) => {
-    if (!isPlaying || isGameOver || board[id].opened) return;
+    if (!isPlaying || isGameOver) return;
+    const cell = board[id];
+    if (!cell || cell.opened) return;
 
     setClickedCellId(id);
     const newBoard = [...board];
-    newBoard[id].opened = true;
+    const targetCell = newBoard[id];
+    if (!targetCell) return;
+    targetCell.opened = true;
 
-    if (newBoard[id].hasMine) {
+    if (targetCell.hasMine) {
       // Boom! Lost.
       playSound('bomb');
       setIsGameOver(true);
@@ -207,7 +220,8 @@ export const MinesGame: React.FC<MinesGameProps> = ({
       setIsPlaying(false);
       // Reveal all mines
       setRevealingAll(true);
-      setTimeout(() => {
+      if (revealTimeoutRef.current) clearTimeout(revealTimeoutRef.current);
+      revealTimeoutRef.current = setTimeout(() => {
         setBoard(newBoard.map(c => c.hasMine ? { ...c, opened: true } : c));
       }, 300);
     } else {

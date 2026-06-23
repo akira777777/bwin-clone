@@ -37,7 +37,7 @@ export function calculateSinglePotentialReturn(
   stakes: Record<string, string>
 ): number {
   return bets.reduce((acc, bet) => {
-    const s = parseFloat(stakes[bet.id]) || 0;
+    const s = parseFloat(stakes[bet.id] ?? '0') || 0;
     return acc + s * bet.odds;
   }, 0);
 }
@@ -55,9 +55,12 @@ export function getCombinations<T>(array: T[], size: number): T[][] {
       return;
     }
     for (let i = start; i < array.length; i++) {
-      combo.push(array[i]);
-      helper(i + 1, combo);
-      combo.pop();
+      const item = array[i];
+      if (item !== undefined) {
+        combo.push(item);
+        helper(i + 1, combo);
+        combo.pop();
+      }
     }
   }
   helper(0, []);
@@ -71,8 +74,8 @@ export function checkIsSelectionWon(selection: string, score: string | undefined
   if (!score) return false;
   const parts = score.split('-');
   if (parts.length !== 2) return false;
-  const s1 = parseInt(parts[0].trim());
-  const s2 = parseInt(parts[1].trim());
+  const s1 = parseInt(parts[0]?.trim() ?? '0');
+  const s2 = parseInt(parts[1]?.trim() ?? '0');
   if (isNaN(s1) || isNaN(s2)) return false;
 
   if (selection === 'home') return s1 > s2;

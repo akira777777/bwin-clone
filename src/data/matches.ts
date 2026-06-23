@@ -275,8 +275,8 @@ export const getDynamicizedMatches = (matches: MatchData[]): MatchData[] => {
         }
       } else if (match.time.includes('Tomorrow')) {
         const parts = match.time.split(',');
-        const timePart = parts.length > 1 ? parts[1].trim() : '18:00';
-        return { ...match, time: `Tomorrow, ${timePart}` };
+        const timePart = parts.length > 1 ? parts[1]?.trim() : '18:00';
+        return { ...match, time: `Tomorrow, ${timePart ?? '18:00'}` };
       }
     }
     

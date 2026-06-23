@@ -76,8 +76,8 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
       id: i + 1,
       name: `${language === 'ru' ? 'Бегун' : 'Runner'} ${i + 1} (${names[i]})`,
       progress: 0,
-      color: colors[i],
-      emoji: emojis[i]
+      color: colors[i] ?? '#FF5656',
+      emoji: emojis[i] ?? '🐎'
     }));
   });
   const [raceActive, setRaceActive] = useState<boolean>(() => {
@@ -196,7 +196,9 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
       ];
 
       const chosenPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-      setCommentary(prev => [...prev, chosenPhrase]);
+      if (chosenPhrase) {
+        setCommentary(prev => [...prev, chosenPhrase]);
+      }
 
       // Chance of goal
       const goalProbability = sportType === 'football' ? 0.08 : 0.45; // much higher for basketball
@@ -205,11 +207,13 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
         if (isHomeAttack) {
           localScore1 += sportType === 'football' ? 1 : Math.random() > 0.7 ? 3 : 2;
           onScoreUpdate(event.id, localScore1, localScore2);
-          setCommentary(prev => [...prev, tLabel(`⚽ GOAL!!! ${event.team1} scores!`, `⚽ ГОЛ!!! ${event.team1} забивает гол!`)]);
+          const goalText = tLabel(`⚽ GOAL!!! ${event.team1} scores!`, `⚽ ГОЛ!!! ${event.team1} забивает гол!`);
+          if (goalText) setCommentary(prev => [...prev, goalText]);
         } else {
           localScore2 += sportType === 'football' ? 1 : Math.random() > 0.7 ? 3 : 2;
           onScoreUpdate(event.id, localScore1, localScore2);
-          setCommentary(prev => [...prev, tLabel(`⚽ GOAL!!! ${event.team2} scores!`, `⚽ ГОЛ!!! ${event.team2} забивает гол!`)]);
+          const goalText = tLabel(`⚽ GOAL!!! ${event.team2} scores!`, `⚽ ГОЛ!!! ${event.team2} забивает гол!`);
+          if (goalText) setCommentary(prev => [...prev, goalText]);
         }
       }
     }, 4500);
@@ -230,8 +234,8 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
       id: i + 1,
       name: `${tLabel('Runner', 'Бегун')} ${i + 1} (${names[i]})`,
       progress: 0,
-      color: colors[i],
-      emoji: emojis[i]
+      color: colors[i] ?? '#FF5656',
+      emoji: emojis[i] ?? '🐎'
     }));
 
     setRunners(initialRunners);
@@ -458,15 +462,15 @@ export const VirtualsSimulator: React.FC<VirtualsSimulatorProps> = ({
                   <div className="podium-positions">
                     <div className="podium-spot second">
                       <span className="spot-num">2nd</span>
-                      <span className="runner-id" style={{ color: runners[podium[1] - 1]?.color }}>#{podium[1]}</span>
+                      <span className="runner-id" style={{ color: runners[(podium[1] ?? 1) - 1]?.color }}>#{podium[1] ?? '?'}</span>
                     </div>
                     <div className="podium-spot first">
                       <span className="spot-num">1st</span>
-                      <span className="runner-id" style={{ color: runners[podium[0] - 1]?.color }}>#{podium[0]}</span>
+                      <span className="runner-id" style={{ color: runners[(podium[0] ?? 1) - 1]?.color }}>#{podium[0] ?? '?'}</span>
                     </div>
                     <div className="podium-spot third">
                       <span className="spot-num">3rd</span>
-                      <span className="runner-id" style={{ color: runners[podium[2] - 1]?.color }}>#{podium[2]}</span>
+                      <span className="runner-id" style={{ color: runners[(podium[2] ?? 1) - 1]?.color }}>#{podium[2] ?? '?'}</span>
                     </div>
                   </div>
                   <button className="btn-restart-race" onClick={initializeRace}>

@@ -39,7 +39,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'profile' | 'stats' | 'vip' | 'safer'>('profile');
   const [nickname, setNickname] = useState<string>(() => {
-    return localStorage.getItem('betz_user_nickname') || (userEmail ? userEmail.split('@')[0] : 'Player');
+    return localStorage.getItem('betz_user_nickname') || (userEmail ? userEmail.split('@')[0] ?? 'Player' : 'Player');
   });
   const [selectedAvatar, setSelectedAvatar] = useState<string>(() => {
     return localStorage.getItem('betz_user_avatar') || '🦊';
@@ -57,6 +57,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
       });
       return () => cancelAnimationFrame(handle);
     }
+    return undefined;
   }, [isOpen]);
 
   // Stats mock calculated from totalWagered

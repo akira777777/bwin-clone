@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Casino.css';
 import './LiveCasino.css';
 
@@ -33,12 +33,21 @@ interface LiveCasinoProps { language?: string; }
 export const LiveCasino: React.FC<LiveCasinoProps> = ({ language = 'en' }) => {
   const [filter, setFilter] = useState<Filter>('All');
   const [toast, setToast] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<number | null>(null);
+
+  // Cleanup toast timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
+  }, []);
 
   const tables = LIVE_TABLES.filter(t => filter === 'All' || t.category === filter);
 
   const showToast = (msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3000);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = window.setTimeout(() => setToast(null), 3000);
   };
 
   return (

@@ -73,7 +73,7 @@ const MainContent: React.FC<MainContentProps> = ({
     setActiveTab('matches');
   }
   
-  const envKey = import.meta.env?.VITE_ODDS_API_KEY || '';
+  const envKey = import.meta.env?.['VITE_ODDS_API_KEY'] || '';
   const initialKey = localStorage.getItem('odds_api_key') || envKey;
   
   const [apiKey, setApiKey] = useState<string>(initialKey);
@@ -136,6 +136,7 @@ const MainContent: React.FC<MainContentProps> = ({
       }, 120000);
       return () => clearInterval(refreshInterval);
     }
+    return undefined;
   }, [apiKey, isKeyModalOpen, isUsingMock, loadRealMatches]);
 
   const showToast = (message: string) => {
@@ -625,7 +626,7 @@ const MainContent: React.FC<MainContentProps> = ({
                     <th style={{ width: '50px' }}>{language === 'ru' ? 'Поз' : language === 'de' ? 'Pos' : language === 'es' ? 'Pos' : 'Pos'}</th>
                     <th>{language === 'ru' ? 'Игрок' : language === 'de' ? 'Spieler' : language === 'es' ? 'Jugador' : 'Player'}</th>
                     <th>{language === 'ru' ? 'Команда / Страна' : language === 'de' ? 'Team / Land' : language === 'es' ? 'Equipo / País' : 'Team / Country'}</th>
-                    <th style={{ textAlign: 'right' }}>{stats[0].statName}</th>
+                    <th style={{ textAlign: 'right' }}>{stats[0]?.statName ?? ''}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -699,16 +700,18 @@ function PromoCarousel({ language, promoIndex, setPromoIndex, onAction }: {
   setPromoIndex: (i: number | ((p: number) => number)) => void;
   onAction: (msg: string) => void;
 }) {
-  const slides = promoSlides[language] || promoSlides.en;
+  const slides = promoSlides[language] || promoSlides['en'] || [];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setPromoIndex((prev: number) => (prev + 1) % slides.length);
+      setPromoIndex((prev: number) => (prev + 1) % (slides?.length ?? 1));
     }, 5000);
     return () => clearInterval(timer);
   }, [slides.length, setPromoIndex]);
 
-  const slide = slides[promoIndex % slides.length];
+  const slide = slides?.[promoIndex % (slides.length ?? 1)];
+
+  if (!slide) return null;
 
   return (
     <section 

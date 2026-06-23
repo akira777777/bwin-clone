@@ -117,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({
   ];
 
   const emailPrefix = userEmail ? userEmail.split('@')[0] : 'Account';
-  const avatarChar = emailPrefix.charAt(0).toUpperCase();
+  const avatarChar = (emailPrefix ?? 'Account').charAt(0).toUpperCase();
   const unreadCount = notifications.filter(n => !n.read).length;
   const isSportsCategory = activeCategory === 'Sports' || activeCategory === 'Live Betting';
 

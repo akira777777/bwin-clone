@@ -277,9 +277,9 @@ const FooterModal: React.FC<FooterModalProps> = ({
   };
 
   // Filter FAQs
-  const currentFaqs = FAQS_LOCALIZED[language] || FAQS_LOCALIZED['en'];
-  const filteredFAQs = currentFaqs.filter(faq => 
-    faq.q.toLowerCase().includes(faqSearch.toLowerCase()) || 
+  const currentFaqs = FAQS_LOCALIZED[language] || FAQS_LOCALIZED['en'] || [];
+  const filteredFAQs = currentFaqs.filter(faq =>
+    faq.q.toLowerCase().includes(faqSearch.toLowerCase()) ||
     faq.a.toLowerCase().includes(faqSearch.toLowerCase())
   );
 

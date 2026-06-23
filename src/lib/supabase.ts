@@ -7,14 +7,16 @@ import { createClient } from '@supabase/supabase-js';
 // We support both Vite (VITE_) and Next.js-style (NEXT_PUBLIC_) prefixes for convenience,
 // plus the newer "PUBLISHABLE_KEY" name.
 const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_URL;
+  import.meta.env?.['VITE_SUPABASE_URL'] ||
+  import.meta.env?.['NEXT_PUBLIC_SUPABASE_URL'] ||
+  '';
 
 const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  import.meta.env?.['VITE_SUPABASE_ANON_KEY'] ||
+  import.meta.env?.['VITE_SUPABASE_PUBLISHABLE_KEY'] ||
+  import.meta.env?.['NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'] ||
+  import.meta.env?.['NEXT_PUBLIC_SUPABASE_ANON_KEY'] ||
+  '';
 
 if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('placeholder')) {
   console.warn(
@@ -47,6 +49,6 @@ export const getCurrentUser = async () => {
 
 // Helper used by auth/bet flows to decide real Supabase vs local simulation
 export const hasRealSupabaseConfig = Boolean(
-  (import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL) &&
-  !(import.meta.env.VITE_SUPABASE_URL || import.meta.env.NEXT_PUBLIC_SUPABASE_URL || '').includes('placeholder')
+  (import.meta.env?.['VITE_SUPABASE_URL'] || import.meta.env?.['NEXT_PUBLIC_SUPABASE_URL']) &&
+  !(import.meta.env?.['VITE_SUPABASE_URL'] || import.meta.env?.['NEXT_PUBLIC_SUPABASE_URL'] || '').includes('placeholder')
 );

@@ -155,6 +155,7 @@ function App() {
         return () => clearTimeout(timer);
       }
     }
+    return undefined;
   }, [isLoggedIn]);
 
   const markNotificationsAsRead = useCallback(() => {
@@ -344,8 +345,8 @@ function App() {
         if (match.score) {
           const parts = match.score.split('-');
           if (parts.length === 2) {
-            homeScore = parseInt(parts[0].trim()) || 0;
-            awayScore = parseInt(parts[1].trim()) || 0;
+            homeScore = parseInt(parts[0]?.trim() ?? '0') || 0;
+            awayScore = parseInt(parts[1]?.trim() ?? '0') || 0;
           }
         }
 
@@ -366,9 +367,9 @@ function App() {
           if (match.time.includes('Q')) {
             const matchQ = match.time.match(/Q(\d)\s+(\d+):(\d+)/);
             if (matchQ) {
-              const quarter = parseInt(matchQ[1]);
-              let minutes = parseInt(matchQ[2]);
-              let seconds = parseInt(matchQ[3]);
+              const quarter = parseInt(matchQ[1] ?? '1');
+              let minutes = parseInt(matchQ[2] ?? '0');
+              let seconds = parseInt(matchQ[3] ?? '0');
 
               seconds -= 15;
               if (seconds < 0) {
@@ -406,9 +407,9 @@ function App() {
           if (match.time.includes('P')) {
             const matchP = match.time.match(/P(\d)\s+(\d+):(\d+)/);
             if (matchP) {
-              const period = parseInt(matchP[1]);
-              let minutes = parseInt(matchP[2]);
-              const seconds = parseInt(matchP[3]);
+              const period = parseInt(matchP[1] ?? '1');
+              let minutes = parseInt(matchP[2] ?? '0');
+              const seconds = parseInt(matchP[3] ?? '0');
 
               minutes += 1;
               if (minutes >= 20) {
@@ -884,6 +885,7 @@ function App() {
       }, delay);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [selfExclusionEndTime]);
 
   return (

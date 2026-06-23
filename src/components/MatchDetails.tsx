@@ -92,15 +92,20 @@ export const MatchDetails: React.FC<MatchDetailsProps> = ({
     // Set initial event asynchronously to avoid synchronous setState inside effect
     const initialIdx = Math.floor(Math.random() * events.length);
     const initTimer = setTimeout(() => {
-      setCurrentEvent(events[initialIdx].text);
-      setBallPos({ x: events[initialIdx].ballX, y: events[initialIdx].ballY });
-      setTickerAction(events[initialIdx].action || 'possession');
+      const initEv = events[initialIdx];
+      if (initEv) {
+        setCurrentEvent(initEv.text);
+        setBallPos({ x: initEv.ballX, y: initEv.ballY });
+        setTickerAction(initEv.action || 'possession');
+      }
     }, 0);
 
     const interval = setInterval(() => {
       const idx = Math.floor(Math.random() * events.length);
       const ev = events[idx];
-      
+
+      if (!ev) return;
+
       setCurrentEvent(ev.text);
       setBallPos({ x: ev.ballX, y: ev.ballY });
       setTickerAction(ev.action || 'possession');

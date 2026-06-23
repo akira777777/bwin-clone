@@ -71,6 +71,7 @@ export const CrashGame: React.FC<CrashGameProps> = ({
   const soundGainRef = useRef<GainNode | null>(null);
   const startTimeRef = useRef<number>(0);
   const triggerNextRoundRef = useRef<() => void>(() => {});
+  const cleanupTimeoutRef = useRef<number | null>(null);
 
   // Helper translations
   const tLabel = (enVal: string, ruVal: string) => (language === 'ru' ? ruVal : enVal);
@@ -372,7 +373,8 @@ export const CrashGame: React.FC<CrashGameProps> = ({
 
         // If user didn't cash out and had bet, they lost
         // reset states after a 3 second delay and start countdown again
-        setTimeout(() => {
+        if (cleanupTimeoutRef.current) clearTimeout(cleanupTimeoutRef.current);
+        cleanupTimeoutRef.current = setTimeout(() => {
           setHasPlacedBet(false);
           setCashedOut(false);
           setBetAmount(0);
@@ -483,7 +485,12 @@ export const CrashGame: React.FC<CrashGameProps> = ({
     return () => {
       clearInterval(countdownTimer);
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (cleanupTimeoutRef.current) clearTimeout(cleanupTimeoutRef.current);
       stopMultiplierSound();
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
     };
   }, [startMultiplierRun, stopMultiplierSound, drawCanvas]);
 

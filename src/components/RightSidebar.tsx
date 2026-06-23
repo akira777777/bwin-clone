@@ -32,8 +32,8 @@ const translateSelection = (selection: string, lang: string): string => {
   
   if (selection.includes(':')) {
     const parts = selection.split(':');
-    const marketName = parts[0].trim();
-    const outcome = parts[1].trim();
+    const marketName = parts[0]?.trim() ?? '';
+    const outcome = parts[1]?.trim() ?? '';
     
     const translatedMarket = t(marketName, lang);
     let translatedOutcome = outcome;
@@ -54,7 +54,9 @@ const getCurrentOdds = (bet: Bet, matches: MatchData[]): number => {
   if (bet.id.startsWith('outright-')) {
     const optionId = bet.id.replace('outright-', '');
     for (const league in leagueOutrights) {
-      for (const outright of leagueOutrights[league]) {
+      const outrights = leagueOutrights[league];
+      if (!outrights) continue;
+      for (const outright of outrights) {
         const option = outright.options.find(o => o.id === optionId);
         if (option) return option.odds;
       }
@@ -157,14 +159,14 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   // 3. Calculations for Single Bets
   const singleTotalStake = useMemo(() => {
     return betSlip.reduce((acc, bet) => {
-      const betStake = parseFloat(singleStakes[bet.id]) || 0;
+      const betStake = parseFloat(singleStakes[bet.id] ?? '0') || 0;
       return acc + betStake;
     }, 0);
   }, [betSlip, singleStakes]);
 
   const singlePotentialReturn = useMemo(() => {
     const total = betSlip.reduce((acc, bet) => {
-      const betStake = parseFloat(singleStakes[bet.id]) || 0;
+      const betStake = parseFloat(singleStakes[bet.id] ?? '0') || 0;
       return acc + (betStake * bet.odds);
     }, 0);
     return total.toFixed(2);
@@ -446,7 +448,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
                             min="0"
                           />
                           <div className="single-return-preview">
-                            {t('Return', language)}: <span>€{((parseFloat(singleStakes[bet.id]) || 0) * (status?.current ?? bet.odds)).toFixed(2)}</span>
+                            {t('Return', language)}: <span>€{((parseFloat(singleStakes[bet.id] ?? '0') || 0) * (status?.current ?? bet.odds)).toFixed(2)}</span>
                           </div>
                         </div>
                       )}

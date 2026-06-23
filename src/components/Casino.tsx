@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Play, Sparkles, Diamond, Coins, Flame } from 'lucide-react';
 import { t } from '../utils/i18n';
 import { MinesGame } from './MinesGame';
@@ -41,12 +41,21 @@ export const Casino: React.FC<CasinoProps> = ({ balance = 10000, updateBalance =
   const [loadingGame, setLoadingGame] = useState<string | null>(null);
   const [isMinesActive, setIsMinesActive] = useState(false);
   const [isCrashActive, setIsCrashActive] = useState(false);
+  const toastTimeoutRef = useRef<number | null>(null);
+
+  // Cleanup toast timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
+  }, []);
 
   const filteredGames = CASINO_GAMES.filter(g => filter === 'All' || g.category === filter);
 
   const showToast = (message: string) => {
     setToast(message);
-    setTimeout(() => setToast(null), 3000);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = window.setTimeout(() => setToast(null), 3000);
   };
 
   const handlePlayGame = (game: Game) => {
@@ -60,10 +69,12 @@ export const Casino: React.FC<CasinoProps> = ({ balance = 10000, updateBalance =
     }
     setLoadingGame(game.id);
     showToast(`${t('Loading', language)} ${game.title}...`);
-    setTimeout(() => {
+    const loadTimer = window.setTimeout(() => {
       setLoadingGame(null);
       showToast(`${game.title} ${t('is ready! Demo mode.', language)}`);
     }, 1500);
+    // Store timer ID for cleanup (we'll use a simple approach since this is temporary)
+    return () => clearTimeout(loadTimer);
   };
 
   const handleClaimBonus = () => {

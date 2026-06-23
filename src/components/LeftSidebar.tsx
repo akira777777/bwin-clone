@@ -91,9 +91,10 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   const leagueStats = useMemo(() => {
     const stats: Record<string, { total: number; live: number }> = {};
     matches.forEach(m => {
-      if (!stats[m.league]) stats[m.league] = { total: 0, live: 0 };
-      stats[m.league].total++;
-      if (m.isLive) stats[m.league].live++;
+      const league = m.league ?? 'Unknown';
+      if (!stats[league]) stats[league] = { total: 0, live: 0 };
+      stats[league].total++;
+      if (m.isLive) stats[league].live++;
     });
     return stats;
   }, [matches]);
@@ -102,9 +103,10 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   const sportStats = useMemo(() => {
     const stats: Record<string, { total: number; live: number }> = {};
     matches.forEach(m => {
-      if (!stats[m.sport]) stats[m.sport] = { total: 0, live: 0 };
-      stats[m.sport].total++;
-      if (m.isLive) stats[m.sport].live++;
+      const sport = m.sport ?? 'Unknown';
+      if (!stats[sport]) stats[sport] = { total: 0, live: 0 };
+      stats[sport].total++;
+      if (m.isLive) stats[sport].live++;
     });
     return stats;
   }, [matches]);
@@ -160,9 +162,9 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
     // Generate a 3-letter code from name
     const words = name.split(' ');
     let code: string;
-    if (words.length >= 3) {
+    if (words.length >= 3 && words[0]?.[0] && words[1]?.[0] && words[2]?.[0]) {
       code = (words[0][0] + words[1][0] + words[2][0]).toUpperCase();
-    } else if (words.length === 2) {
+    } else if (words.length === 2 && words[0]?.[0] && words[1]?.[0] && words[1]?.[1]) {
       code = (words[0][0] + words[1][0] + words[1][1]).toUpperCase();
     } else {
       code = name.substring(0, 3).toUpperCase();
@@ -233,7 +235,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
             const stats = leagueStats[league.name];
             const badge = getLeagueBadge(league.name);
             return (
-              <li 
+              <li
                 key={league.name}
                 className={`sidebar-item ${activeLeague === league.name ? 'active' : ''}`}
                 onClick={() => handleLeagueClick(league)}
@@ -243,7 +245,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 </div>
                 <span className="comp-name">{league.name}</span>
                 <div className="item-meta">
-                  {stats?.live > 0 ? (
+                  {stats && stats.live > 0 ? (
                     <span className="live-indicator">
                       <span className="live-dot-mini"></span>
                       {stats.live}
@@ -304,7 +306,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 <span className="sport-badge-emoji">{SPORT_ICONS[sport]}</span>
                 <span className="comp-name">{t(sport, language)}</span>
                 <div className="item-meta">
-                  {stats?.live > 0 ? (
+                  {stats && stats.live > 0 ? (
                     <span className="live-indicator">
                       <span className="live-dot-mini"></span>
                       {stats.live}
@@ -336,7 +338,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                 <span className="league-flag">{league.flag}</span>
                 <span className="comp-name">{league.name}</span>
                 <div className="item-meta">
-                  {stats?.live > 0 ? (
+                  {stats && stats.live > 0 ? (
                     <span className="live-indicator">
                       <span className="live-dot-mini"></span>
                       {stats.live}

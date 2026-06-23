@@ -68,6 +68,7 @@ export const DailyWheelModal: React.FC<DailyWheelModalProps> = ({
       }, 0);
       return () => clearTimeout(initTimer);
     }
+    return undefined;
   }, [isOpen]);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export const DailyWheelModal: React.FC<DailyWheelModalProps> = ({
       }, 60000);
       return () => clearInterval(timer);
     }
+    return undefined;
   }, [canSpin, isOpen]);
 
   if (!isOpen) return null;
@@ -90,6 +92,8 @@ export const DailyWheelModal: React.FC<DailyWheelModalProps> = ({
     // Select a random segment
     const segmentIndex = Math.floor(Math.random() * SEGMENTS.length);
     const winningSegment = SEGMENTS[segmentIndex];
+
+    if (!winningSegment) return;
     
     // Each segment takes 360 / 8 = 45 degrees.
     // To align the winning segment with the pointer (top center, 0 degrees):

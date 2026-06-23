@@ -74,8 +74,9 @@ interface VirtualsProps {
 
 export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet, language = 'en' }) => {
   const [events, setEvents] = useState<VirtualEvent[]>(INITIAL_EVENTS);
-  const [selectedEvent, setSelectedEvent] = useState<VirtualEvent | null>(INITIAL_EVENTS[0]);
+  const [selectedEvent, setSelectedEvent] = useState<VirtualEvent | null>(INITIAL_EVENTS[0] ?? null);
   const [toast, setToast] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -96,12 +97,16 @@ export const Virtuals: React.FC<VirtualsProps> = ({ betSlip = [], addBet, langua
         return next;
       });
     }, 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
   }, []);
 
   const showToast = (msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 2800);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => setToast(null), 2800);
   };
 
   const handleOdd = (eventId: string, marketLabel: string, oddValue: string, sportName: string) => {

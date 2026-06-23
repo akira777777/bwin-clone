@@ -281,6 +281,14 @@ export default function CryptoDeposit({ onDeposit, onClose }: CryptoDepositProps
   const rateRef = useRef(rates);
   const onDepositRef = useRef(onDeposit);
   const confirmedEurRef = useRef(0);
+  const copiedTimeoutRef = useRef<number | null>(null);
+
+  // Cleanup copied timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (copiedTimeoutRef.current) clearTimeout(copiedTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => { rateRef.current = rates; }, [rates]);
   useEffect(() => { onDepositRef.current = onDeposit; }, [onDeposit]);
@@ -349,7 +357,8 @@ export default function CryptoDeposit({ onDeposit, onClose }: CryptoDepositProps
       navigator.clipboard.writeText(crypto.address).catch(() => undefined);
     }
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copiedTimeoutRef.current) clearTimeout(copiedTimeoutRef.current);
+    copiedTimeoutRef.current = window.setTimeout(() => setCopied(false), 2000);
   };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {

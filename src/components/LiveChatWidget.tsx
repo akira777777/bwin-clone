@@ -29,8 +29,8 @@ const translateSelection = (selection: string, lang: string): string => {
   
   if (selection.includes(':')) {
     const parts = selection.split(':');
-    const marketName = parts[0].trim();
-    const outcome = parts[1].trim();
+    const marketName = parts[0]?.trim() ?? '';
+    const outcome = parts[1]?.trim() ?? '';
     
     const translatedMarket = t(marketName, lang);
     let translatedOutcome = outcome;
@@ -60,6 +60,14 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
+
+  // Cleanup typing timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, []);
 
   // Set initial welcoming message in the correct language
   useEffect(() => {
@@ -113,7 +121,8 @@ const LiveChatWidget: React.FC<LiveChatWidgetProps> = ({
     setIsTyping(true);
 
     // Simulate bot thinking delay
-    setTimeout(() => {
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
       // eslint-disable-next-line no-useless-assignment
       let botResponseText = '';
 

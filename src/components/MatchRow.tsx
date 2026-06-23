@@ -17,7 +17,7 @@ interface MatchRowProps {
 
 const getTeamAbbreviation = (name: string): string => {
   const words = name.split(' ');
-  if (words.length >= 2) {
+  if (words.length >= 2 && words[0]?.[0] && words[1]?.[0]) {
     return (words[0][0] + words[1][0]).toUpperCase();
   }
   return name.substring(0, 3).toUpperCase();
@@ -33,7 +33,7 @@ const getTeamColor = (name: string): string => {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
   const index = Math.abs(hash) % colors.length;
-  return colors[index];
+  return colors[index] ?? '#2563EB';
 };
 
 const MatchRow: React.FC<MatchRowProps> = ({ match, betSlip, addBet, onSelectMatch, oddsFormat, isFavorite = false, onToggleFavorite }) => {
