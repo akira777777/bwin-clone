@@ -208,6 +208,8 @@ describe('LiveChatWidget Component', () => {
       const user = userEvent.setup();
       renderLiveChatWidget({ messages: [], setMessages: mockSetMessages });
 
+      mockSetMessages.mockClear();
+
       const sendButton = screen.getByRole('button', { name: /Send/i });
       await user.click(sendButton);
 
@@ -217,6 +219,8 @@ describe('LiveChatWidget Component', () => {
     it('does not send whitespace-only messages', async () => {
       const user = userEvent.setup();
       renderLiveChatWidget({ messages: [], setMessages: mockSetMessages });
+
+      mockSetMessages.mockClear();
 
       const input = screen.getByRole('textbox');
       await user.type(input, '   ');
@@ -678,10 +682,11 @@ describe('LiveChatWidget Component', () => {
 
     it('handles emoji in messages', async () => {
       const user = userEvent.setup();
-      renderLiveChatWidget({ messages: [], setMessages: mockSetclusionEndTime: 0,
-      messages: [],
-      setMessages: mockSetMessages,
-    });
+      renderLiveChatWidget({
+        messages: [],
+        setMessages: mockSetMessages,
+        selfExclusionEndTime: 0,
+      });
 
     const input = screen.getByRole('textbox');
     await user.type(input, '😀🎉🚀');

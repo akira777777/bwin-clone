@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import WelcomePopup from './WelcomePopup';
 
 // Mock lucide-react icons
@@ -61,7 +61,7 @@ describe('WelcomePopup', () => {
     test('should render close button with X icon', () => {
       renderWelcomePopup();
 
-      const closeButton = screen.getByRole('button', { name: /close/i }) ||
+      const closeButton = screen.queryByRole('button', { name: /close/i }) ||
                          document.querySelector('.welcome-popup-close');
       expect(closeButton).toBeInTheDocument();
       expect(screen.getByTestId('x-icon')).toBeInTheDocument();

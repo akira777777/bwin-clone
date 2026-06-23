@@ -93,6 +93,7 @@ describe('DailyWheelModal Component Tests', () => {
       localStorage.setItem('betz_last_wheel_spin', recentSpin.toString());
 
       renderComponent();
+      vi.runAllTimers();
 
       expect(screen.queryByRole('button', { name: /Spin Now/i })).not.toBeInTheDocument();
       expect(screen.getByText(/Next spin in:/i)).toBeInTheDocument();
@@ -103,6 +104,7 @@ describe('DailyWheelModal Component Tests', () => {
       localStorage.setItem('betz_last_wheel_spin', recentSpin.toString());
 
       renderComponent();
+      vi.runAllTimers();
 
       expect(screen.getByText(/12h \d+m/i)).toBeInTheDocument();
     });
@@ -112,6 +114,7 @@ describe('DailyWheelModal Component Tests', () => {
       localStorage.setItem('betz_last_wheel_spin', oldSpin.toString());
 
       renderComponent();
+      vi.runAllTimers();
 
       expect(screen.getByRole('button', { name: /Spin Now/i })).toBeInTheDocument();
     });
@@ -377,6 +380,7 @@ describe('DailyWheelModal Component Tests', () => {
       localStorage.setItem('betz_last_wheel_spin', recentSpin.toString());
 
       renderComponent();
+      vi.runAllTimers();
 
       const initialText = screen.getByText(/Next spin in:/i).textContent;
 
@@ -394,6 +398,7 @@ describe('DailyWheelModal Component Tests', () => {
       localStorage.setItem('betz_last_wheel_spin', recentSpin.toString());
 
       renderComponent({ language: 'ru' });
+      vi.runAllTimers();
 
       expect(screen.getByText(/Следующий спин через:/i)).toBeInTheDocument();
     });

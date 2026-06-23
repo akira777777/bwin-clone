@@ -257,7 +257,13 @@ describe('Casino Component', () => {
     it('applies active class to selected filter button', async () => {
       const { user } = renderCasino();
 
+      const allGamesButton = screen.getByRole('button', { name: 'All Games' });
+      expect(allGamesButton).toHaveClass('active');
+
       const slotsButton = screen.getByRole('button', { name: 'Slots' });
+      await user.click(slotsButton);
+
+      expect(allGamesButton).not.toHaveClass('active');
       expect(slotsButton).toHaveClass('active');
 
       await user.click(screen.getByRole('button', { name: 'Live Dealer' }));
@@ -564,15 +570,15 @@ describe('Casino Component', () => {
       });
     });
 
-    it('cleans up toast timeout on component unmount', () => {
-      const { unmount } = renderCasino();
+    it('cleans up toast timeout on component unmount', async () => {
+      const { user, unmount } = renderCasino();
 
-      // Trigger a toast
+      await user.click(screen.getByRole('button', { name: 'Claim Bonus' }));
+
       const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
 
       unmount();
 
-      // Cleanup should happen
       expect(clearTimeoutSpy).toHaveBeenCalled();
 
       clearTimeoutSpy.mockRestore();

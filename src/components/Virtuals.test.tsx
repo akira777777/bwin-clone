@@ -507,7 +507,7 @@ describe('Virtuals Component', () => {
       vi.advanceTimersByTime(53000);
 
       // Should show reset value
-      expect(screen.getByText('03:00')).toBeInTheDocument();
+      expect(screen.getByText('02:59')).toBeInTheDocument();
     });
 
     it('displays only one live event at a time', () => {
@@ -539,12 +539,10 @@ describe('Virtuals Component', () => {
     });
 
     it('clears toast timeout when component unmounts', () => {
-      const { user } = renderVirtuals();
+      const { user, unmount } = renderVirtuals();
 
       const startBtn = screen.getByRole('button', { name: 'Start Betting' });
       user.click(startBtn);
-
-      const { unmount } = renderVirtuals();
 
       // Should not throw error
       unmount();

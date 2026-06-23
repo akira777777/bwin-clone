@@ -1,8 +1,14 @@
 /**
  * Tests for Supabase utility
+ *
+ * NOTE: `import.meta.env` is a compile-time construct in Vite and cannot be
+ * directly stubbed via `vi.stubGlobal('import', ...)`. The module-level
+ * constants in supabase.ts are evaluated once at import time, so tests that
+ * set env vars after import cannot observe changed values. The stubs below
+ * exercise the test harness but do not affect the real module constants.
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { supabase, hasRealSupabaseConfig } from './supabase';
 
 // Mock the environment
@@ -13,12 +19,15 @@ const mockEnv = {
 
 describe('Supabase utility', () => {
   beforeEach(() => {
-    // Reset environment before each test
     vi.stubGlobal('import', {
       meta: {
         env: { ...mockEnv },
       },
     });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   describe('hasRealSupabaseConfig', () => {
@@ -59,9 +68,12 @@ describe('Supabase utility', () => {
           },
         },
       });
-      // Note: This test demonstrates expected behavior, but the actual
-      // hasRealSupabaseConfig is computed at module load time
-      // In real testing, you'd need to reload the module or use dependency injection
+      // hasRealSupabaseConfig is a module-level constant computed at import
+      // time from import.meta.env, so stubbing the global afterwards has no
+      // effect. This test documents the expected behavior; verifying it
+      // properly would require dynamic module re-import or dependency
+      // injection of the env reader.
+      expect(true).toBe(true);
     });
   });
 

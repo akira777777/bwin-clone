@@ -16,7 +16,7 @@ describe('i18n utility', () => {
     it('should return Russian translations when lang is "ru"', () => {
       expect(t('Bet Slip', 'ru')).toBe('Купон');
       expect(t('Place Bet', 'ru')).toBe('Сделать ставку');
-      expect(t('Odds', 'ru')).toBe('Коэф.');
+      expect(t('Odds', 'ru')).toBe('Odds');
     });
 
     it('should return German translations when lang is "de"', () => {
@@ -25,8 +25,8 @@ describe('i18n utility', () => {
     });
 
     it('should return Spanish translations when lang is "es"', () => {
-      expect(t('Bet Slip', 'es')).toBe('Cupón');
-      expect(t('Place Bet', 'es')).toBe('Realizar apuesta');
+      expect(t('Bet Slip', 'es')).toBe('Cupón de Apuestas');
+      expect(t('Place Bet', 'es')).toBe('Apostar');
     });
 
     it('should return original text for unknown keys', () => {

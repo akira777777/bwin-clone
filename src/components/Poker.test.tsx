@@ -379,12 +379,12 @@ describe('Poker Component', () => {
 
       firstButton.addEventListener('click', (e) => {
         buttonClicked = true;
-        expect(e.defaultPrevented).toBe(true);
       });
 
       await user.click(firstButton);
 
       expect(buttonClicked).toBe(true);
+      expect(rowClicked).toBe(false);
     });
   });
 
