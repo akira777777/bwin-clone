@@ -1,311 +1,91 @@
-:root {
-  /* BETZ Design System — Dark Theme */
-  
-  /* Core Backgrounds */
-  --betz-bg: #0A0C0F;
-  --betz-surface: #13171C;
-  --betz-elevated: #1B232B;
-  --betz-input: #0E1216;
-  --betz-recessed: #1A2027;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  /* Primary Accent (Lime Green) */
-  --betz-accent: #C2F95A;
-  --betz-accent-hover: #d2ff74;
-  --betz-accent-14: rgba(194,249,90,0.14);
-  --betz-accent-18: rgba(194,249,90,0.18);
-  --betz-accent-10: rgba(194,249,90,0.10);
-
-  /* Live / Danger Red */
-  --betz-live: #FF5656;
-  --betz-live-light: #FF7A7A;
-  --betz-live-12: rgba(255,86,86,0.12);
-  --betz-live-55: rgba(255,86,86,0.55);
-
-  /* Boost / Gold */
-  --betz-gold: #F4B740;
-  --betz-gold-hover: #ffc95a;
-  --betz-gold-13: rgba(244,183,64,0.13);
-  --betz-gold-22: rgba(244,183,64,0.22);
-  --betz-gold-32: rgba(244,183,64,0.32);
-  --betz-gold-35: rgba(244,183,64,0.35);
-
-  /* Success */
-  --betz-success: #34D399;
-  --betz-success-12: rgba(52,211,153,0.12);
-  --betz-success-18: rgba(52,211,153,0.18);
-  --betz-success-30: rgba(52,211,153,0.30);
-
-  /* Text */
-  --betz-text-primary: #EAEEF3;
-  --betz-text-secondary: #C0C8D2;
-  --betz-text-tertiary: #C9D1DB;
-  --betz-text-muted: #9AA4B1;
-  --betz-text-label: #7C8694;
-  --betz-text-dim: #8B94A1;
-  --betz-text-faint: #5E6875;
-  --betz-text-separator: #4A535F;
-
-  /* Borders (white alpha) */
-  --betz-border-02: rgba(255,255,255,0.02);
-  --betz-border-04: rgba(255,255,255,0.04);
-  --betz-border-05: rgba(255,255,255,0.05);
-  --betz-border-06: rgba(255,255,255,0.06);
-  --betz-border-07: rgba(255,255,255,0.07);
-  --betz-border-08: rgba(255,255,255,0.08);
-
-  /* Scrollbar */
-  --betz-scrollbar: #262E37;
-
-  /* Legacy compat (for components not yet migrated) */
-  --bwin-yellow: #C2F95A;
-  --bwin-yellow-hover: #d2ff74;
-  --bwin-black: #0A0C0F;
-  --bwin-dark: #0A0C0F;
-  --bwin-bg: #0A0C0F;
-  --bwin-bg-secondary: #13171C;
-  --bwin-gray: #1B232B;
-  --bwin-gray-light: #262E37;
-  --bwin-gray-text: #7C8694;
-  --bwin-text: #EAEEF3;
-  --bwin-white: #EAEEF3;
-  --bwin-border: rgba(255,255,255,0.06);
-  --bwin-border-light: rgba(255,255,255,0.07);
-  --bwin-odds-bg: #1B232B;
-  --bwin-odds-hover: #222C35;
-  --bwin-odds-text: #EAEEF3;
-  --bwin-odds-text-highlight: #C2F95A;
-  --bwin-green: #34D399;
-  --bwin-red: #FF5656;
-  --bwin-header-bg: rgba(10,12,15,0.86);
-  --neon-cyan: #C2F95A;
-  --neon-red: #FF5656;
-  --neon-green: #34D399;
+@layer base {
+  :root {
+    --background: 222 33% 5%;
+    --foreground: 0 0% 96%;
+    --card: 220 26% 9%;
+    --card-foreground: 0 0% 96%;
+    --popover: 220 26% 8%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 72 95% 55%;
+    --primary-foreground: 220 40% 6%;
+    --secondary: 220 18% 14%;
+    --secondary-foreground: 0 0% 92%;
+    --muted: 220 15% 16%;
+    --muted-foreground: 220 10% 58%;
+    --accent: 220 18% 16%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 16%;
+    --input: 220 15% 18%;
+    --ring: 72 95% 55%;
+    --radius: 0.625rem;
+  }
 }
 
-* {
-  box-sizing: border-box;
-}
+html { color-scheme: dark; }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Manrope', system-ui, sans-serif;
-  background-color: var(--betz-bg);
-  color: var(--betz-text-primary);
-  overflow-x: hidden;
-  background-image:
-    radial-gradient(ellipse at 25% -5%, var(--betz-accent-10), transparent 50%);
+  @apply bg-background text-foreground antialiased;
+  font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'tnum';
 }
 
-/* Typography helpers */
-.font-display {
-  font-family: 'Sora', sans-serif;
-}
+/* slim scrollbars */
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: hsl(220 15% 20%); border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
 
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
 
-/* Utility classes */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  color: inherit;
-}
-
-ul {
-  list-style: none;
-}
-
-/* ===== APP LAYOUT ===== */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.main-layout {
-  display: grid;
-  grid-template-columns: 236px minmax(0, 1fr) 344px;
-  gap: 18px;
-  max-width: 1440px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 20px 22px 60px;
-}
-
-.main-layout.full-width {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-/* ===== CARDS ===== */
-.betz-card {
-  background: var(--betz-surface);
-  border: 1px solid var(--betz-border-06);
-  border-radius: 16px;
-  padding: 14px;
-}
-
-.betz-card-hover:hover {
-  background: var(--betz-border-04);
-}
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--betz-scrollbar);
-  border-radius: 8px;
-}
-
-/* ===== ODDS BUTTONS (global) ===== */
-.match-odds button,
-.odds-btn,
-.odds-button {
-  position: relative;
-  cursor: pointer;
-  text-align: center;
-  padding: 9px 4px;
-  border-radius: 11px;
-  background: var(--betz-elevated);
-  border: 1px solid var(--betz-border-07);
-  color: var(--betz-text-primary);
-  font-family: 'Sora', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
-  transition: filter 0.15s ease;
-}
-
-.match-odds button:hover,
-.odds-btn:hover,
-.odds-button:hover {
-  filter: brightness(1.12);
-}
-
-.match-odds button.selected,
-.odds-btn.selected {
-  background: var(--betz-accent);
-  color: var(--betz-bg);
-  border-color: var(--betz-accent);
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes livePulse {
-  0%, 100% { box-shadow: 0 0 0 0 var(--betz-live-55); }
-  50% { box-shadow: 0 0 0 5px rgba(255,86,86,0); }
-}
-
-@keyframes dotPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.25; }
-}
-
-@keyframes sheen {
-  0% { transform: translateX(-130%) skewX(-18deg); }
-  100% { transform: translateX(240%) skewX(-18deg); }
-}
-
-@keyframes slideDownFade {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInScale {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* ===== SIDEBAR CONTAINERS ===== */
-.sidebar-container {
-  display: block;
-}
-
-.content-container {
-  flex: 1;
-  min-width: 0;
-}
-
-/* ===== MOBILE ===== */
-.mobile-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 40;
-}
-
-@media (max-width: 1024px) {
-  .main-layout {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    gap: 10px;
+@layer components {
+  .panel {
+    @apply rounded-xl border border-border bg-card;
   }
-  
-  .sidebar-container {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    z-index: 50;
-    transition: transform 0.3s ease;
-    background-color: var(--betz-surface);
-    width: 280px;
-    height: 100vh;
-    overflow-y: auto;
+  .btn-lime {
+    @apply rounded-lg bg-primary font-semibold text-primary-foreground transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none;
   }
-  
-  .sidebar-container.left {
-    left: 0;
-    transform: translateX(-100%);
+  .btn-ghost {
+    @apply rounded-lg border border-border bg-secondary/60 font-medium text-secondary-foreground transition hover:bg-accent active:scale-[0.98];
   }
-  
-  .sidebar-container.left.open {
-    transform: translateX(0);
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold;
   }
-  
-  .sidebar-container.right {
-    right: 0;
-    width: 344px;
-    transform: translateX(100%);
+  .odds-btn {
+    @apply relative flex min-w-[64px] flex-col items-center justify-center gap-0.5 rounded-lg border border-border bg-secondary/70 px-3 py-2 text-sm font-bold transition hover:border-primary/60 hover:bg-accent active:scale-[0.97];
   }
-  
-  .sidebar-container.right.open {
-    transform: translateX(0);
+  .odds-btn.selected {
+    @apply border-primary bg-primary text-primary-foreground;
   }
-  
-  .mobile-overlay {
-    display: block;
+  .odds-btn.suspended {
+    @apply opacity-40 pointer-events-none;
+  }
+  .nav-item {
+    @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-accent hover:text-foreground cursor-pointer;
+  }
+  .nav-item.active {
+    @apply bg-accent text-foreground;
+  }
+  .tab-btn {
+    @apply rounded-lg px-4 py-1.5 text-sm font-semibold text-muted-foreground transition hover:text-foreground;
+  }
+  .tab-btn.active {
+    @apply bg-primary text-primary-foreground;
   }
 }
+
+@keyframes pulse-live { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+.live-dot { animation: pulse-live 1.4s ease-in-out infinite; }
+
+@keyframes slide-up { from { transform: translateY(12px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+.toast-anim { animation: slide-up .25s ease-out; }
+
+@keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+.modal-anim { animation: fade-in .18s ease-out; }
+
+@keyframes crash-run { from { transform: translate(0,0) scale(1) } to { transform: translate(6px,-10px) scale(1.06) } }

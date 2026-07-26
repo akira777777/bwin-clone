@@ -1,174 +1,145 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Sparkles, Diamond, Coins, Flame } from 'lucide-react';
-import { t } from '../utils/i18n';
-import { MinesGame } from './MinesGame';
-import { CrashGame } from './CrashGame';
-import './Casino.css';
+import { useEffect, useRef, useState } from 'react'
+import { Rocket } from 'lucide-react'
+import { useApp } from '@/state/AppContext'
+import { t } from '@/i18n'
+import { formatMoney } from '@/lib/odds'
 
-interface Game {
-  id: string;
-  title: string;
-  provider: string;
-  color: string;
-  icon: React.ReactNode;
-  category: 'Slots' | 'Table Games' | 'Live Dealer';
-  image?: string;
-}
+type Phase = 'idle' | 'running' | 'crashed'
 
-const CASINO_GAMES: Game[] = [
-  { id: 'mines', title: 'BETZ Mines', provider: 'BETZ Originals', color: 'linear-gradient(135deg, #1b232b, #0e1216)', icon: <Sparkles size={40} />, category: 'Slots' },
-  { id: 'crash', title: 'BETZ Crash', provider: 'BETZ Originals', color: 'linear-gradient(135deg, #13171c, #0a0c0f)', icon: <Flame size={40} style={{ color: 'var(--betz-accent)' }} />, category: 'Slots' },
-  { id: '1', title: 'Book of Dead', provider: 'Play\'n GO', color: 'linear-gradient(135deg, #b92b27, #1565C0)', icon: <Sparkles size={40} />, category: 'Slots', image: '/casino/book_of_dead.png' },
-  { id: '2', title: 'Lightning Roulette', provider: 'Evolution', color: 'linear-gradient(135deg, #1f4037, #99f2c8)', icon: <Coins size={40} />, category: 'Live Dealer', image: '/casino/lightning_roulette.png' },
-  { id: '3', title: 'Crazy Time', provider: 'Evolution', color: 'linear-gradient(135deg, #f12711, #f5af19)', icon: <Play size={40} />, category: 'Live Dealer', image: '/casino/crazy_time.png' },
-  { id: '4', title: 'Starburst', provider: 'NetEnt', color: 'linear-gradient(135deg, #8E2DE2, #4A00E0)', icon: <Diamond size={40} />, category: 'Slots', image: '/casino/starburst.png' },
-  { id: '5', title: 'Sweet Bonanza', provider: 'Pragmatic Play', color: 'linear-gradient(135deg, #ff00cc, #333399)', icon: <Sparkles size={40} />, category: 'Slots', image: '/casino/sweet_bonanza.png' },
-  { id: '6', title: 'BETZ Blackjack', provider: 'BETZ Exclusive', color: 'linear-gradient(135deg, #000000, #434343)', icon: <Coins size={40} />, category: 'Table Games', image: '/casino/blackjack.png' },
-  { id: '7', title: 'Mega Moolah', provider: 'Microgaming', color: 'linear-gradient(135deg, #11998e, #38ef7d)', icon: <Diamond size={40} />, category: 'Slots', image: '/casino/mega_moolah.png' },
-  { id: '8', title: 'European Roulette', provider: 'Playtech', color: 'linear-gradient(135deg, #2c3e50, #3498db)', icon: <Play size={40} />, category: 'Table Games', image: '/casino/european_roulette.png' },
-];
+function CrashGame() {
+  const { state, dispatch } = useApp()
+  const lang = state.settings.lang
+  const [stake, setStake] = useState(10)
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [multiplier, setMultiplier] = useState(1)
+  const [cashedAt, setCashedAt] = useState<number | null>(null)
+  const [history, setHistory] = useState<number[]>([])
+  const crashPoint = useRef(1)
+  const raf = useRef<number>(0)
+  const startTs = useRef(0)
+  const trail = useRef<number[]>([1])
 
-interface CasinoProps {
-  balance?: number;
-  updateBalance?: (newBalance: number) => void;
-  language?: string;
-  onWager?: (amount: number) => void;
-}
-
-export const Casino: React.FC<CasinoProps> = ({ balance = 10000, updateBalance = () => {}, language = 'en', onWager }) => {
-  const [filter, setFilter] = useState<'All' | 'Slots' | 'Table Games' | 'Live Dealer'>('All');
-  const [toast, setToast] = useState<string | null>(null);
-  const [loadingGame, setLoadingGame] = useState<string | null>(null);
-  const [isMinesActive, setIsMinesActive] = useState(false);
-  const [isCrashActive, setIsCrashActive] = useState(false);
-  const toastTimeoutRef = useRef<number | null>(null);
-
-  // Cleanup toast timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
-    };
-  }, []);
-
-  const filteredGames = CASINO_GAMES.filter(g => filter === 'All' || g.category === filter);
-
-  const showToast = (message: string) => {
-    setToast(message);
-    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
-    toastTimeoutRef.current = window.setTimeout(() => setToast(null), 3000);
-  };
-
-  const handlePlayGame = (game: Game) => {
-    if (game.id === 'mines') {
-      setIsMinesActive(true);
-      return;
+  const tickLoop = () => {
+    const elapsed = (performance.now() - startTs.current) / 1000
+    const m = Math.pow(Math.E, 0.16 * elapsed) // growth curve
+    setMultiplier(m)
+    trail.current.push(m)
+    if (trail.current.length > 120) trail.current.shift()
+    if (m >= crashPoint.current) {
+      setPhase('crashed')
+      setMultiplier(crashPoint.current)
+      setHistory((h) => [crashPoint.current, ...h].slice(0, 10))
+      return
     }
-    if (game.id === 'crash') {
-      setIsCrashActive(true);
-      return;
-    }
-    setLoadingGame(game.id);
-    showToast(`${t('Loading', language)} ${game.title}...`);
-    const loadTimer = window.setTimeout(() => {
-      setLoadingGame(null);
-      showToast(`${game.title} ${t('is ready! Demo mode.', language)}`);
-    }, 1500);
-    // Store timer ID for cleanup (we'll use a simple approach since this is temporary)
-    return () => clearTimeout(loadTimer);
-  };
-
-  const handleClaimBonus = () => {
-    const bonusText = language === 'ru' 
-      ? '🎁 Бонус активирован! 100% на первый депозит + 50 бесплатных вращений.'
-      : language === 'de'
-      ? '🎁 Bonus aktiviert! 100% auf die erste Einzahlung + 50 Freispiele.'
-      : language === 'es'
-      ? '🎁 ¡Bono activado! 100% en el primer depósito + 50 giros gratis.'
-      : '🎁 Bonus activated! 100% on first deposit + 50 Free Spins.';
-    showToast(bonusText);
-  };
-
-  if (isMinesActive) {
-    return (
-      <MinesGame
-        balance={balance}
-        updateBalance={updateBalance}
-        language={language}
-        onBack={() => setIsMinesActive(false)}
-        onWager={onWager}
-      />
-    );
+    raf.current = requestAnimationFrame(tickLoop)
   }
 
-  if (isCrashActive) {
-    return (
-      <CrashGame
-        balance={balance}
-        updateBalance={updateBalance}
-        language={language}
-        onBack={() => setIsCrashActive(false)}
-        onWager={onWager}
-      />
-    );
+  useEffect(() => () => cancelAnimationFrame(raf.current), [])
+
+  const start = () => {
+    if (!state.user.loggedIn) { dispatch({ type: 'AUTH', mode: 'login' }); return }
+    if (stake <= 0 || stake > state.user.balance) return
+    dispatch({ type: 'ADJUST_BALANCE', delta: -stake })
+    const r = Math.random()
+    crashPoint.current = Math.max(1, Math.floor((0.97 / (1 - r)) * 100) / 100)
+    setCashedAt(null)
+    setMultiplier(1)
+    trail.current = [1]
+    setPhase('running')
+    startTs.current = performance.now()
+    raf.current = requestAnimationFrame(tickLoop)
   }
+
+  const cashOut = () => {
+    if (phase !== 'running' || cashedAt) return
+    cancelAnimationFrame(raf.current)
+    const win = Math.round(stake * multiplier * 100) / 100
+    setCashedAt(multiplier)
+    setHistory((h) => [multiplier, ...h].slice(0, 10))
+    dispatch({ type: 'ADJUST_BALANCE', delta: win })
+    setPhase('idle')
+  }
+
+  // draw curve
+  const W = 560, H = 260
+  const pts = trail.current.map((m, i) => {
+    const x = (i / 119) * (W - 40) + 10
+    const y = H - 20 - Math.min(1, (m - 1) / Math.max(crashPoint.current - 1, 4)) * (H - 60)
+    return `${x.toFixed(1)},${y.toFixed(1)}`
+  }).join(' ')
 
   return (
-    <main className="main-content casino-container">
-      {/* Toast */}
-      {toast && (
-        <div className="casino-toast" role="alert">
-          {toast}
+    <div className="panel overflow-hidden">
+      <div className="border-b border-border px-4 py-3 text-sm font-black uppercase tracking-wider">{t('crashTitle', lang)}</div>
+      <div className="relative bg-[radial-gradient(ellipse_at_bottom,hsl(220_30%_12%),transparent)]">
+        <svg viewBox={`0 0 ${W} ${H}`} className="block w-full">
+          {[0.25, 0.5, 0.75].map((f) => (
+            <line key={f} x1="0" x2={W} y1={H * f} y2={H * f} stroke="hsl(220 15% 16%)" strokeDasharray="4 6" />
+          ))}
+          <polyline points={pts} fill="none" stroke={phase === 'crashed' ? 'hsl(0 72% 55%)' : 'hsl(72 95% 55%)'} strokeWidth="3" strokeLinecap="round" />
+        </svg>
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+          <div className={`text-5xl font-black tabular-nums sm:text-6xl ${phase === 'crashed' ? 'text-destructive' : cashedAt ? 'text-emerald-400' : 'text-foreground'}`}>
+            {(phase === 'running' ? multiplier : phase === 'crashed' ? crashPoint.current : multiplier).toFixed(2)}×
+          </div>
+          {phase === 'crashed' && <div className="mt-1 text-sm font-bold text-destructive">{t('crashBusted', lang)}</div>}
+          {cashedAt && phase === 'idle' && <div className="mt-1 text-sm font-bold text-emerald-400">+{formatMoney(Math.round(stake * cashedAt * 100) / 100)}</div>}
+          {phase === 'idle' && !cashedAt && <div className="mt-1 text-sm text-muted-foreground">{t('crashWaiting', lang)}</div>}
+        </div>
+        <Rocket className={`absolute bottom-6 right-8 h-8 w-8 -rotate-45 ${phase === 'running' ? 'text-primary' : 'text-muted-foreground'}`} />
+      </div>
+      <div className="flex flex-col gap-3 border-t border-border p-4 sm:flex-row sm:items-center">
+        <input
+          type="number" min={1} value={stake || ''} disabled={phase === 'running'}
+          onChange={(e) => setStake(Math.max(0, Number(e.target.value)))}
+          className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm font-bold outline-none focus:border-primary/60 sm:w-36"
+          placeholder={`${t('stake', lang)} (€)`}
+        />
+        {phase === 'running' ? (
+          <button className="btn-lime h-10 flex-1 text-sm" onClick={cashOut} disabled={!!cashedAt}>
+            {t('crashCash', lang)} · {formatMoney(Math.round(stake * multiplier * 100) / 100)}
+          </button>
+        ) : (
+          <button className="btn-lime h-10 flex-1 text-sm" onClick={start} disabled={stake <= 0 || stake > state.user.balance}>
+            {state.user.loggedIn ? `${t('crashPlace', lang)} · ${formatMoney(stake)}` : t('loginRequired', lang)}
+          </button>
+        )}
+      </div>
+      {history.length > 0 && (
+        <div className="flex gap-1.5 overflow-x-auto border-t border-border px-4 py-2 no-scrollbar">
+          {history.map((h, i) => (
+            <span key={i} className={`chip shrink-0 ${h >= 2 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-destructive/15 text-destructive'}`}>{h.toFixed(2)}×</span>
+          ))}
         </div>
       )}
+    </div>
+  )
+}
 
-      <div className="promo-banner" style={{ background: 'linear-gradient(135deg, #1a1a1a, #ebd100)', color: '#000' }}>
-        <div className="promo-content">
-          <div className="promo-badge" style={{ background: '#000', color: '#ebd100' }}>{t('Exclusive Offer', language)}</div>
-          <h2>{t('Casino Welcome Bonus', language)}</h2>
-          <p>{t('Casino Welcome Bonus Desc', language)}</p>
-          <button className="btn-promo" style={{ background: '#000', color: '#ebd100', borderColor: '#000' }} onClick={handleClaimBonus}>
-            {t('Claim Bonus', language)}
-          </button>
+const COMING_SOON = [
+  { name: 'Mines', icon: '💣' }, { name: 'Roulette', icon: '🎡' }, { name: 'Blackjack', icon: '🃏' },
+  { name: 'Slots', icon: '🎰' }, { name: 'Baccarat', icon: '🀄' }, { name: 'Plinko', icon: '⚪' },
+]
+
+export function Casino() {
+  const { state } = useApp()
+  const lang = state.settings.lang
+  return (
+    <div className="mx-auto max-w-3xl space-y-5">
+      <CrashGame />
+      <div>
+        <h3 className="mb-1 text-sm font-black uppercase tracking-wider">{t('casinoLobby', lang)}</h3>
+        <p className="mb-3 text-xs text-muted-foreground">{t('otherGamesSoon', lang)}</p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {COMING_SOON.map((g) => (
+            <div key={g.name} className="panel relative flex h-28 flex-col items-center justify-center gap-2 overflow-hidden">
+              <span className="text-3xl grayscale opacity-60">{g.icon}</span>
+              <span className="text-sm font-bold text-muted-foreground">{g.name}</span>
+              <span className="chip absolute right-2 top-2 bg-secondary text-muted-foreground">{t('comingSoon', lang)}</span>
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className="casino-header">
-        <h2>{t('Casino Lobby', language)}</h2>
-        <div className="casino-nav">
-          <button className={filter === 'All' ? 'active' : ''} onClick={() => setFilter('All')}>{t('All Games', language)}</button>
-          <button className={filter === 'Slots' ? 'active' : ''} onClick={() => setFilter('Slots')}>{t('Slots', language)}</button>
-          <button className={filter === 'Live Dealer' ? 'active' : ''} onClick={() => setFilter('Live Dealer')}>{t('Live Dealer', language)}</button>
-          <button className={filter === 'Table Games' ? 'active' : ''} onClick={() => setFilter('Table Games')}>{t('Table Games', language)}</button>
-        </div>
-      </div>
-
-      <div className="games-grid">
-        {filteredGames.map(game => (
-          <div key={game.id} className={`game-card ${loadingGame === game.id ? 'loading' : ''}`} onClick={() => handlePlayGame(game)}>
-            <div 
-              className="game-bg" 
-              style={{ 
-                background: game.color,
-                backgroundImage: game.image ? `url(${game.image})` : undefined,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}
-            >
-              {!game.image && game.icon}
-            </div>
-            <div className="game-overlay">
-              <button className="play-btn" onClick={(e) => { e.stopPropagation(); handlePlayGame(game); }}>
-                {loadingGame === game.id ? t('Loading...', language) : t('Play Now', language)}
-              </button>
-            </div>
-            <div className="game-info">
-              <h3 className="game-title">{game.title}</h3>
-              <p className="game-provider">{game.provider}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </main>
-  );
-};
+    </div>
+  )
+}
