@@ -44,7 +44,7 @@ vi.mock('../utils/i18n', () => ({
     };
     return translations[lang]?.[key] || key;
   },
-});
+}));
 
 // Helper function to render LiveChatWidget with default props
 const renderLiveChatWidget = (props = {}) => {
@@ -869,3 +869,5 @@ describe('Lifecycle and Cleanup', () => {
     expect(screen.getByText('Second')).toBeInTheDocument();
   });
 });
+});
+

@@ -121,7 +121,7 @@ const COMING_SOON = [
   { name: 'Slots', icon: '🎰' }, { name: 'Baccarat', icon: '🀄' }, { name: 'Plinko', icon: '⚪' },
 ]
 
-export function Casino() {
+export function Casino(_props?: any) {
   const { state } = useApp()
   const lang = state.settings.lang
   return (

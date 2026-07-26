@@ -109,8 +109,8 @@ describe('Supabase utility', () => {
     it('should access environment variables using bracket notation', () => {
       // This tests that we're using the safe access pattern
       // (bracket notation for import.meta.env)
-      const url = import['meta']?.env?.VITE_SUPABASE_URL;
-      const key = import['meta']?.env?.VITE_SUPABASE_ANON_KEY;
+      const url = import.meta.env?.VITE_SUPABASE_URL;
+      const key = import.meta.env?.VITE_SUPABASE_ANON_KEY;
 
       expect(url).toBeDefined();
       expect(key).toBeDefined();
